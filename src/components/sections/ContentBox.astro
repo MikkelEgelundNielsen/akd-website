@@ -1,0 +1,129 @@
+---
+interface Item {
+  title: string
+  description: string
+  icon: 'arrow' | 'check'
+  href?: string
+}
+
+interface Props {
+  variant?: 'light' | 'dark'
+  preHeader: string
+  headline: string
+  imageUrl: string
+  imageAlt: string
+  items: Item[]
+  pullUp?: boolean
+}
+
+const { 
+  variant = 'light',
+  preHeader,
+  headline,
+  imageUrl,
+  imageAlt,
+  items,
+  pullUp = false
+} = Astro.props
+
+const bgColor = variant === 'dark' ? 'bg-charcoal' : 'bg-white'
+const textColor = variant === 'dark' ? 'text-white' : 'text-charcoal'
+const textColorLight = variant === 'dark' ? 'text-white/90' : 'text-charcoal'
+---
+
+<div class:list={[
+  'container-custom',
+  pullUp && '-mt-48 sm:-mt-52 md:-mt-56 lg:-mt-[200px]'
+]}>
+  <div class:list={[
+    'relative rounded-lg shadow-2xl overflow-hidden z-10',
+    bgColor
+  ]}>
+    <div class="grid grid-cols-1 lg:grid-cols-2">
+      <!-- Image - Left Half -->
+      <div class="relative h-64 md:h-96 lg:h-auto">
+        <img 
+          src={imageUrl}
+          alt={imageAlt}
+          class="w-full h-full object-cover"
+        />
+      </div>
+      
+      <!-- Content - Right Half -->
+      <div class="p-8 md:p-10 lg:p-12">
+        <!-- Pre-header -->
+        <p class="text-mint font-bold text-base mb-4 uppercase tracking-wide">
+          {preHeader}
+        </p>
+        
+        <!-- Header -->
+        <h2 class:list={[
+          'font-serif font-semibold italic text-3xl md:text-4xl leading-tight mb-8',
+          textColor
+        ]}>
+          {headline}
+        </h2>
+        
+        <!-- Items List -->
+        <div class="space-y-6">
+          {items.map((item) => {
+            const ItemTag = item.href ? 'a' : 'div';
+            const itemProps = item.href ? { href: item.href } : {};
+            
+            return (
+              <ItemTag 
+                {...itemProps}
+                class:list={[
+                  'flex items-center justify-between',
+                  item.href && 'group cursor-pointer'
+                ]}
+              >
+                <div class="flex-1">
+                  <h3 class:list={[
+                    'font-sans font-bold text-xl md:text-[22px] mb-1',
+                    textColor
+                  ]}>
+                    {item.title}
+                  </h3>
+                  <p class:list={[
+                    'text-base md:text-lg leading-relaxed',
+                    textColorLight
+                  ]}>
+                    {item.description}
+                  </p>
+                </div>
+                
+                {item.icon === 'arrow' && (
+                  <svg 
+                    class:list={[
+                      'w-5 h-5 md:w-6 md:h-6 text-mint flex-shrink-0 ml-4',
+                      item.href && 'transition-transform group-hover:translate-x-1'
+                    ]}
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24" 
+                    aria-hidden="true"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                  </svg>
+                )}
+                
+                {item.icon === 'check' && (
+                  <svg 
+                    class="w-6 h-6 text-mint flex-shrink-0" 
+                    fill="currentColor" 
+                    viewBox="0 0 20 20" 
+                    aria-hidden="true"
+                  >
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                  </svg>
+                )}
+              </ItemTag>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

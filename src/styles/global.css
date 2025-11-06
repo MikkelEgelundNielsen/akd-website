@@ -1,0 +1,203 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-forest-green: #004928;
+  --color-mint: #10E397;
+  --color-burnt-orange: #E87722;  /* PRIMARY CTA */
+  --color-amber: #F5A623;
+  --color-charcoal: #26251E;
+  --color-warm-light: #F2F1EC;
+  --color-light: #F7F7F4;
+}
+
+/* Typography base styles */
+body {
+  font-family: 'Open Sans', sans-serif;
+  color: var(--color-charcoal);
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Lora', serif;
+  color: var(--color-forest-green);
+  font-weight: 600;
+}
+
+h1 { @apply text-4xl md:text-5xl lg:text-6xl; }
+h2 { @apply text-3xl md:text-4xl lg:text-5xl; }
+h3 { @apply text-2xl md:text-3xl; }
+h4 { @apply text-xl md:text-2xl; }
+
+/* Component styles */
+@layer components {
+  /* PRIMARY CTA - Burnt Orange with expanding circle animation */
+  .btn-primary {
+    @apply inline-flex items-center gap-3
+           bg-burnt-orange text-white
+           h-12 pl-6 pr-[3px] rounded-full
+           focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burnt-orange
+           relative overflow-hidden;
+  }
+  
+  /* Expanding circle background effect */
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    right: 3px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 42px;
+    height: 42px;
+    background-color: #F5A623; /* amber */
+    border-radius: 50%;
+    transition: all 0.35s ease-out;
+    z-index: 1;
+  }
+  
+  .btn-primary:hover::before {
+    width: calc(100% - 6px);
+    height: calc(100% - 6px);
+    border-radius: 9999px; /* Stay rounded */
+  }
+  
+  .btn-primary > span:first-child,
+  .btn-primary > .btn-text {
+    @apply text-lg font-normal flex-1 relative z-10;
+    transition: color 0.35s ease-out;
+  }
+  
+  .btn-primary:hover > span:first-child,
+  .btn-primary:hover > .btn-text {
+    color: #26251E; /* charcoal */
+  }
+  
+  /* Icon circle container */
+  .btn-primary > .btn-icon-circle {
+    @apply flex items-center justify-center
+           w-[42px] h-[42px] rounded-full
+           flex-shrink-0 ml-auto relative z-10;
+    background-color: transparent;
+  }
+  
+  /* Icon inside circle */
+  .btn-primary > .btn-icon-circle svg {
+    @apply text-white;
+    transition: color 0.35s ease-out;
+  }
+  
+  .btn-primary:hover > .btn-icon-circle svg {
+    color: #26251E; /* charcoal */
+  }
+  
+  /* SECONDARY CTA - Link style with arrow */
+  .btn-secondary {
+    @apply inline-flex items-center gap-2
+           text-burnt-orange font-semibold text-base md:text-lg
+           hover:text-amber transition-colors
+           focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burnt-orange;
+  }
+  
+  .btn-secondary svg {
+    @apply w-5 h-5 transition-transform;
+  }
+  
+  .btn-secondary:hover svg {
+    transform: translateX(4px);
+  }
+  
+  /* LOGIN - Burnt Orange with lock icon */
+  .btn-login {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg font-semibold
+           bg-burnt-orange text-white hover:bg-amber transition-colors
+           focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burnt-orange;
+  }
+  
+  /* TEXT LINK - Mint accent */
+  .link-mint {
+    @apply text-mint hover:text-forest-green underline underline-offset-4 transition-colors
+           focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mint;
+  }
+  
+  /* STANDARD LINK - Burnt orange with arrow */
+  .link-arrow-standard {
+    @apply inline-flex items-center gap-2
+           text-burnt-orange font-normal text-base
+           hover:text-amber transition-colors
+           focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burnt-orange;
+  }
+  
+  .link-arrow-standard svg {
+    @apply w-4 h-4 transition-transform;
+  }
+  
+  .link-arrow-standard:hover svg {
+    transform: translateX(2px);
+  }
+  
+  /* BURNT ORANGE LINK - With arrow */
+  .link-arrow {
+    @apply text-burnt-orange font-semibold text-lg inline-flex items-center gap-2
+           hover:text-amber transition-colors
+           focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burnt-orange;
+  }
+  
+  .link-arrow svg {
+    transition: transform 0.3s ease;
+  }
+  
+  .link-arrow:hover svg {
+    transform: translateX(4px);
+  }
+  
+  /* Layout utilities */
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  .section {
+    @apply py-16 md:py-24;
+  }
+  
+  /* First section after navigation - reduced top padding */
+  .section-after-nav {
+    @apply pt-8 sm:pt-10 md:pt-12 lg:pt-16 pb-16 md:pb-24;
+  }
+  
+  .card {
+    @apply bg-light rounded-lg shadow-md p-6 border border-gray-200;
+  }
+  
+  /* Screen reader only */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+  
+  .sr-only:focus,
+  .sr-only:focus-visible {
+    position: static;
+    width: auto;
+    height: auto;
+    padding: inherit;
+    margin: inherit;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+}
+
+/* Focus styles for all interactive elements */
+button:focus-visible,
+a:focus-visible {
+  @apply outline-2 outline-offset-2 outline-burnt-orange;
+}
+

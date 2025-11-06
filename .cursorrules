@@ -1,0 +1,49 @@
+# AKD Website - Core Development Rules
+
+## Project Context
+Danish potato starch cooperative website (akddanmark.dk). Modern, responsive site built with Astro, Vue 3, Tailwind CSS, and Sanity CMS. Serves three audiences: job seekers, prospective shareholders, and existing shareholders.
+
+## Tech Stack
+- **Framework:** Astro 4.x (SSG with selective SSR)
+- **Interactive Components:** Vue 3 Composition API only
+- **Styling:** Tailwind CSS (utility-first, no custom CSS unless necessary)
+- **Language:** TypeScript (strict mode)
+- **CMS:** Sanity.io
+- **Analytics:** PostHog
+
+## Language & Localization
+- All content in Danish (da-DK)
+- Date format: DD-MM-YYYY or DD. MMM YYYY
+- Number format: 1.234,56 (comma decimal separator)
+- Tone: Jordnær (down-to-earth), præcis (precise), imødekommende (welcoming)
+
+## File Naming Conventions
+- Astro components: `PascalCase.astro`
+- Vue components: `PascalCase.vue`
+- TypeScript utilities: `camelCase.ts`
+- Pages: `kebab-case.astro`
+- CSS files: `kebab-case.css`
+
+## Import Aliases
+Use `@/` for all src imports:
+```typescript
+import Layout from '@/layouts/BaseLayout.astro'
+import { sanityClient } from '@/lib/sanity'
+```
+
+## Code Quality Standards
+- **TypeScript:** Strict mode, explicit types, no `any`
+- **Performance:** Lighthouse 90+ on all metrics
+- **Accessibility:** WCAG 2.1 AA minimum
+- **Mobile-First:** Always design for 375px first
+- **Progressive Enhancement:** CSS-first, minimal JavaScript
+
+## Before Every Commit
+- [ ] TypeScript compiles with no errors
+- [ ] No console errors in browser
+- [ ] Tested at 375px, 768px, 1024px
+- [ ] All images have alt text
+- [ ] Links are keyboard accessible
+- [ ] Tailwind classes only (no inline styles)
+- [ ] Color contrast meets WCAG AA
+

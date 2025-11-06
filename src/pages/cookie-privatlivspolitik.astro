@@ -1,0 +1,134 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import TextPage from '@/components/templates/TextPage.astro'
+
+const sections = [
+  { id: 'cookies', title: 'Cookies' },
+  { id: 'persondata', title: 'Behandling af persondata' },
+  { id: 'formaal', title: 'Formål med databehandling' },
+  { id: 'dine-rettigheder', title: 'Dine rettigheder' },
+  { id: 'kontakt', title: 'Kontakt' }
+]
+---
+
+<BaseLayout 
+  title="Cookie & privatlivspolitik | AKD Danmark"
+  description="Læs om hvordan AKD Danmark behandler cookies og persondata"
+>
+  <TextPage
+    preHeader="Juridisk information"
+    headline="COOKIE & <span class='font-serif italic text-mint'>PRIVATLIVSPOLITIK</span>"
+    sections={sections}
+  >
+    
+    <h2 id="cookies">Cookies</h2>
+    
+    <p>
+      Denne hjemmeside anvender cookies til at optimere brugeroplevelsen og analysere trafikken på siden. 
+      En cookie er en lille datafil, som gemmes på din computer, tablet eller smartphone, når du besøger hjemmesiden.
+    </p>
+    
+    <h3>Typer af cookies vi bruger</h3>
+    
+    <p>Vi anvender følgende typer af cookies på vores hjemmeside:</p>
+    
+    <ul>
+      <li><strong>Nødvendige cookies:</strong> Disse cookies er nødvendige for at hjemmesiden kan fungere korrekt.</li>
+      <li><strong>Funktionelle cookies:</strong> Disse cookies husker dine præferencer og forbedrer din oplevelse.</li>
+      <li><strong>Analytiske cookies:</strong> Disse cookies hjælper os med at forstå, hvordan besøgende bruger hjemmesiden.</li>
+    </ul>
+    
+    <div class="callout">
+      <p><strong>Vigtigt:</strong> Du kan til enhver tid ændre eller tilbagetrække dit samtykke til cookies via vores cookie-indstillinger.</p>
+    </div>
+    
+    <h2 id="persondata">Behandling af persondata</h2>
+    
+    <p>
+      AKD Danmark tager databeskyttelse alvorligt. Vi behandler kun personoplysninger i overensstemmelse 
+      med gældende lovgivning, herunder GDPR (Databeskyttelsesforordningen).
+    </p>
+    
+    <h3>Hvilke data indsamler vi?</h3>
+    
+    <p>Vi kan indsamle følgende typer af personoplysninger:</p>
+    
+    <ul>
+      <li>Navn og kontaktoplysninger (e-mail, telefon, adresse)</li>
+      <li>CVR-nummer (for andelshavere og forretningspartnere)</li>
+      <li>Oplysninger om dyrkning og leverancer (kun for andelshavere)</li>
+      <li>IP-adresse og browserinformation</li>
+    </ul>
+    
+    <h2 id="formaal">Formål med databehandling</h2>
+    
+    <p>Vi behandler dine personoplysninger til følgende formål:</p>
+    
+    <ul>
+      <li>Administration af andelsforhold og leveranceaftaler</li>
+      <li>Kampagneplanlægning og logistik</li>
+      <li>Udarbejdelse af regnskaber og betalinger</li>
+      <li>Kommunikation og nyhedsbreve</li>
+      <li>Behandling af jobansøgninger</li>
+      <li>Forbedring af vores hjemmeside og services</li>
+    </ul>
+    
+    <h3>Retsgrundlag</h3>
+    
+    <p>
+      Vores behandling af personoplysninger sker på baggrund af følgende retsgrundlag:
+    </p>
+    
+    <ul>
+      <li>Opfyldelse af kontrakt (for andelshavere og leverandører)</li>
+      <li>Legitim interesse (for drift og udvikling af forretningen)</li>
+      <li>Dit samtykke (for markedsføring og nyhedsbreve)</li>
+      <li>Lovkrav (for regnskab og skattemæssige forhold)</li>
+    </ul>
+    
+    <h2 id="dine-rettigheder">Dine rettigheder</h2>
+    
+    <p>Du har følgende rettigheder i forhold til dine personoplysninger:</p>
+    
+    <ul>
+      <li><strong>Ret til indsigt:</strong> Du kan få oplyst, hvilke personoplysninger vi behandler om dig.</li>
+      <li><strong>Ret til berigtigelse:</strong> Du kan få rettet ukorrekte eller ufuldstændige oplysninger.</li>
+      <li><strong>Ret til sletning:</strong> Du kan under visse omstændigheder få slettet dine personoplysninger.</li>
+      <li><strong>Ret til begrænsning:</strong> Du kan få begrænset behandlingen af dine oplysninger.</li>
+      <li><strong>Ret til dataportabilitet:</strong> Du kan få udleveret dine data i et struktureret format.</li>
+      <li><strong>Ret til indsigelse:</strong> Du kan gøre indsigelse mod vores behandling af dine data.</li>
+    </ul>
+    
+    <h3>Opbevaring af data</h3>
+    
+    <p>
+      Vi opbevarer dine personoplysninger kun så længe, det er nødvendigt for at opfylde de formål, 
+      som oplysningerne blev indsamlet til, eller så længe vi er forpligtet til det efter lovgivningen.
+    </p>
+    
+    <h2 id="kontakt">Kontakt</h2>
+    
+    <p>
+      Hvis du har spørgsmål til vores behandling af personoplysninger eller ønsker at gøre brug af 
+      dine rettigheder, er du velkommen til at kontakte os:
+    </p>
+    
+    <div class="callout">
+      <p><strong>Dataansvarlig:</strong> Andels-Kartoffelmelsfabrikken Danmark</p>
+      <p><strong>Adresse:</strong> Herningvej 38, 7330 Brande</p>
+      <p><strong>E-mail:</strong> <a href="mailto:akd@akddanmark.dk">akd@akddanmark.dk</a></p>
+      <p><strong>Telefon:</strong> <a href="tel:97180888">97 18 08 88</a></p>
+    </div>
+    
+    <p>
+      Du har også mulighed for at klage til Datatilsynet, hvis du mener, at vi ikke behandler 
+      dine personoplysninger i overensstemmelse med gældende lovgivning.
+    </p>
+    
+    <p class="text-sm text-charcoal/70 mt-12">
+      Denne privatlivspolitik er senest opdateret: 6. november 2024
+    </p>
+    
+  </TextPage>
+</BaseLayout>
+

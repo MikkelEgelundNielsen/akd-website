@@ -1,0 +1,79 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+---
+
+<BaseLayout 
+  title="At arbejde hos AKD"
+  description="Lær mere om, hvordan det er at arbejde hos AKD Danmark"
+  navTheme="light"
+>
+  <section class="section-after-nav bg-light">
+    <div class="container-custom">
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-serif text-forest-green mb-8">
+        At arbejde hos AKD
+      </h1>
+      <p class="text-lg md:text-xl text-charcoal leading-relaxed max-w-3xl mb-12">
+        AKD er et moderne andelsselskab med stærke rødder i dansk tradition. Vi værdsætter faglighed, samarbejde og innovation.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+        <div class="card">
+          <h2 class="text-2xl font-serif text-forest-green mb-4">
+            Vores værdier
+          </h2>
+          <ul class="space-y-3 text-charcoal">
+            <li class="flex items-start gap-3">
+              <span class="text-mint text-xl">✓</span>
+              <span><strong class="font-semibold">Jordnær:</strong> Vi holder fødderne på jorden og kommunikerer ærligt</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-mint text-xl">✓</span>
+              <span><strong class="font-semibold">Præcis:</strong> Vi leverer kvalitet i alt, hvad vi gør</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-mint text-xl">✓</span>
+              <span><strong class="font-semibold">Imødekommende:</strong> Vi møder alle med respekt og åbenhed</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h2 class="text-2xl font-serif text-forest-green mb-4">
+            Fordele
+          </h2>
+          <ul class="space-y-3 text-charcoal">
+            <li class="flex items-start gap-3">
+              <span class="text-burnt-orange text-xl">•</span>
+              <span>Konkurrencedygtig løn og gode pensionsforhold</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-burnt-orange text-xl">•</span>
+              <span>Mulighed for efteruddannelse og faglig udvikling</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-burnt-orange text-xl">•</span>
+              <span>Gode kollegiale fællesskaber</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-burnt-orange text-xl">•</span>
+              <span>Moderne faciliteter og arbejdspladser</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bg-forest-green text-white p-8 rounded-lg">
+        <h2 class="text-3xl font-serif mb-4">
+          Klar til at blive en del af teamet?
+        </h2>
+        <p class="text-lg mb-6 max-w-2xl">
+          Se vores ledige stillinger og find dit næste job hos AKD.
+        </p>
+        <a href="/job/stillinger" class="btn-primary">
+          Se ledige stillinger
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+

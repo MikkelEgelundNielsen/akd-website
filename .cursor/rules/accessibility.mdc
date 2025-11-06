@@ -1,0 +1,182 @@
+---
+description: Accessibility requirements and WCAG 2.1 AA compliance
+globs:
+  - "**/*.astro"
+  - "**/*.vue"
+alwaysApply: true
+---
+
+# Accessibility Standards (WCAG 2.1 AA)
+
+## Semantic HTML - ALWAYS
+
+### ✅ CORRECT
+```html
+<nav aria-label="Hovednavigation">
+  <ul>
+    <li><a href="/job">Job & karriere</a></li>
+  </ul>
+</nav>
+
+<main id="main-content">
+  <article>
+    <h1>Nyhed titel</h1>
+    <p>Indhold...</p>
+  </article>
+</main>
+
+<footer>
+  <p>&copy; 2024 AKD Danmark</p>
+</footer>
+```
+
+### ❌ WRONG
+```html
+<div class="nav">
+  <div><a href="/job">Job & karriere</a></div>
+</div>
+
+<div class="main">
+  <div class="article">
+    <div class="title">Nyhed titel</div>
+  </div>
+</div>
+```
+
+## Images - Alt Text Required
+
+```html
+<!-- Decorative images - empty alt -->
+<img src="/pattern.svg" alt="" role="presentation" />
+
+<!-- Informative images - descriptive alt -->
+<img 
+  src="/factory.jpg" 
+  alt="AKD's fabriksanlæg i Brande med karakteristiske industrielle bygninger" 
+/>
+
+<!-- Complex images - detailed alt + aria-describedby -->
+<img 
+  src="/process-diagram.svg" 
+  alt="Produktionsproces: Fra kartoffel til stivelse i 5 trin"
+  aria-describedby="process-description"
+/>
+<div id="process-description" class="sr-only">
+  Detaljeret beskrivelse af processen...
+</div>
+```
+
+## Interactive Elements
+
+### Buttons
+```html
+<!-- Icon buttons MUST have labels -->
+<button 
+  aria-label="Luk menu" 
+  class="p-2"
+>
+  <svg><!-- X icon --></svg>
+</button>
+
+<!-- Text buttons are self-describing -->
+<button class="btn-primary">
+  Book møde
+</button>
+```
+
+### Links
+```html
+<!-- Descriptive link text -->
+<a href="/job" class="link-mint">
+  Se alle ledige stillinger
+</a>
+
+<!-- Icon links need aria-label -->
+<a 
+  href="https://linkedin.com/akd" 
+  aria-label="Følg AKD på LinkedIn"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  <svg><!-- LinkedIn icon --></svg>
+</a>
+```
+
+### Forms
+```html
+<form>
+  <!-- Every input needs a label -->
+  <label for="name" class="block text-sm font-semibold text-charcoal mb-2">
+    Navn <span class="text-burnt-orange">*</span>
+  </label>
+  <input 
+    type="text" 
+    id="name" 
+    name="name"
+    required
+    aria-required="true"
+    aria-describedby="name-error"
+    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-burnt-orange"
+  />
+  <span id="name-error" class="text-sm text-red-600" role="alert">
+    <!-- Error message if validation fails -->
+  </span>
+</form>
+```
+
+## Color Contrast (WCAG AA)
+
+### Minimum Ratios
+- Normal text (< 24px): **4.5:1**
+- Large text (≥ 24px): **3:1**
+- UI components: **3:1**
+
+### Approved Combinations
+
+✅ **PASS - High Contrast**
+- Forest Green (#004928) on White
+- Charcoal (#26251E) on Warm Light (#F2F1EC)
+- White on Forest Green
+- White on Burnt Orange
+- White on Amber (large text only)
+
+⚠️ **CAUTION - Check Before Use**
+- Mint (#10E397) on White (use for accents only, not body text)
+- Burnt Orange on Warm Light (verify in context)
+
+❌ **FAIL - Do Not Use**
+- Mint on Warm Light (insufficient contrast)
+- Light Gray on White
+- Yellow on White
+
+## Keyboard Navigation
+
+All interactive elements must be:
+- ✅ Focusable (tabbable)
+- ✅ Have visible focus indicator
+- ✅ Operable with Enter/Space
+
+```html
+<!-- Skip links for screen readers -->
+<a href="#main-content" class="sr-only focus:not-sr-only">
+  Spring til hovedindhold
+</a>
+
+<!-- Proper tab order -->
+<div role="dialog" tabindex="-1">
+  <button tabindex="0">Close</button>
+  <button tabindex="0">Confirm</button>
+</div>
+```
+
+## Testing Checklist
+
+Before every commit:
+- [ ] All images have alt text
+- [ ] All buttons/links have labels
+- [ ] Color contrast passes WCAG AA
+- [ ] Keyboard navigation works (Tab, Enter, Escape)
+- [ ] Focus indicators visible
+- [ ] Forms have labels and error messages
+- [ ] Semantic HTML used throughout
+- [ ] Tested with screen reader (NVDA/VoiceOver)

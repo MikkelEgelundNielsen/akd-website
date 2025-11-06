@@ -1,0 +1,52 @@
+---
+import '@/styles/global.css'
+import Navigation from '@/components/layout/Navigation.astro'
+import Footer from '@/components/layout/Footer.astro'
+
+interface Props {
+  title: string
+  description?: string
+  navTheme?: 'light' | 'dark'
+  bodyBg?: 'warm-light' | 'forest-green'
+}
+
+const { 
+  title, 
+  description = 'AKD Danmark - Moderne andelsselskab med rødder i traditionerne',
+  navTheme = 'light',
+  bodyBg = 'warm-light'
+} = Astro.props
+
+const bodyBgClass = bodyBg === 'forest-green' ? 'bg-forest-green' : 'bg-warm-light'
+---
+
+<!doctype html>
+<html lang="da">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title} | AKD Danmark</title>
+    <meta name="description" content={description} />
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,500;1,600&family=Open+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  </head>
+  <body class={`${bodyBgClass} text-charcoal`}>
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-burnt-orange focus:text-white focus:rounded-lg">
+      Spring til hovedindhold
+    </a>
+    
+    <!-- Navigation -->
+    <Navigation theme={navTheme} />
+    
+    <main id="main-content">
+      <slot />
+    </main>
+    
+    <Footer />
+  </body>
+</html>
+

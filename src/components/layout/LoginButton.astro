@@ -1,0 +1,114 @@
+---
+interface Props {
+  theme?: 'light' | 'dark'
+}
+
+const { theme = 'light' } = Astro.props
+---
+
+<a 
+  href="/andelshavere/login"
+  class="login-button"
+  aria-label="Log ind til andelshaver-området"
+>
+  <span class="login-text">For andelshavere</span>
+  <span class="login-icon-circle" aria-hidden="true">
+    <svg 
+      class="w-5 h-5 text-white" 
+      fill="none" 
+      stroke="currentColor" 
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path 
+        stroke-linecap="round" 
+        stroke-linejoin="round" 
+        stroke-width="2" 
+        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+      />
+    </svg>
+  </span>
+</a>
+
+<style>
+  .login-button {
+    @apply inline-flex items-center gap-3
+           bg-burnt-orange
+           h-12 pl-6 pr-[3px] rounded-full
+           focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burnt-orange
+           relative overflow-hidden;
+  }
+  
+  /* Expanding circle background effect */
+  .login-button::before {
+    content: '';
+    position: absolute;
+    right: 3px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 42px;
+    height: 42px;
+    background-color: #F5A623; /* amber */
+    border-radius: 50%;
+    transition: all 0.35s ease-out;
+    z-index: 1;
+  }
+  
+  .login-button:hover::before {
+    width: calc(100% - 6px);
+    height: calc(100% - 6px);
+    border-radius: 9999px; /* Stay rounded */
+  }
+  
+  .login-text {
+    @apply text-white text-lg font-sans font-normal flex-1 relative z-10;
+    transition: color 0.35s ease-out;
+  }
+  
+  .login-button:hover .login-text {
+    color: #26251E; /* charcoal */
+  }
+  
+  .login-icon-circle {
+    @apply flex items-center justify-center
+           w-[42px] h-[42px] rounded-full
+           flex-shrink-0 ml-auto relative z-10;
+    background-color: transparent;
+  }
+  
+  .login-icon-circle svg {
+    @apply text-white;
+    transition: color 0.35s ease-out;
+  }
+  
+  .login-button:hover .login-icon-circle svg {
+    color: #26251E; /* charcoal */
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 1023px) {
+    .login-text {
+      @apply text-base;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .login-button {
+      @apply pl-4 pr-[3px] gap-2;
+    }
+    
+    .login-text {
+      @apply text-sm;
+    }
+    
+    .login-icon-circle {
+      @apply w-9 h-9;
+    }
+    
+    .login-button::before {
+      width: 36px;
+      height: 36px;
+    }
+  }
+</style>
+

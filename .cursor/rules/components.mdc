@@ -1,0 +1,128 @@
+---
+description: Component structure and organization patterns
+globs:
+  - "src/components/**/*.astro"
+  - "src/components/**/*.vue"
+alwaysApply: false
+---
+
+# Component Structure Standards
+
+## Astro Component Template
+
+```astro
+---
+// 1. Type imports first
+import type { ImageMetadata } from 'astro'
+
+// 2. Component imports
+import Layout from '@/layouts/BaseLayout.astro'
+import Button from '@/components/ui/Button.astro'
+
+// 3. Props interface (always define explicitly)
+interface Props {
+  title: string
+  description?: string
+  image?: ImageMetadata
+}
+
+// 4. Props destructuring with defaults
+const { 
+  title, 
+  description = 'Default description',
+  image 
+} = Astro.props
+
+// 5. Data fetching (if needed)
+const data = await sanityClient.fetch('...')
+
+// 6. Computed values
+const formattedDate = new Date().toLocaleDateString('da-DK')
+---
+
+<!-- 7. Semantic HTML template -->
+<section class="section" aria-labelledby="section-heading">
+  <div class="container-custom">
+    <h2 id="section-heading" class="text-3xl md:text-5xl font-serif text-forest-green mb-8">
+      {title}
+    </h2>
+    {description && <p class="text-lg text-charcoal">{description}</p>}
+  </div>
+</section>
+```
+
+## Vue Component Template (Composition API)
+
+```vue
+<script setup lang="ts">
+// 1. Imports
+import { ref, computed, onMounted } from 'vue'
+
+// 2. Props interface and definition
+interface Props {
+  title: string
+  isOpen?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  isOpen: false
+})
+
+// 3. Emits
+const emit = defineEmits<{
+  close: []
+  submit: [value: string]
+}>()
+
+// 4. Reactive state
+const isVisible = ref(props.isOpen)
+const formData = ref({ name: '', email: '' })
+
+// 5. Computed values
+const isValid = computed(() => {
+  return formData.value.name && formData.value.email
+})
+
+// 6. Methods
+function handleSubmit() {
+  if (isValid.value) {
+    emit('submit', formData.value.name)
+  }
+}
+
+// 7. Lifecycle hooks
+onMounted(() => {
+  // Component mounted logic
+})
+</script>
+
+<template>
+  <div class="component-wrapper">
+    <h2 class="text-2xl font-serif text-forest-green mb-4">{{ title }}</h2>
+    <button 
+      @click="handleSubmit"
+      class="btn-primary"
+      :disabled="!isValid"
+      :aria-label="`Submit ${title}`"
+    >
+      Submit
+    </button>
+  </div>
+</template>
+```
+
+## When to Use Vue vs Astro
+
+### Use Astro (.astro) for:
+- Static content
+- Server-rendered pages
+- SEO-critical content
+- Layouts and templates
+- Content from CMS
+
+### Use Vue (.vue) for:
+- Forms with validation
+- Interactive widgets (accordions, tabs, modals)
+- Client-side state management
+- Dynamic filtering/sorting
+- Real-time updates

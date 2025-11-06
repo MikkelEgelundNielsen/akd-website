@@ -1,0 +1,25 @@
+{
+  "name": "akd-website",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "AKD Danmark - Modern cooperative website",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/tailwind": "^5.1.2",
+    "@astrojs/vue": "^4.5.2",
+    "@sanity/client": "^6.24.1",
+    "astro": "^4.16.18",
+    "tailwindcss": "^3.4.17",
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  }
+}
+

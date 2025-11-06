@@ -1,0 +1,99 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+---
+
+<BaseLayout 
+  title="Ledige Stillinger"
+  description="Se alle ledige stillinger hos AKD Danmark"
+  navTheme="light"
+>
+  <section class="section-after-nav bg-light">
+    <div class="container-custom">
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-serif text-forest-green mb-8">
+        Ledige Stillinger
+      </h1>
+      <p class="text-lg md:text-xl text-charcoal leading-relaxed max-w-3xl mb-12">
+        Her finder du alle vores aktuelle jobannoncer. Vi opdaterer løbende, når nye stillinger bliver ledige.
+      </p>
+
+      <!-- Example job listings -->
+      <div class="space-y-6">
+        <article class="card hover:shadow-lg transition-shadow">
+          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+            <h2 class="text-2xl font-serif text-forest-green">
+              Produktionstekniker
+            </h2>
+            <span class="text-sm font-semibold text-burnt-orange bg-burnt-orange/10 px-3 py-1 rounded-full self-start">
+              Fuldtid
+            </span>
+          </div>
+          <p class="text-charcoal mb-4">
+            Vi søger en erfaren produktionstekniker til vores fabrik i Brande. Du kommer til at arbejde med optimering af produktionsprocesser og sikre høj kvalitet.
+          </p>
+          <div class="flex flex-wrap gap-4 text-sm text-charcoal/70 mb-6">
+            <span>📍 Brande</span>
+            <span>📅 Opslået 5. nov. 2024</span>
+          </div>
+          <a href="#" class="btn-primary">
+            Læs mere og ansøg
+          </a>
+        </article>
+
+        <article class="card hover:shadow-lg transition-shadow">
+          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+            <h2 class="text-2xl font-serif text-forest-green">
+              IT-supporter
+            </h2>
+            <span class="text-sm font-semibold text-burnt-orange bg-burnt-orange/10 px-3 py-1 rounded-full self-start">
+              Fuldtid
+            </span>
+          </div>
+          <p class="text-charcoal mb-4">
+            Vil du være med til at drive og udvikle vores IT-infrastruktur? Vi søger en dygtig IT-supporter, der kan hjælpe vores medarbejdere med tekniske udfordringer.
+          </p>
+          <div class="flex flex-wrap gap-4 text-sm text-charcoal/70 mb-6">
+            <span>📍 Brande</span>
+            <span>📅 Opslået 3. nov. 2024</span>
+          </div>
+          <a href="#" class="btn-primary">
+            Læs mere og ansøg
+          </a>
+        </article>
+
+        <article class="card hover:shadow-lg transition-shadow">
+          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+            <h2 class="text-2xl font-serif text-forest-green">
+              Lagermedarbejder
+            </h2>
+            <span class="text-sm font-semibold text-amber bg-amber/10 px-3 py-1 rounded-full self-start">
+              Deltid
+            </span>
+          </div>
+          <p class="text-charcoal mb-4">
+            Vi søger en fleksibel lagermedarbejder på deltid til varemodtagelse, plukning og emballering. Erfaring med truck er en fordel.
+          </p>
+          <div class="flex flex-wrap gap-4 text-sm text-charcoal/70 mb-6">
+            <span>📍 Brande</span>
+            <span>📅 Opslået 1. nov. 2024</span>
+          </div>
+          <a href="#" class="btn-primary">
+            Læs mere og ansøg
+          </a>
+        </article>
+      </div>
+
+      <div class="mt-12 p-8 bg-forest-green/5 rounded-lg border border-forest-green/10">
+        <h3 class="text-2xl font-serif text-forest-green mb-4">
+          Kunne ikke finde noget passende?
+        </h3>
+        <p class="text-charcoal mb-6">
+          Send os en uopfordret ansøgning. Vi er altid interesserede i at høre fra dygtige kandidater.
+        </p>
+        <a href="/job/ansoegning" class="btn-secondary">
+          Send uopfordret ansøgning
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+

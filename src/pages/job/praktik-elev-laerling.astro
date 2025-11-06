@@ -1,0 +1,179 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+---
+
+<BaseLayout 
+  title="Praktik, elev- og lærlingepladser"
+  description="Information om uddannelsesmuligheder og praktikpladser hos AKD Danmark"
+  navTheme="light"
+>
+  <section class="section-after-nav bg-light">
+    <div class="container-custom">
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-serif text-forest-green mb-8">
+        Praktik, elev- og lærlingepladser
+      </h1>
+      <p class="text-lg md:text-xl text-charcoal leading-relaxed max-w-3xl mb-12">
+        Hos AKD investerer vi i fremtidens faglærte medarbejdere. Vi tilbyder praktik-, elev- og lærlingepladser inden for flere forskellige fagområder.
+      </p>
+
+      <!-- Education types -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+        <div class="card">
+          <div class="w-16 h-16 rounded-full bg-burnt-orange/10 flex items-center justify-center mb-4">
+            <svg class="w-8 h-8 text-burnt-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+            </svg>
+          </div>
+          <h2 class="text-2xl font-serif text-forest-green mb-4">
+            Praktikpladser
+          </h2>
+          <p class="text-charcoal mb-4">
+            Vi modtager praktikanter fra gymnasier, erhvervsskoler og videregående uddannelser. En praktik hos os giver værdifuld erfaring med arbejdslivet i en produktionsvirksomhed.
+          </p>
+          <ul class="space-y-2 text-charcoal text-sm">
+            <li>• Varighed: 2-12 uger</li>
+            <li>• Flere fagområder</li>
+            <li>• Tæt opfølgning</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <div class="w-16 h-16 rounded-full bg-amber/10 flex items-center justify-center mb-4">
+            <svg class="w-8 h-8 text-amber" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+            </svg>
+          </div>
+          <h2 class="text-2xl font-serif text-forest-green mb-4">
+            Elevpladser
+          </h2>
+          <p class="text-charcoal mb-4">
+            Vi uddanner elever inden for produktionsteknik, maskinteknologi og andre relevante fagområder. Som elev hos AKD får du en solid faglig uddannelse.
+          </p>
+          <ul class="space-y-2 text-charcoal text-sm">
+            <li>• EUX og almindelig erhvervsuddannelse</li>
+            <li>• Erfarne instruktører</li>
+            <li>• Moderne udstyr</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <div class="w-16 h-16 rounded-full bg-mint/10 flex items-center justify-center mb-4">
+            <svg class="w-8 h-8 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+            </svg>
+          </div>
+          <h2 class="text-2xl font-serif text-forest-green mb-4">
+            Lærlingepladser
+          </h2>
+          <p class="text-charcoal mb-4">
+            Vi tilbyder lærepladser til unge, der ønsker at blive faglærte håndværkere. Blandt andet industrimekanikere, elektrikere og procesoperatører.
+          </p>
+          <ul class="space-y-2 text-charcoal text-sm">
+            <li>• 3-4 årig uddannelse</li>
+            <li>• Fast ansættelse under uddannelse</li>
+            <li>• Gode karrieremuligheder</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Education areas -->
+      <div class="mb-12">
+        <h2 class="text-3xl md:text-4xl font-serif text-forest-green mb-8">
+          Fagområder vi uddanner inden for
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="flex items-start gap-4 p-6 bg-warm-light rounded-lg">
+            <span class="text-2xl">⚙️</span>
+            <div>
+              <h3 class="text-xl font-serif text-forest-green mb-2">Produktionsteknik</h3>
+              <p class="text-charcoal">Arbejde med produktionsprocesser, optimering og kvalitetskontrol.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-4 p-6 bg-warm-light rounded-lg">
+            <span class="text-2xl">🔧</span>
+            <div>
+              <h3 class="text-xl font-serif text-forest-green mb-2">Industrimekaniker</h3>
+              <p class="text-charcoal">Vedligehold og reparation af produktionsudstyr og maskiner.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-4 p-6 bg-warm-light rounded-lg">
+            <span class="text-2xl">⚡</span>
+            <div>
+              <h3 class="text-xl font-serif text-forest-green mb-2">Elektriker</h3>
+              <p class="text-charcoal">Installation og vedligehold af elektriske systemer og automation.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-4 p-6 bg-warm-light rounded-lg">
+            <span class="text-2xl">🏭</span>
+            <div>
+              <h3 class="text-xl font-serif text-forest-green mb-2">Procesoperatør</h3>
+              <p class="text-charcoal">Overvågning og styring af produktionsprocesser og anlæg.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-4 p-6 bg-warm-light rounded-lg">
+            <span class="text-2xl">📊</span>
+            <div>
+              <h3 class="text-xl font-serif text-forest-green mb-2">Kontor og administration</h3>
+              <p class="text-charcoal">Kontorelev med fokus på administration og kundeservice.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-4 p-6 bg-warm-light rounded-lg">
+            <span class="text-2xl">🔬</span>
+            <div>
+              <h3 class="text-xl font-serif text-forest-green mb-2">Laborant</h3>
+              <p class="text-charcoal">Kvalitetsanalyse og laboratoriearbejde med prøver og tests.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Application process -->
+      <div class="bg-forest-green text-white p-8 md:p-12 rounded-lg mb-12">
+        <h2 class="text-3xl md:text-4xl font-serif mb-6">
+          Sådan ansøger du
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div>
+            <div class="text-4xl font-bold text-amber mb-3">1</div>
+            <h3 class="text-xl font-semibold mb-2">Find den rette plads</h3>
+            <p>Se vores aktuelle praktik-, elev- og lærlingepladser under ledige stillinger.</p>
+          </div>
+          <div>
+            <div class="text-4xl font-bold text-amber mb-3">2</div>
+            <h3 class="text-xl font-semibold mb-2">Send din ansøgning</h3>
+            <p>Skriv en kort ansøgning og vedlæg dit CV. Fortæl os, hvorfor du gerne vil i praktik/uddannelse hos AKD.</p>
+          </div>
+          <div>
+            <div class="text-4xl font-bold text-amber mb-3">3</div>
+            <h3 class="text-xl font-semibold mb-2">Kom til samtale</h3>
+            <p>Vi inviterer interessante kandidater til en uformel samtale, hvor vi lærer hinanden at kende.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="text-center">
+        <h2 class="text-3xl font-serif text-forest-green mb-4">
+          Klar til at søge?
+        </h2>
+        <p class="text-lg text-charcoal mb-8 max-w-2xl mx-auto">
+          Se vores ledige praktik-, elev- og lærlingepladser, eller kontakt os for mere information.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="/job/stillinger" class="btn-primary">
+            Se ledige pladser
+          </a>
+          <a href="/kontakt" class="btn-secondary">
+            Kontakt os
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+

@@ -1,0 +1,85 @@
+---
+import MainNav from './MainNav.astro'
+import SubNav from './SubNav.astro'
+import { getCurrentNavItem } from '@/lib/navigation'
+
+interface Props {
+  theme?: 'light' | 'dark'
+}
+
+const { theme = 'light' } = Astro.props
+const currentPath = Astro.url.pathname
+
+// Find current main nav item and its children
+const currentMainItem = getCurrentNavItem(currentPath)
+const hasSubNav = currentMainItem?.children && currentMainItem.children.length > 0
+---
+
+<header 
+  class={`navigation-wrapper fixed top-0 left-0 right-0 z-50 transition-shadow duration-200 ${theme === 'dark' ? 'bg-forest-green' : 'bg-warm-light'}`}
+  data-theme={theme}
+>
+  <MainNav theme={theme} currentPath={currentPath} />
+  
+  {hasSubNav && currentMainItem.children && (
+    <SubNav 
+      parentLabel={currentMainItem.label}
+      items={currentMainItem.children}
+      currentPath={currentPath}
+      theme={theme}
+    />
+  )}
+</header>
+
+<!-- Spacer to prevent content from hiding under fixed nav -->
+<!-- Responsive height: smaller on mobile, larger on desktop -->
+{hasSubNav ? (
+  <div class="nav-spacer h-36 sm:h-40 md:h-44 lg:h-46" aria-hidden="true"></div>
+) : (
+  <div class="nav-spacer h-24 sm:h-26 md:h-28 lg:h-31" aria-hidden="true"></div>
+)}
+
+<script>
+  // Add shadow and shrink on scroll
+  const header = document.querySelector('.navigation-wrapper')
+  
+  if (header) {
+    let lastScroll = 0
+    
+    const handleScroll = () => {
+      const currentScroll = window.pageYOffset
+      
+      // Add shadow and shrink class when scrolled down
+      if (currentScroll > 10) {
+        header.classList.add('shadow-lg', 'scrolled')
+      } else {
+        header.classList.remove('shadow-lg', 'scrolled')
+      }
+      
+      lastScroll = currentScroll
+    }
+    
+    // Initial check
+    handleScroll()
+    
+    // Listen to scroll events
+    window.addEventListener('scroll', handleScroll, { passive: true })
+  }
+</script>
+
+<style>
+  .navigation-wrapper {
+    transition: box-shadow 0.2s ease, height 0.3s ease;
+  }
+  
+  /* Ensure proper z-index stacking */
+  .navigation-wrapper {
+    z-index: 50;
+  }
+  
+  /* Smooth height transition when scrolled */
+  .navigation-wrapper.scrolled {
+    /* Additional styling can be added here if needed */
+  }
+</style>
+

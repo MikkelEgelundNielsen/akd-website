@@ -1,0 +1,147 @@
+---
+import LoginButton from './LoginButton.astro'
+import LogoColored from '@/components/ui/LogoColored.astro'
+import LogoWhite from '@/components/ui/LogoWhite.astro'
+import { navigationItems } from '@/lib/navigation'
+
+interface Props {
+  theme?: 'light' | 'dark'
+  currentPath?: string
+}
+
+const { theme = 'light', currentPath = '/' } = Astro.props
+
+const textColor = theme === 'dark' ? 'text-white' : 'text-charcoal'
+---
+
+<nav 
+  class={`main-nav ${theme === 'dark' ? 'bg-forest-green' : 'bg-warm-light'}`}
+  aria-label="Hovednavigation"
+>
+  <div class="container-custom flex items-center h-[124px] gap-4 md:gap-8 transition-all duration-300">
+    <!-- Logo -->
+    <a 
+      href="/" 
+      class="logo-link flex-shrink-0"
+      aria-label="AKD Danmark forside"
+    >
+      {theme === 'dark' ? (
+        <LogoWhite class="w-32 md:w-40 lg:w-[180px] h-auto transition-all duration-300" />
+      ) : (
+        <LogoColored class="w-32 md:w-40 lg:w-[180px] h-auto transition-all duration-300" />
+      )}
+    </a>
+    
+    <!-- Spacer to push nav items to the right -->
+    <div class="flex-1"></div>
+    
+    <!-- Desktop Navigation Items -->
+    <ul 
+      class="hidden lg:flex items-center gap-8"
+      role="list"
+    >
+      {navigationItems.map((item) => {
+        const isActive = currentPath.startsWith(item.href)
+        const hasChildren = item.children && item.children.length > 0
+        
+        return (
+          <li>
+            <a
+              href={item.href}
+              class={`nav-link ${textColor} ${isActive ? 'font-semibold' : 'font-normal'}`}
+              aria-current={isActive ? 'page' : undefined}
+            >
+              {item.label}
+              {hasChildren && (
+                <svg 
+                  class="inline-block ml-2 w-4 h-4" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path 
+                    stroke-linecap="round" 
+                    stroke-linejoin="round" 
+                    stroke-width="2" 
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              )}
+            </a>
+          </li>
+        )
+      })}
+    </ul>
+    
+    <!-- Login Button (32px gap from nav items) -->
+    <div class="flex-shrink-0 ml-8">
+      <LoginButton theme={theme} />
+    </div>
+
+    <!-- Mobile Menu Button (placeholder for future mobile menu) -->
+    <button
+      class={`lg:hidden flex-shrink-0 p-2 ${textColor}`}
+      aria-label="Åbn menu"
+      aria-expanded="false"
+      type="button"
+    >
+      <svg 
+        class="w-6 h-6" 
+        fill="none" 
+        stroke="currentColor" 
+        viewBox="0 0 24 24"
+      >
+        <path 
+          stroke-linecap="round" 
+          stroke-linejoin="round" 
+          stroke-width="2" 
+          d="M4 6h16M4 12h16M4 18h16"
+        />
+      </svg>
+    </button>
+  </div>
+</nav>
+
+<style>
+  .nav-link {
+    @apply text-lg inline-flex items-center
+           hover:opacity-70 transition-opacity duration-200
+           focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burnt-orange;
+  }
+
+  .logo-link {
+    @apply focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burnt-orange
+           rounded-md;
+  }
+
+  /* Shrink navigation on scroll */
+  :global(.navigation-wrapper.scrolled) .main-nav .container-custom {
+    height: 60px;
+  }
+
+  :global(.navigation-wrapper.scrolled) .logo-link :global(svg) {
+    width: 120px;
+  }
+  
+  /* Responsive logo sizing on scroll */
+  @media (max-width: 1023px) {
+    :global(.navigation-wrapper.scrolled) .logo-link :global(svg) {
+      width: 100px;
+    }
+  }
+  
+  @media (max-width: 767px) {
+    :global(.navigation-wrapper.scrolled) .logo-link :global(svg) {
+      width: 80px;
+    }
+  }
+
+  /* Responsive font sizes */
+  @media (max-width: 1279px) {
+    .nav-link {
+      @apply text-base;
+    }
+  }
+</style>
+

@@ -1,0 +1,75 @@
+---
+description: AKD brand color system - strict enforcement
+globs: 
+  - "**/*.astro"
+  - "**/*.vue"
+  - "**/*.css"
+alwaysApply: true
+---
+
+# Color System - CRITICAL RULES
+
+## Exact Brand Colors
+
+ALWAYS use these Tailwind classes. NEVER use arbitrary values like `bg-[#E87722]`.
+
+### Primary Palette
+- `bg-forest-green` / `text-forest-green` - #004928
+  - Navigation bars, section headers, primary text areas
+  
+- `bg-burnt-orange` / `text-burnt-orange` - #E87722
+  - **PRIMARY CTA COLOR - Use for ALL main call-to-action buttons**
+  
+- `bg-amber` / `text-amber` - #F5A623
+  - Secondary CTAs, highlights, hover states on secondary buttons
+
+- `bg-mint` / `text-mint` - #10E397
+  - Minor accents only, hover states on links, decorative elements
+
+### Neutrals
+- `bg-charcoal` / `text-charcoal` - #26251E (body text)
+- `bg-warm-light` - #F2F1EC (page backgrounds)
+- `bg-light` - #F7F7F4 (card backgrounds)
+
+## Button Color Hierarchy
+
+### ✅ CORRECT Usage
+```html
+<!-- Primary action - burnt orange -->
+<button class="btn-primary">Book møde</button>
+
+<!-- Secondary action - amber -->
+<button class="btn-secondary">Læs mere</button>
+
+<!-- Link with mint accent -->
+<a href="#" class="link-mint">Se alle stillinger →</a>
+```
+
+### ❌ WRONG Usage
+```html
+<!-- NEVER use mint for primary CTAs -->
+<button class="bg-mint">Book møde</button>
+
+<!-- NEVER use arbitrary color values -->
+<button class="bg-[#E87722]">Click me</button>
+
+<!-- NEVER use inline styles -->
+<button style="background-color: #E87722">Click me</button>
+```
+
+## Color Decision Tree
+
+1. **Is it a PRIMARY call-to-action?** → Use `burnt-orange`
+2. **Is it a SECONDARY action?** → Use `amber`
+3. **Is it a text link or small accent?** → Use `mint`
+4. **Is it navigation or headers?** → Use `forest-green`
+5. **Is it body text?** → Use `charcoal`
+6. **Is it a page background?** → Use `warm-light`
+7. **Is it a card background?** → Use `light`
+
+## Forbidden Practices
+- ❌ No hex codes in HTML/templates
+- ❌ No RGB/HSL values
+- ❌ No inline styles
+- ❌ No custom color names
+- ❌ No arbitrary Tailwind values: `bg-[#abc123]`

@@ -1,0 +1,371 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import ContentBox from '@/components/sections/ContentBox.astro'
+---
+
+<BaseLayout 
+  title="Velkommen til AKD Danmark"
+  description="Et moderne andelsselskab med rødder i traditionerne"
+  navTheme="dark"
+  bodyBg="forest-green"
+>
+  <!-- Hero Section -->
+  <section class="relative bg-forest-green text-white pt-16 pb-56 sm:pt-20 sm:pb-72 md:pt-24 md:pb-[280px] lg:pt-32 lg:pb-[315px]">
+    <div class="container-custom">
+      <!-- Pre-headline -->
+      <p class="text-mint text-center text-lg font-semibold uppercase tracking-wide mb-6">
+        Velkommen til AKD
+      </p>
+      
+      <!-- Main Headline -->
+      <h1 class="text-center mb-24 md:mb-32 max-w-5xl mx-auto">
+        <span class="block text-white font-sans font-extrabold text-4xl md:text-5xl lg:text-[64px] leading-tight">
+          ET MODERNE ANDELSSELSKAB <span class="italic font-medium text-mint" style="font-family: 'Lora', serif;">med rødder</span> I TRADITIONERNE
+        </span>
+      </h1>
+      
+      <!-- Three Column CTAs -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16 max-w-6xl mx-auto">
+        <!-- Job & karriere -->
+        <div class="text-center md:text-left">
+          <h2 class="text-mint text-[32px] font-semibold italic mb-4" style="font-family: 'Lora', serif;">
+            Job & karriere
+          </h2>
+          <p class="text-white font-semibold text-lg leading-relaxed mb-6">
+            Stærkt fællesskab, moderne produktion og ordentlige forhold
+          </p>
+          <a href="/job" class="link-arrow">
+            Se ledige stillinger
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </a>
+        </div>
+
+        <!-- Bliv andelshaver -->
+        <div class="text-center md:text-left">
+          <h2 class="text-mint text-[32px] font-semibold italic mb-4" style="font-family: 'Lora', serif;">
+            Bliv andelshaver
+          </h2>
+          <p class="text-white font-semibold text-lg leading-relaxed mb-6">
+            Stabil afsætning, rådgivning og individuelle ydelser.
+          </p>
+          <a href="/bliv-andelshaver" class="link-arrow">
+            Sådan bliver du andelshaver
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </a>
+        </div>
+
+        <!-- For andelshavere -->
+        <div class="text-center md:text-left">
+          <h2 class="text-mint text-[32px] font-semibold italic mb-4" style="font-family: 'Lora', serif;">
+            For andelshavere
+          </h2>
+          <p class="text-white font-semibold text-lg leading-relaxed mb-6">
+            Nyheder, kampagne, rådgivning og Avlerinfo.
+          </p>
+          <a href="/andelshavere/login" class="link-arrow">
+            Log ind
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Overlapping White Section (200px negative margin) -->
+  <section class="relative bg-warm-light pt-1 pb-16 md:pb-24">
+    <ContentBox
+      variant="light"
+      preHeader="AKD i tal"
+      headline="Et stærkt fællesskab med kapacitet til mere"
+      imageUrl="https://placehold.co/1200x800/2B5329/FFFFFF?text=AKD+Fabrik"
+      imageAlt="AKD's fabriksanlæg i Brande med karakteristiske silo og produktionsbygninger"
+      pullUp={true}
+      items={[
+        {
+          title: '2 moderne fabrikker',
+          description: 'Effektive anlæg med fokus på sikkerhed, kvalitet og stabile leverancer.',
+          icon: 'arrow'
+        },
+        {
+          title: '600+ andelshavere',
+          description: 'Et stærkt andelsselskab, hvor samarbejde og indflydelse går hånd i hånd.',
+          icon: 'arrow'
+        },
+        {
+          title: '~200.000 tons ingredienser årligt',
+          description: 'Vi skaber værdi af hele kartoflen, fra stivelse til biprodukter.',
+          icon: 'arrow'
+        },
+        {
+          title: '88+ medarbejdere',
+          description: 'Dygtige kolleger, ordnede forhold og til at udvikle sig.',
+          icon: 'arrow'
+        }
+      ]}
+    />
+  </section>
+
+  <!-- Career Section -->
+  <section class="relative bg-warm-light pt-24 md:pt-32 lg:pt-40 pb-16 md:pb-24">
+    <div class="container-custom">
+      <!-- Pre-headline -->
+      <p class="text-charcoal font-bold text-base mb-6 uppercase tracking-wide text-center">
+        AKD vokser - vi ansætter nu
+      </p>
+      
+      <!-- Main Headline -->
+      <h2 class="text-center mb-8 md:mb-12">
+        <span class="font-sans font-extrabold text-4xl md:text-5xl lg:text-[52px] text-charcoal uppercase leading-tight">
+          DIN KARRIERE <span class="font-serif italic normal-case text-mint">kan gro</span> HOS AKD
+        </span>
+      </h2>
+      
+      <!-- Body Text -->
+      <div class="max-w-4xl mx-auto text-center space-y-6 mb-12">
+        <p class="text-charcoal text-base md:text-lg leading-relaxed">
+          Hos AKD laver vi hverdagsingredienser med omtanke. Vi vokser og søger dygtige folk på fabrikkerne i Brande og Toftlund. Vi tilbyder moderne anlæg, ordnede forhold, gode kollegaer og ansvar fra dag ét.
+        </p>
+        <p class="text-charcoal text-base md:text-lg leading-relaxed">
+          Vi investerer i oplæring, sikkerhed og ordentlige vilkår – hver eneste dag. Er du praktisk anlagt, stabil og glad for godt udstyr? Så er her et godt sted at starte.
+        </p>
+      </div>
+      
+      <!-- Primary CTA -->
+      <div class="text-center mb-16 md:mb-24">
+        <a href="/job/moed-vores-medarbejdere" class="btn-primary">
+          <span>Mød vores medarbejdere</span>
+          <span class="btn-icon-circle">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </span>
+        </a>
+      </div>
+      
+      <!-- Job Listings Section -->
+      <div class="max-w-5xl mx-auto">
+        <h3 class="font-serif italic text-3xl md:text-4xl text-charcoal text-center mb-8 md:mb-12">
+          Ledige stillinger - vi søger lige nu
+        </h3>
+        
+        <!-- Job Cards -->
+        <div class="space-y-4 mb-8">
+          <!-- Job 1 -->
+          <a href="/job/stillinger" class="block bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 group">
+            <div class="flex items-center justify-between">
+              <div class="flex-1">
+                <h4 class="font-sans font-bold text-xl md:text-2xl text-charcoal mb-2">
+                  Smed eller klejnsmed
+                </h4>
+                <p class="text-charcoal/70 text-base md:text-lg italic">
+                  Bliv en del af et stærkt teknisk team
+                </p>
+              </div>
+              <div class="ml-6 flex items-center gap-3">
+                <span class="text-charcoal font-semibold text-base md:text-lg">
+                  AKD/Sønderjylland
+                </span>
+                <svg class="w-6 h-6 text-mint transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                </svg>
+              </div>
+            </div>
+          </a>
+          
+          <!-- Job 2 -->
+          <a href="/job/stillinger" class="block bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 group">
+            <div class="flex items-center justify-between">
+              <div class="flex-1">
+                <h4 class="font-sans font-bold text-xl md:text-2xl text-charcoal mb-2">
+                  Procesoperatør
+                </h4>
+                <p class="text-charcoal/70 text-base md:text-lg italic">
+                  Indgå i et team, der samarbejder tæt
+                </p>
+              </div>
+              <div class="ml-6 flex items-center gap-3">
+                <span class="text-charcoal font-semibold text-base md:text-lg">
+                  AKD/Midtjylland
+                </span>
+                <svg class="w-6 h-6 text-mint transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                </svg>
+              </div>
+            </div>
+          </a>
+          
+          <!-- Job 3 -->
+          <a href="/job/stillinger" class="block bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 group">
+            <div class="flex items-center justify-between">
+              <div class="flex-1">
+                <h4 class="font-sans font-bold text-xl md:text-2xl text-charcoal mb-2">
+                  Procesoperatør
+                </h4>
+                <p class="text-charcoal/70 text-base md:text-lg italic">
+                  Bliv en del af et fast team med din holdmakker
+                </p>
+              </div>
+              <div class="ml-6 flex items-center gap-3">
+                <span class="text-charcoal font-semibold text-base md:text-lg">
+                  AKD/Sønderjylland
+                </span>
+                <svg class="w-6 h-6 text-mint transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                </svg>
+              </div>
+            </div>
+          </a>
+          
+          <!-- Job 4 -->
+          <a href="/job/stillinger" class="block bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 group">
+            <div class="flex items-center justify-between">
+              <div class="flex-1">
+                <h4 class="font-sans font-bold text-xl md:text-2xl text-charcoal mb-2">
+                  Vejehusoperatør
+                </h4>
+                <p class="text-charcoal/70 text-base md:text-lg italic">
+                  Bliv en vigtig brik i vores sæsonbaserede produktion
+                </p>
+              </div>
+              <div class="ml-6 flex items-center gap-3">
+                <span class="text-charcoal font-semibold text-base md:text-lg">
+                  AKD/Sønderjylland
+                </span>
+                <svg class="w-6 h-6 text-mint transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                </svg>
+              </div>
+            </div>
+          </a>
+        </div>
+        
+        <!-- Bottom CTAs -->
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-6 mt-12 mb-48 sm:mb-52 md:mb-56 lg:mb-[200px]">
+          <!-- Secondary CTA -->
+          <a href="/job/ansoegning" class="btn-secondary">
+            Send en uopfordret ansøgning
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </a>
+          
+          <!-- Primary CTA -->
+          <a href="/job/stillinger" class="btn-primary">
+            <span>Se alle ledige stillinger</span>
+            <span class="btn-icon-circle">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+              </svg>
+            </span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bliv Andelshaver Section -->
+  <section class="relative bg-forest-green text-white pt-24 md:pt-32 lg:pt-40 pb-16 md:pb-24">
+    <!-- Content Box with Image and Benefits -->
+    <ContentBox
+      variant="dark"
+      preHeader="Bliv andelshaver"
+      headline="Som andelshaver i AKD får du en stabil aftager, faglig sparring og klare vilkår."
+      imageUrl="https://placehold.co/1200x800/8FD5A6/26251E?text=Andelshaver"
+      imageAlt="Andelshaver i traktor under høst med moderne udstyr"
+      pullUp={false}
+      items={[
+        {
+          title: 'Stabil aftagning',
+          description: 'Tydelige aftaler og kampagnevilkår, år efter år.',
+          icon: 'check'
+        },
+        {
+          title: 'Faglig rådgivning',
+          description: 'Agro-teamet hjælper med dyrkning, optagning og lagring.',
+          icon: 'check'
+        },
+        {
+          title: 'Fællesskab & indflydelse',
+          description: 'Andelsselskab med gennemsigtighed og stemme.',
+          icon: 'check'
+        },
+        {
+          title: 'Hele værdikæden',
+          description: 'Moderne fabrikker og fuld udnyttelse af kartoflen.',
+          icon: 'check'
+        }
+      ]}
+    />
+    
+    <!-- CTA Button -->
+    <div class="text-center mt-12 mb-96 sm:mb-[416px] md:mb-[448px] lg:mb-[400px]">
+      <a href="/andelshaver/bliv-andelshaver" class="btn-primary">
+        <span>Sådan bliver du andelshaver</span>
+        <span class="btn-icon-circle">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+          </svg>
+        </span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Ansvar i Praksis Section (Overlapping) -->
+  <section class="relative bg-warm-light pt-1 pb-16 md:pb-24">
+    <ContentBox
+      variant="light"
+      preHeader="Ansvar i praksis"
+      headline="Vi bruger hele kartoflen og laver biprodukter til ny værdi."
+      imageUrl="https://placehold.co/1200x800/2B5329/FFFFFF?text=Produktion"
+      imageAlt="Produktion af kartoffelmel og biprodukter på moderne udstyr"
+      pullUp={true}
+      items={[
+        {
+          title: 'Hele råvaren i brug',
+          description: 'Fra stivelse til pulp og protamylasse. Intet går til spilde.',
+          icon: 'arrow'
+        },
+        {
+          title: 'Lokale kredsløb',
+          description: 'Foder og gødning, der giver mening i kredsløbet.',
+          icon: 'arrow'
+        },
+        {
+          title: 'Energi & klima',
+          description: 'Effektive processer, vedvarende løsninger og løbende optimering.',
+          icon: 'arrow'
+        }
+      ]}
+    />
+    
+    <!-- CTAs Below White Box -->
+    <div class="container-custom">
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-6 mt-12 mb-24">
+        <!-- Secondary CTA -->
+        <a href="/om/ansvar-politikker" class="btn-secondary">
+          Se vores ansvar & politikker
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+          </svg>
+        </a>
+        
+        <!-- Primary CTA -->
+        <a href="/om/produkter-biprodukter" class="btn-primary">
+          <span>Produkter & biprodukter</span>
+          <span class="btn-icon-circle">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </span>
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
