@@ -1,0 +1,100 @@
+---
+import { portableTextToHtml } from '@/lib/portableTextSerializer'
+import type { PortableTextContent } from '@/types/sanity'
+
+interface Props {
+  content: PortableTextContent
+  addHeadingIds?: boolean
+  class?: string
+}
+
+const { content, addHeadingIds = false, class: className = '' } = Astro.props
+
+const html = portableTextToHtml(content, { addHeadingIds })
+---
+
+<div class={`prose-akd ${className}`} set:html={html} />
+
+<style>
+  /* Portable Text styles - matches TextPage.astro */
+  .prose-akd {
+    @apply text-charcoal;
+  }
+  
+  /* Main header (H2 is first level in content) */
+  .prose-akd :global(h2) {
+    @apply font-serif font-bold italic text-charcoal text-[34px] leading-tight mb-6 mt-12 first:mt-0;
+    scroll-margin-top: 120px;
+  }
+  
+  /* Sub header */
+  .prose-akd :global(h3) {
+    @apply font-sans font-semibold text-charcoal text-[28px] leading-tight mb-4 mt-8;
+    scroll-margin-top: 120px;
+  }
+  
+  /* Smaller sub header */
+  .prose-akd :global(h4) {
+    @apply font-sans font-semibold text-charcoal text-xl leading-tight mb-3 mt-6;
+    scroll-margin-top: 120px;
+  }
+  
+  /* Regular paragraphs */
+  .prose-akd :global(p) {
+    @apply text-base text-charcoal leading-relaxed mb-4;
+  }
+  
+  /* Lists */
+  .prose-akd :global(ul),
+  .prose-akd :global(ol) {
+    @apply text-base text-charcoal leading-relaxed mb-4 ml-6;
+  }
+  
+  .prose-akd :global(li) {
+    @apply mb-2;
+  }
+  
+  .prose-akd :global(ul li) {
+    @apply list-disc;
+  }
+  
+  .prose-akd :global(ol li) {
+    @apply list-decimal;
+  }
+  
+  /* Links */
+  .prose-akd :global(a) {
+    @apply text-burnt-orange hover:text-amber transition-colors underline;
+  }
+  
+  /* Strong/Bold */
+  .prose-akd :global(strong) {
+    @apply font-semibold;
+  }
+  
+  /* Emphasized callout boxes */
+  .prose-akd :global(.callout) {
+    @apply bg-light border-l-4 border-mint p-6 rounded-r-lg my-6;
+  }
+  
+  .prose-akd :global(.callout p:last-child) {
+    @apply mb-0;
+  }
+  
+  /* Images */
+  .prose-akd :global(figure) {
+    @apply my-8;
+  }
+  
+  .prose-akd :global(figcaption) {
+    @apply text-sm text-charcoal/70 mt-2 text-center;
+  }
+  
+  /* Mint accent (custom mark) */
+  .prose-akd :global(.text-mint) {
+    color: #10E397;
+    font-family: 'Lora', serif;
+    font-style: italic;
+  }
+</style>
+

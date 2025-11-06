@@ -3,23 +3,31 @@ import BaseLayout from '@/layouts/BaseLayout.astro'
 import TextPage from '@/components/templates/TextPage.astro'
 import PortableText from '@/components/sanity/PortableText.astro'
 import { sanityClient } from '@/lib/sanity'
-import { generalPageBySlugQuery } from '@/lib/sanityQueries'
+import { generalPageBySlugQuery, allGeneralPagesQuery } from '@/lib/sanityQueries'
 import { portableTextToHtml } from '@/lib/portableTextSerializer'
 import type { GeneralPage } from '@/types/sanity'
 
-// Fetch page from Sanity
-let page: GeneralPage | null = null
-try {
-  page = await sanityClient.fetch(generalPageBySlugQuery('cookie-og-privatlivspolitik'))
-  console.log('Page fetched from Sanity:', page ? 'Found' : 'Not found')
-} catch (error) {
-  console.error('Error fetching page from Sanity:', error)
+// Generate static paths for all general pages in Sanity
+export async function getStaticPaths() {
+  const pages = await sanityClient.fetch(allGeneralPagesQuery)
+  
+  console.log('Generated paths for pages:', pages.map((p: any) => p.slug.current).join(', '))
+  
+  return pages.map((page: any) => ({
+    params: { slug: page.slug.current },
+    props: { page }
+  }))
 }
 
-if (!page) {
-  console.error('Page not found in Sanity with slug: cookie-og-privatlivspolitik')
-  return Astro.redirect('/404')
-}
+// Get the page data from props
+const { page } = Astro.props as { page: GeneralPage }
+
+// Debug: log the page data
+console.log('Page slug:', page?.slug?.current || page?.slug)
+console.log('Page has content:', !!page?.content)
+console.log('Content length:', page?.content?.length)
+console.log('Has TOC:', !!page?.tableOfContents)
+console.log('TOC length:', page?.tableOfContents?.length)
 
 // Convert headline to HTML (with mint accent support)
 const headlineHtml = page.headline ? portableTextToHtml(page.headline, { addHeadingIds: false }) : page.title
@@ -53,7 +61,7 @@ const metaDescription = page.seo?.metaDescription || ''
     
     {page.updatedAt && (
       <p class="text-sm text-charcoal/70 mt-12">
-        Denne privatlivspolitik er senest opdateret: {new Date(page.updatedAt).toLocaleDateString('da-DK', { 
+        Denne side er senest opdateret: {new Date(page.updatedAt).toLocaleDateString('da-DK', { 
           year: 'numeric', 
           month: 'long', 
           day: 'numeric' 

@@ -1,7 +1,9 @@
 ---
 import MainNav from './MainNav.astro'
 import SubNav from './SubNav.astro'
-import { getCurrentNavItem } from '@/lib/navigation'
+import { sanityClient } from '@/lib/sanity'
+import { navigationQuery } from '@/lib/sanityQueries'
+import type { Navigation } from '@/types/sanity'
 
 interface Props {
   theme?: 'light' | 'dark'
@@ -10,9 +12,43 @@ interface Props {
 const { theme = 'light' } = Astro.props
 const currentPath = Astro.url.pathname
 
-// Find current main nav item and its children
-const currentMainItem = getCurrentNavItem(currentPath)
-const hasSubNav = currentMainItem?.children && currentMainItem.children.length > 0
+// Fetch navigation from Sanity
+const navigation: Navigation = await sanityClient.fetch(navigationQuery)
+const navigationItems = navigation?.menuItems || []
+
+// Find current main nav item based on path
+// Check both parent page and child pages
+const currentMainItem = navigationItems.find(item => {
+  // Special case: Don't match frontpage unless explicitly targeting it
+  if (currentPath === '/' && item.href !== '/') {
+    return false
+  }
+  
+  // Check if we're on the parent page
+  if (currentPath.startsWith(item.href) && item.href !== '/') {
+    return true
+  }
+  
+  // Exact match for root
+  if (currentPath === '/' && item.href === '/') {
+    return true
+  }
+  
+  // Check if we're on one of the child pages
+  if (item.subItems && item.subItems.length > 0) {
+    return item.subItems.some(subItem => currentPath.startsWith(subItem.href) && subItem.href !== '/')
+  }
+  
+  return false
+})
+
+const hasSubNav = currentMainItem?.subItems && currentMainItem.subItems.length > 0
+
+// Convert subItems to the format SubNav expects
+const subNavItems = currentMainItem?.subItems?.map(item => ({
+  label: item.label,
+  href: item.href
+})) || []
 ---
 
 <header 
@@ -21,10 +57,10 @@ const hasSubNav = currentMainItem?.children && currentMainItem.children.length >
 >
   <MainNav theme={theme} currentPath={currentPath} />
   
-  {hasSubNav && currentMainItem.children && (
+  {hasSubNav && (
     <SubNav 
       parentLabel={currentMainItem.label}
-      items={currentMainItem.children}
+      items={subNavItems}
       currentPath={currentPath}
       theme={theme}
     />

@@ -92,19 +92,19 @@ const { preHeader, headline, sections } = Astro.props
         <!-- Table of Contents - Desktop (Sticky) -->
         <aside class="toc-sidebar">
         <div class="sticky top-32" id="toc-wrapper">
-          <nav class="bg-warm-light rounded-lg p-6" aria-label="Indholdsfortegnelse">
-            <h2 class="text-xs font-bold text-charcoal uppercase tracking-wide mb-4 flex items-center gap-2">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          <nav class="bg-warm-light rounded-lg" aria-label="Indholdsfortegnelse">
+            <h2 class="text-[14px] font-sans font-bold text-charcoal uppercase tracking-wide mb-4 flex items-center gap-2 px-6 pt-6">
+              <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 18" aria-hidden="true">
+                <path fill="currentColor" d="M3.12 0H.937A.94.94 0 0 0 0 .938v2.181a.94.94 0 0 0 .938.938h2.181a.94.94 0 0 0 .938-.938V.938A.94.94 0 0 0 3.119 0m.312 3.12a.313.313 0 0 1-.313.312H.938a.313.313 0 0 1-.313-.313V.938A.313.313 0 0 1 .938.625h2.181a.313.313 0 0 1 .313.313zM5.967 1.36h10.35a.313.313 0 0 0 0-.625H5.967a.313.313 0 0 0 0 .625M5.966 3.322h5.713a.312.312 0 0 0 0-.625H5.966a.313.313 0 0 0 0 .625M3.12 6.722H.937A.94.94 0 0 0 0 7.659v2.182a.94.94 0 0 0 .938.938h2.181a.94.94 0 0 0 .938-.938V7.659a.94.94 0 0 0-.938-.937m.312 3.119a.313.313 0 0 1-.313.313H.938a.313.313 0 0 1-.313-.313V7.659a.313.313 0 0 1 .313-.312h2.181a.313.313 0 0 1 .313.312zM16.317 7.456H5.967a.313.313 0 0 0 0 .625h10.35a.312.312 0 0 0 0-.625M5.966 10.044h5.713a.313.313 0 0 0 0-.625H5.966a.313.313 0 0 0 0 .625M3.12 13.443H.937a.94.94 0 0 0-.938.938v2.182a.94.94 0 0 0 .938.937h2.181a.94.94 0 0 0 .938-.937V14.38a.94.94 0 0 0-.938-.938m.312 3.12a.313.313 0 0 1-.313.312H.938a.313.313 0 0 1-.313-.312V14.38a.313.313 0 0 1 .313-.313h2.181a.313.313 0 0 1 .313.313zM16.317 14.178H5.967a.312.312 0 0 0 0 .625h10.35a.313.313 0 0 0 0-.625M11.68 16.14H5.966a.313.313 0 0 0 0 .625h5.712a.312.312 0 0 0 0-.625"/>
               </svg>
               Indhold på denne side
             </h2>
-            <ul class="space-y-2" id="toc-list">
+            <ul class="space-y-3 pb-6" id="toc-list">
               {sections.map((section) => (
                 <li>
                   <a 
                     href={`#${section.id}`}
-                    class="toc-link block text-sm text-charcoal hover:text-burnt-orange transition-colors py-1.5 px-3 rounded border-l-4 border-transparent"
+                    class="toc-link block text-sm text-charcoal hover:text-burnt-orange transition-colors py-2.5 px-6 border-l-4 border-r-4 border-l-transparent border-r-transparent"
                     data-target={section.id}
                   >
                     {section.title}
@@ -165,14 +165,14 @@ const { preHeader, headline, sections } = Astro.props
           if (entry.isIntersecting) {
             // Remove active class from all links
             document.querySelectorAll('.toc-link').forEach((link) => {
-              link.classList.remove('border-mint', 'bg-mint/10', 'text-burnt-orange', 'font-semibold');
-              link.classList.add('border-transparent');
+              link.classList.remove('border-l-mint', 'border-r-mint', 'bg-light', 'text-burnt-orange', 'font-semibold');
+              link.classList.add('border-l-transparent', 'border-r-transparent');
             });
             
             // Add active class to current link
             if (tocLink) {
-              tocLink.classList.remove('border-transparent');
-              tocLink.classList.add('border-mint', 'bg-mint/10', 'text-burnt-orange', 'font-semibold');
+              tocLink.classList.remove('border-l-transparent', 'border-r-transparent');
+              tocLink.classList.add('border-l-mint', 'border-r-mint', 'bg-light', 'text-burnt-orange', 'font-semibold');
             }
           }
         });

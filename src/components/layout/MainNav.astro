@@ -2,7 +2,9 @@
 import LoginButton from './LoginButton.astro'
 import LogoColored from '@/components/ui/LogoColored.astro'
 import LogoWhite from '@/components/ui/LogoWhite.astro'
-import { navigationItems } from '@/lib/navigation'
+import { sanityClient } from '@/lib/sanity'
+import { navigationQuery } from '@/lib/sanityQueries'
+import type { Navigation } from '@/types/sanity'
 
 interface Props {
   theme?: 'light' | 'dark'
@@ -12,6 +14,10 @@ interface Props {
 const { theme = 'light', currentPath = '/' } = Astro.props
 
 const textColor = theme === 'dark' ? 'text-white' : 'text-charcoal'
+
+// Fetch navigation from Sanity
+const navigation: Navigation = await sanityClient.fetch(navigationQuery)
+const navigationItems = navigation?.menuItems || []
 ---
 
 <nav 
@@ -42,7 +48,7 @@ const textColor = theme === 'dark' ? 'text-white' : 'text-charcoal'
     >
       {navigationItems.map((item) => {
         const isActive = currentPath.startsWith(item.href)
-        const hasChildren = item.children && item.children.length > 0
+        const hasChildren = item.subItems && item.subItems.length > 0
         
         return (
           <li>

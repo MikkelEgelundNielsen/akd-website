@@ -1,135 +1,43 @@
 ---
 import LogoColored from '@/components/ui/LogoColored.astro'
+import { sanityClient } from '@/lib/sanity'
+import { siteSettingsQuery } from '@/lib/sanityQueries'
+import type { SiteSettings } from '@/types/sanity'
 
 const currentYear = new Date().getFullYear()
+
+// Fetch site settings from Sanity
+const settings: SiteSettings = await sanityClient.fetch(siteSettingsQuery)
 ---
 
 <!-- Quick Links Section -->
 <section class="bg-light py-12 md:py-16">
   <div class="container-custom">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
-      <!-- Job & karriere -->
-      <div>
-        <h3 class="font-serif font-semibold text-2xl text-charcoal mb-4">
-          Job & karriere
-        </h3>
-        <ul class="space-y-3">
-          <li>
-            <a href="/job/at-arbejde-hos-akd" class="link-arrow-standard">
-              At arbejde hos AKD
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-              </svg>
-            </a>
-          </li>
-          <li>
-            <a href="/job/moed-vores-medarbejdere" class="link-arrow-standard">
-              Mød vores medarbejdere
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-              </svg>
-            </a>
-          </li>
-          <li>
-            <a href="/job/praktik-elev-laerling" class="link-arrow-standard">
-              Praktik, elev- og lærlingepladser
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-              </svg>
-            </a>
-          </li>
-          <li>
-            <a href="/job/stillinger" class="link-arrow-standard">
-              Ledige stillinger
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-              </svg>
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <!-- Bliv andelshaver -->
-      <div>
-        <h3 class="font-serif font-semibold text-2xl text-charcoal mb-4">
-          Bliv andelshaver
-        </h3>
-        <ul class="space-y-3">
-          <li>
-            <a href="/andelshaver/bliv-andelshaver" class="link-arrow-standard">
-              Sådan bliver du andelshaver
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-              </svg>
-            </a>
-          </li>
-          <li>
-            <a href="/andelshaver/fordele" class="link-arrow-standard">
-              Fordele ved AKD-fællesskabet
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-              </svg>
-            </a>
-          </li>
-          <li>
-            <a href="/andelshaver/krav-forventninger" class="link-arrow-standard">
-              Krav & forventninger
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-              </svg>
-            </a>
-          </li>
-          <li>
-            <a href="/kontakt" class="link-arrow-standard">
-              Kontakt AKD Agro
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-              </svg>
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <!-- Om AKD -->
-      <div>
-        <h3 class="font-serif font-semibold text-2xl text-charcoal mb-4">
-          Om AKD
-        </h3>
-        <ul class="space-y-3">
-          <li>
-            <a href="/om/andelsselskab" class="link-arrow-standard">
-              Et moderne andelsselskab
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-              </svg>
-            </a>
-          </li>
-          <li>
-            <a href="/om/produkter" class="link-arrow-standard">
-              Produkter & biprodukter
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-              </svg>
-            </a>
-          </li>
-          <li>
-            <a href="/om/regnskaber" class="link-arrow-standard">
-              Regnskaber & vedtægter
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-              </svg>
-            </a>
-          </li>
-          <li>
-            <a href="/om/nyheder" class="link-arrow-standard">
-              Nyheder & presse
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-              </svg>
-            </a>
-          </li>
-        </ul>
-      </div>
+      {settings.quickLinks && settings.quickLinks.map((group) => (
+        <div>
+          <h3 class="font-serif font-semibold text-2xl text-charcoal mb-4">
+            {group.title}
+          </h3>
+          <ul class="space-y-3">
+            {group.links.map((link) => (
+              <li>
+                <a 
+                  href={link.href} 
+                  class="link-arrow-standard"
+                  target={link.openInNewTab ? '_blank' : undefined}
+                  rel={link.openInNewTab ? 'noopener noreferrer' : undefined}
+                >
+                  {link.title}
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                  </svg>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
     </div>
   </div>
 </section>
@@ -144,17 +52,21 @@ const currentYear = new Date().getFullYear()
           <LogoColored class="w-32 md:w-40 h-auto" />
         </a>
         <p class="text-charcoal text-base leading-relaxed mb-4">
-          AKD er et moderne andelsselskab med et stærkt fællesskab der samler andelshavere, medarbejdere og lokalsamfund om moderne, ansvarlig produktion af kartoffelstivelse.
+          {settings.footerDescription || 'AKD er et moderne andelsselskab med et stærkt fællesskab der samler andelshavere, medarbejdere og lokalsamfund om moderne, ansvarlig produktion af kartoffelstivelse.'}
         </p>
-        <p class="text-charcoal/70 text-sm">
-          CVR nr: 62818328
-        </p>
-        <a href="/om/akd" class="link-arrow-standard mt-4 inline-flex">
-          Læs mere om AKD
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-          </svg>
-        </a>
+        {settings.cvr && (
+          <p class="text-charcoal/70 text-sm">
+            CVR nr: {settings.cvr}
+          </p>
+        )}
+        {settings.footerCtaText && settings.footerCtaLink && (
+          <a href={settings.footerCtaLink} class="link-arrow-standard mt-4 inline-flex">
+            {settings.footerCtaText}
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </a>
+        )}
       </div>
 
       <!-- Contact -->
@@ -163,33 +75,42 @@ const currentYear = new Date().getFullYear()
           Kontakt
         </h3>
         <address class="not-italic text-charcoal text-base space-y-2">
-          <p class="font-semibold">
-            Andels-Kartoffelmelsfabrikken Danmark
-          </p>
-          <p>
-            Herningvej 38<br>
-            7330 Brande
-          </p>
-          <p class="pt-2">
-            Tlf.: <a href="tel:97180888" class="text-burnt-orange hover:text-amber transition-colors">9718 0888</a>
-          </p>
-          <p>
-            <a href="mailto:akd@akddanmark.dk" class="text-burnt-orange hover:text-amber transition-colors">
-              akd@akddanmark.dk
-            </a>
-          </p>
+          {settings.companyName && (
+            <p class="font-semibold">
+              {settings.companyName}
+            </p>
+          )}
+          {settings.address && (
+            <p>
+              {settings.address.street && `${settings.address.street}`}
+              {settings.address.street && <br />}
+              {settings.address.zipCode && settings.address.city && `${settings.address.zipCode} ${settings.address.city}`}
+            </p>
+          )}
+          {settings.phone && (
+            <p class="pt-2">
+              Tlf.: <a href={`tel:${settings.phone.replace(/\s/g, '')}`} class="text-burnt-orange hover:text-amber transition-colors">{settings.phone}</a>
+            </p>
+          )}
+          {settings.email && (
+            <p>
+              <a href={`mailto:${settings.email}`} class="text-burnt-orange hover:text-amber transition-colors">
+                {settings.email}
+              </a>
+            </p>
+          )}
         </address>
       </div>
 
       <!-- For andelshavere -->
       <div>
         <h3 class="font-serif font-semibold text-2xl text-charcoal mb-4">
-          For andelshavere
+          {settings.andelshavereTitle || 'For andelshavere'}
         </h3>
         <p class="text-charcoal text-base mb-4">
-          Nyheder, kampagne, rådgivning og Avlerinfo.
+          {settings.andelshavereDescription || 'Nyheder, kampagne, rådgivning og Avlerinfo.'}
         </p>
-        <a href="/andelshavere/login" class="inline-flex items-center gap-2 text-burnt-orange hover:text-amber transition-colors font-semibold">
+        <a href={settings.andelshavereLoginLink || '/andelshavere/login'} class="inline-flex items-center gap-2 text-burnt-orange hover:text-amber transition-colors font-semibold">
           Log ind
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
@@ -205,20 +126,20 @@ const currentYear = new Date().getFullYear()
   <div class="container-custom">
     <div class="flex flex-col md:flex-row items-center justify-between gap-4">
       <!-- Left-aligned links -->
-      <nav aria-label="Juridiske links" class="flex flex-wrap items-center justify-center md:justify-start gap-x-6 gap-y-2">
-        <a href="/cookie-privatlivspolitik" class="text-charcoal text-base hover:text-burnt-orange transition-colors">
-          Cookie & privatlivspolitik
-        </a>
-        <a href="/kontrolrapporter" class="text-charcoal text-base hover:text-burnt-orange transition-colors">
-          Kontrolrapporter
-        </a>
-        <a href="/vedtaegter" class="text-charcoal text-base hover:text-burnt-orange transition-colors">
-          Vedtægter
-        </a>
-        <a href="/regnskaber" class="text-charcoal text-base hover:text-burnt-orange transition-colors">
-          Regnskaber
-        </a>
-      </nav>
+      {settings.tertiaryLinks && settings.tertiaryLinks.length > 0 && (
+        <nav aria-label="Juridiske links" class="flex flex-wrap items-center justify-center md:justify-start gap-x-6 gap-y-2">
+          {settings.tertiaryLinks.map((link) => (
+            <a 
+              href={link.href} 
+              class="text-charcoal text-base hover:text-burnt-orange transition-colors"
+              target={link.openInNewTab ? '_blank' : undefined}
+              rel={link.openInNewTab ? 'noopener noreferrer' : undefined}
+            >
+              {link.title}
+            </a>
+          ))}
+        </nav>
+      )}
       
       <!-- Right-aligned copyright -->
       <p class="text-charcoal text-base">
