@@ -1,0 +1,107 @@
+---
+import { sanityClient } from '@/lib/sanity'
+import { andelshavereNavigationQuery } from '@/lib/sanityQueries'
+import type { AndelshavereNavigation } from '@/types/sanity'
+
+// Fetch navigation from Sanity
+const navigation: AndelshavereNavigation | null = await sanityClient.fetch(andelshavereNavigationQuery)
+
+// Get current path to highlight active link
+const currentPath = Astro.url.pathname
+---
+
+{navigation && navigation.menuItems && navigation.menuItems.length > 0 && (
+  <div class="sub-nav bg-warm-light border-t border-opacity-20 border-gray-300">
+    <div class="container-custom">
+      <div class="flex items-center justify-between py-4 gap-4 md:gap-8">
+        <!-- Parent label (left) -->
+        <div class="text-base md:text-lg font-light text-charcoal flex-shrink-0">
+          For andelshavere
+        </div>
+        
+        <!-- Sub nav items (right, scrollable) -->
+        <nav 
+          class="flex-1 overflow-x-auto"
+          aria-label="Andelshavere undernavigation"
+        >
+          <ul class="flex items-center gap-4 md:gap-6 justify-end min-w-max" role="list">
+            {navigation.menuItems.map((item) => {
+              const isActive = currentPath === item.href || currentPath.startsWith(item.href + '/')
+              return (
+                <li>
+                  <a
+                    href={item.href}
+                    class={`sub-nav-link text-charcoal ${isActive ? 'active' : ''}`}
+                    aria-current={isActive ? 'page' : undefined}
+                    title={item.description}
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              )
+            })}
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+)}
+
+<style>
+  .sub-nav-link {
+    @apply text-base md:text-lg font-normal pb-1 inline-block whitespace-nowrap
+           border-b-4 border-transparent
+           focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-burnt-orange
+           relative;
+  }
+  
+  /* Animated bottom stroke on hover */
+  .sub-nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background-color: currentColor;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.3s ease;
+  }
+  
+  .sub-nav-link:hover::after {
+    transform: scaleX(1);
+  }
+  
+  /* Active state overrides hover animation */
+  .sub-nav-link.active {
+    @apply font-bold border-burnt-orange;
+  }
+  
+  .sub-nav-link.active::after {
+    display: none;
+  }
+  
+  /* Custom scrollbar for horizontal overflow */
+  .overflow-x-auto {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(231, 119, 34, 0.3) transparent;
+  }
+  
+  .overflow-x-auto::-webkit-scrollbar {
+    height: 4px;
+  }
+  
+  .overflow-x-auto::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .overflow-x-auto::-webkit-scrollbar-thumb {
+    @apply bg-burnt-orange/30 rounded-full;
+  }
+  
+  .overflow-x-auto::-webkit-scrollbar-thumb:hover {
+    @apply bg-burnt-orange/50;
+  }
+</style>
+

@@ -1,0 +1,129 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+
+// If already logged in, redirect to dashboard
+const authToken = Astro.cookies.get('akd_auth_token')?.value;
+if (authToken) {
+  return Astro.redirect('/andelshavere/dashboard');
+}
+---
+
+<BaseLayout 
+  title="Login - For Andelshavere"
+  description="Log ind til andelshaver-området hos AKD Danmark"
+>
+  <section class="py-16 md:py-24 min-h-screen flex items-center justify-center">
+    <div class="container-custom max-w-md">
+      <h1 class="text-4xl md:text-5xl font-serif text-forest-green mb-8 text-center">
+        For Andelshavere
+      </h1>
+      
+      <div class="bg-light p-8 rounded-lg shadow-lg">
+        <p class="text-charcoal mb-6 text-center">
+          Log ind for at få adgang til nyheder, kampagner, rådgivning og Avlerinfo.
+        </p>
+        
+        <form id="login-form" class="space-y-6">
+          <div>
+            <label for="username" class="block text-sm font-semibold text-charcoal mb-2">
+              Brugernavn
+            </label>
+            <input 
+              type="text" 
+              id="username" 
+              name="username"
+              required
+              autocomplete="username"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-burnt-orange"
+            />
+          </div>
+          
+          <div>
+            <label for="password" class="block text-sm font-semibold text-charcoal mb-2">
+              Adgangskode
+            </label>
+            <input 
+              type="password" 
+              id="password" 
+              name="password"
+              required
+              autocomplete="current-password"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-burnt-orange"
+            />
+          </div>
+          
+          <div id="error-message" class="hidden text-sm text-red-600 bg-red-50 p-3 rounded-lg" role="alert">
+          </div>
+          
+          <button 
+            type="submit"
+            id="submit-btn"
+            class="w-full bg-burnt-orange text-white px-6 py-3 rounded-lg hover:bg-amber transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Log ind
+          </button>
+        </form>
+        
+        <div class="mt-6 text-center text-sm text-charcoal/70">
+          <p>Problemer med at logge ind?</p>
+          <a href="/kontakt" class="text-mint hover:text-forest-green transition-colors font-semibold">
+            Kontakt os
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const form = document.getElementById('login-form') as HTMLFormElement;
+  const errorMessage = document.getElementById('error-message') as HTMLDivElement;
+  const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorMessage.classList.add('hidden');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Logger ind...';
+    
+    const formData = new FormData(form);
+    const username = formData.get('username');
+    const password = formData.get('password');
+    
+    try {
+      console.log('Sending login request...');
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+      
+      console.log('Response status:', response.status);
+      console.log('Response ok:', response.ok);
+      
+      const data = await response.json();
+      console.log('Response data:', data);
+      
+      if (response.ok) {
+        console.log('Login successful, redirecting to dashboard...');
+        // Redirect to dashboard on success
+        window.location.href = '/andelshavere/dashboard';
+      } else {
+        console.log('Login failed:', data.message);
+        errorMessage.textContent = data.message || 'Noget gik galt. Prøv venligst igen.';
+        errorMessage.classList.remove('hidden');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Log ind';
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      errorMessage.textContent = 'Vi kan ikke forbinde til login-systemet lige nu. Prøv venligst igen om lidt.';
+      errorMessage.classList.remove('hidden');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Log ind';
+    }
+  });
+</script>
+

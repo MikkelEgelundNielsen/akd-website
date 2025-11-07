@@ -2,6 +2,111 @@
 
 Reusable UI components for the AKD website.
 
+## Buttons
+
+### PrimaryButton.astro
+Primary CTA button with burnt orange background, white text, and arrow icon in circular background.
+
+**Usage:**
+```astro
+import PrimaryButton from '@/components/ui/PrimaryButton.astro'
+
+<PrimaryButton href="/path">Button Text</PrimaryButton>
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `href` | `string` | **required** | URL destination |
+| `class` | `string` | `''` | Additional CSS classes |
+| `ariaLabel` | `string` | - | Accessibility label (optional) |
+
+**When to use:**
+- Primary call-to-action on a page
+- Most important conversion action
+- Main navigation destination
+- Maximum one per section (typically)
+
+**Examples:**
+```astro
+<!-- Basic usage -->
+<PrimaryButton href="/job/stillinger">
+  Se alle ledige stillinger
+</PrimaryButton>
+
+<!-- With custom classes -->
+<PrimaryButton href="/kontakt" class="mt-8">
+  Kontakt os
+</PrimaryButton>
+
+<!-- With aria-label -->
+<PrimaryButton href="/login" ariaLabel="Log ind til andelshaver-området">
+  Log ind
+</PrimaryButton>
+```
+
+---
+
+### SecondaryButton.astro
+Secondary CTA link with arrow icon. Burnt orange text that changes to amber on hover.
+
+**Usage:**
+```astro
+import SecondaryButton from '@/components/ui/SecondaryButton.astro'
+
+<SecondaryButton href="/path">Link Text</SecondaryButton>
+```
+
+**Props:**
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `href` | `string` | **required** | URL destination |
+| `class` | `string` | `''` | Additional CSS classes |
+| `ariaLabel` | `string` | - | Accessibility label (optional) |
+
+**When to use:**
+- Secondary actions on a page
+- Supporting links alongside primary CTAs
+- "Learn more" or "Read more" type links
+- Multiple per section is acceptable
+
+**Examples:**
+```astro
+<!-- Basic usage -->
+<SecondaryButton href="/om/ansvar-politikker">
+  Se vores ansvar & politikker
+</SecondaryButton>
+
+<!-- Paired with primary CTA -->
+<div class="flex flex-col sm:flex-row gap-6">
+  <SecondaryButton href="/kontakt">
+    Kontakt os
+  </SecondaryButton>
+  <PrimaryButton href="/">
+    Gå til forsiden
+  </PrimaryButton>
+</div>
+```
+
+---
+
+### Button Hierarchy Best Practices
+
+**DO:**
+✅ Use PrimaryButton for the main conversion action  
+✅ Use SecondaryButton for supporting actions  
+✅ Place SecondaryButton before PrimaryButton in layout  
+✅ Limit to one primary CTA per section  
+✅ Use consistent gap spacing: `gap-6`  
+
+**DON'T:**
+❌ Use multiple primary buttons in the same section  
+❌ Use primary button for less important actions  
+❌ Reverse the order (primary should come after secondary)  
+❌ Mix button components with manual markup (use components consistently)  
+
+---
+
 ## Logos
 
 ### LogoColored.astro

@@ -138,6 +138,22 @@ export interface Navigation {
   menuItems: MenuItem[]
 }
 
+// Andelshavere Navigation
+export interface AndelshavereMenuItem {
+  label: string
+  linkType: 'internal' | 'manual'
+  href: string
+  description?: string
+  icon?: string
+}
+
+export interface AndelshavereNavigation {
+  _id: string
+  _type: 'andelshavereNavigation'
+  title: string
+  menuItems: AndelshavereMenuItem[]
+}
+
 // General Page
 export interface GeneralPage {
   _id: string

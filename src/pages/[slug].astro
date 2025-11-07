@@ -7,7 +7,10 @@ import { generalPageBySlugQuery, allGeneralPagesQuery } from '@/lib/sanityQuerie
 import { portableTextToHtml } from '@/lib/portableTextSerializer'
 import type { GeneralPage } from '@/types/sanity'
 
-// Generate static paths for all general pages in Sanity
+// Pre-render all Sanity pages at build time using getStaticPaths
+export const prerender = true;
+
+// In hybrid mode, getStaticPaths is used to generate all pages at build time
 export async function getStaticPaths() {
   const pages = await sanityClient.fetch(allGeneralPagesQuery)
   
@@ -19,8 +22,20 @@ export async function getStaticPaths() {
   }))
 }
 
-// Get the page data from props
-const { page } = Astro.props as { page: GeneralPage }
+// Get the page data from props or fetch it in SSR mode
+let { page } = Astro.props as { page: GeneralPage }
+
+// In SSR mode, page might not be provided, so fetch it from Sanity
+if (!page) {
+  const slug = Astro.params.slug
+  // generalPageBySlugQuery is a function that returns a query string
+  page = await sanityClient.fetch(generalPageBySlugQuery(slug || ''))
+  
+  if (!page) {
+    // Page not found - return 404
+    return Astro.redirect('/404')
+  }
+}
 
 // Debug: log the page data
 console.log('Page slug:', page?.slug?.current || page?.slug)

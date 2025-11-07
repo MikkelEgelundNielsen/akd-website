@@ -1,0 +1,42 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import PrimaryButton from '@/components/ui/PrimaryButton.astro'
+import SecondaryButton from '@/components/ui/SecondaryButton.astro'
+
+export const prerender = true; // Pre-render this page at build time
+---
+
+<BaseLayout 
+  title="Side ikke fundet - 404"
+  description="Siden du leder efter kunne ikke findes"
+>
+  <section class="py-32 md:py-40 lg:py-48 flex items-center justify-center bg-warm-light">
+    <div class="container-custom max-w-2xl text-center">
+      <div class="mb-8">
+        <span class="text-8xl md:text-9xl font-serif text-mint" aria-hidden="true">404</span>
+      </div>
+      
+      <h1 class="text-4xl md:text-5xl font-serif text-forest-green mb-6">
+        Siden blev ikke fundet
+      </h1>
+      
+      <p class="text-lg md:text-xl text-charcoal mb-8 leading-relaxed">
+        Vi kunne desværre ikke finde den side, du leder efter. 
+        Måske er linket forældet, eller siden er blevet flyttet.
+      </p>
+      
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+        <!-- Secondary CTA - Kontakt os -->
+        <SecondaryButton href="/kontakt">
+          Kontakt os
+        </SecondaryButton>
+        
+        <!-- Primary CTA - Gå til forsiden -->
+        <PrimaryButton href="/">
+          Gå til forsiden
+        </PrimaryButton>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+

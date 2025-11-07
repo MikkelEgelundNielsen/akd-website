@@ -7,6 +7,8 @@ import { generalPageBySlugQuery } from '@/lib/sanityQueries'
 import { portableTextToHtml } from '@/lib/portableTextSerializer'
 import type { GeneralPage } from '@/types/sanity'
 
+export const prerender = true; // Pre-render this page at build time
+
 // Fetch page from Sanity
 let page: GeneralPage | null = null
 try {

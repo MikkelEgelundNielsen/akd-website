@@ -1,0 +1,132 @@
+import type { APIRoute } from 'astro';
+
+export const prerender = false;
+
+export const POST: APIRoute = async ({ request, cookies }) => {
+  try {
+    const { username, password } = await request.json();
+    
+    // Validate input
+    if (!username || !password) {
+      return new Response(
+        JSON.stringify({ message: 'Du skal udfylde både brugernavn og adgangskode.' }), 
+        { 
+          status: 400,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+    }
+    
+    const apiUrl = import.meta.env.ASB_API_URL;
+    
+    if (!apiUrl) {
+      console.error('ASB_API_URL environment variable is not set');
+      return new Response(
+        JSON.stringify({ message: 'Login-systemet er ikke korrekt konfigureret. Kontakt venligst support.' }), 
+        { 
+          status: 500,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+    }
+    
+    // Call Loopback 3 login endpoint (farmers model)
+    console.log('Calling Avlerinfo API:', `${apiUrl}/api/farmers/login`);
+    const response = await fetch(`${apiUrl}/api/farmers/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username,
+        password,
+      }),
+    });
+    
+    console.log('Avlerinfo API response status:', response.status);
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.log('Login failed:', errorData);
+      return new Response(
+        JSON.stringify({ 
+          message: 'Hmm, det brugernavn eller den adgangskode kender vi ikke. Prøv venligst igen.' 
+        }), 
+        { 
+          status: 401,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+    }
+    
+    const data = await response.json();
+    console.log('Avlerinfo API response data:', data);
+    
+    // Loopback 3 typically returns { id: 'token', userId: 'userId', ... }
+    const token = data.id;
+    const userId = data.userId;
+    console.log('Token received:', token ? 'Yes' : 'No');
+    console.log('User ID:', userId);
+    
+    if (!token) {
+      return new Response(
+        JSON.stringify({ message: 'Der opstod et problem med login-systemet. Prøv venligst igen om lidt.' }), 
+        { 
+          status: 500,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+    }
+    
+    // Set secure HTTP-only cookies - store both token and userId
+    console.log('Setting auth cookies...');
+    cookies.set('akd_auth_token', token, {
+      path: '/',
+      httpOnly: true,
+      secure: import.meta.env.PROD, // HTTPS in production
+      sameSite: 'strict',
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+    });
+    
+    // Also store userId to fetch farmer data later
+    cookies.set('akd_user_id', userId?.toString() || '', {
+      path: '/',
+      httpOnly: true,
+      secure: import.meta.env.PROD,
+      sameSite: 'strict',
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+    });
+    
+    console.log('Login successful, returning success response');
+    return new Response(
+      JSON.stringify({ success: true }), 
+      { 
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+    
+  } catch (error) {
+    console.error('Login error:', error);
+    return new Response(
+      JSON.stringify({ message: 'Vi kan ikke forbinde til login-systemet lige nu. Prøv venligst igen om lidt.' }), 
+      { 
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+  }
+};
+

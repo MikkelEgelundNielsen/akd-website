@@ -1,0 +1,76 @@
+---
+import AndelshavereLayout from '@/layouts/AndelshavereLayout.astro'
+import NavigationCards from '@/components/andelshavere/NavigationCards.astro'
+
+// User is available from middleware
+const user = Astro.locals.user;
+---
+
+<AndelshavereLayout 
+  title="Dashboard - For Andelshavere"
+  description="Velkommen til andelshaver-området"
+>
+  <section class="py-16 md:py-24 bg-warm-light">
+    <div class="container-custom">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-4">
+        <div>
+          <h1 class="text-4xl md:text-5xl font-serif text-forest-green mb-2">
+            Velkommen{user?.displayname ? `, ${user.displayname}` : ''}
+          </h1>
+          <p class="text-lg text-charcoal">
+            Du er nu logget ind i andelshaver-området
+          </p>
+        </div>
+        <button 
+          id="logout-btn"
+          class="bg-amber text-white px-6 py-3 rounded-lg hover:bg-burnt-orange transition-colors font-semibold"
+          aria-label="Log ud af andelshaver-området"
+        >
+          Log ud
+        </button>
+      </div>
+      
+      <!-- Dashboard Content - Navigation Cards from Sanity -->
+      <div class="mb-12">
+        <NavigationCards />
+      </div>
+      
+      <!-- Quick Links Section -->
+      <div class="bg-forest-green text-white p-8 rounded-lg">
+        <h2 class="text-3xl font-serif mb-4">
+          Hurtige links
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <a href="/andelshavere/min-profil" class="hover:text-mint transition-colors">
+            → Min profil
+          </a>
+          <a href="/andelshavere/indstillinger" class="hover:text-mint transition-colors">
+            → Indstillinger
+          </a>
+          <a href="/om-akd" class="hover:text-mint transition-colors">
+            → Om AKD
+          </a>
+          <a href="/kontakt" class="hover:text-mint transition-colors">
+            → Kontakt
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</AndelshavereLayout>
+
+<script>
+  const logoutBtn = document.getElementById('logout-btn');
+  
+  logoutBtn?.addEventListener('click', async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Redirect anyway
+      window.location.href = '/';
+    }
+  });
+</script>
+

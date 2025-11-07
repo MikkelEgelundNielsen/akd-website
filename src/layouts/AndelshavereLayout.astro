@@ -1,0 +1,23 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import AndelshavereNav from '@/components/layout/AndelshavereNav.astro'
+
+interface Props {
+  title: string
+  description?: string
+}
+
+const { 
+  title, 
+  description = 'Andelshaver-området hos AKD Danmark'
+} = Astro.props
+---
+
+<BaseLayout 
+  title={title}
+  description={description}
+>
+  <AndelshavereNav />
+  <slot />
+</BaseLayout>
+

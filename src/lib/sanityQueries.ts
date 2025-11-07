@@ -179,3 +179,20 @@ export const articlesByCategoryQuery = (category: string) => `*[_type == "articl
   category
 }`
 
+// Andelshavere Navigation
+export const andelshavereNavigationQuery = `*[_type == "andelshavereNavigation"][0] {
+  _id,
+  title,
+  menuItems[] {
+    label,
+    linkType,
+    "href": select(
+      linkType == "internal" && defined(internalLink) => "/" + internalLink->slug.current,
+      linkType == "manual" => manualUrl,
+      "/"
+    ),
+    description,
+    icon
+  }
+}`
+
