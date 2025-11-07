@@ -2,6 +2,8 @@
 import AndelshavereLayout from '@/layouts/AndelshavereLayout.astro'
 import NavigationCards from '@/components/andelshavere/NavigationCards.astro'
 
+export const prerender = false; // This page must be server-rendered for authentication
+
 // User is available from middleware
 const user = Astro.locals.user;
 ---
