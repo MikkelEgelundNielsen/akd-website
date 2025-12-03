@@ -73,6 +73,7 @@ export const POST: APIRoute = async (context) => {
     // Call Loopback 3 login endpoint (farmers model)
     const loginUrl = `${apiUrl}/api/farmers/login`;
     console.log('Calling Avlerinfo API:', loginUrl);
+    console.log('Login request payload:', { username, passwordLength: password?.length || 0 });
     
     let response: Response;
     try {
@@ -80,6 +81,7 @@ export const POST: APIRoute = async (context) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
         body: JSON.stringify({
           username,
