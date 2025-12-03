@@ -4,16 +4,22 @@ export const prerender = false;
 
 export const GET: APIRoute = async (context) => {
   // Try all possible ways to access environment variables
-  const runtime = (context as any).runtime;
-  const runtimeEnv = runtime?.env;
+  // In Astro with Cloudflare adapter, runtime env vars are in context.locals.runtime.env
+  const locals = (context as any).locals;
+  const localsRuntime = locals?.runtime;
+  const localsRuntimeEnv = localsRuntime?.env;
+  const contextRuntime = (context as any).runtime;
+  const contextRuntimeEnv = contextRuntime?.env;
   
   // Get the actual value from import.meta.env (even if it's undefined/empty)
   const importMetaEnvValue = import.meta.env.ASB_API_URL;
   const importMetaEnvType = typeof importMetaEnvValue;
   const importMetaEnvIsEmpty = importMetaEnvValue === '' || importMetaEnvValue === undefined || importMetaEnvValue === null;
   
-  // Primary method: import.meta.env (standard for Cloudflare Pages)
-  const apiUrl = importMetaEnvValue || runtimeEnv?.ASB_API_URL;
+  // Try all possible access methods (prioritize locals.runtime.env for runtime vars)
+  const apiUrl = localsRuntimeEnv?.ASB_API_URL || 
+                 contextRuntimeEnv?.ASB_API_URL ||
+                 importMetaEnvValue;
   
   // Get all import.meta.env keys (for debugging, but don't expose values)
   const envKeys = Object.keys(import.meta.env).filter(key => 
@@ -28,19 +34,24 @@ export const GET: APIRoute = async (context) => {
       configured: !!apiUrl && !importMetaEnvIsEmpty,
       apiUrl: apiUrl || 'NOT SET',
       accessMethods: {
+        localsRuntimeEnv: localsRuntimeEnv?.ASB_API_URL || 'NOT SET',
+        contextRuntimeEnv: contextRuntimeEnv?.ASB_API_URL || 'NOT SET',
         importMetaEnv: importMetaEnvValue || 'NOT SET',
         importMetaEnvType: importMetaEnvType,
-        importMetaEnvIsEmpty: importMetaEnvIsEmpty,
-        runtimeEnv: runtimeEnv?.ASB_API_URL || 'NOT SET'
+        importMetaEnvIsEmpty: importMetaEnvIsEmpty
       },
       diagnostics: {
         hasKeyInKeys: envKeys.includes('ASB_API_URL'),
         hasKeyButNoValue: hasKeyButNoValue,
-        keyExistsButValueEmpty: hasKeyButNoValue
+        keyExistsButValueEmpty: hasKeyButNoValue,
+        hasLocalsRuntime: !!localsRuntime,
+        hasLocalsRuntimeEnv: !!localsRuntimeEnv,
+        localsRuntimeEnvKeys: localsRuntimeEnv ? Object.keys(localsRuntimeEnv) : [],
+        hasContextRuntime: !!contextRuntime,
+        hasContextRuntimeEnv: !!contextRuntimeEnv,
+        contextRuntimeEnvKeys: contextRuntimeEnv ? Object.keys(contextRuntimeEnv) : []
       },
       availableEnvKeys: envKeys,
-      runtimeEnvKeys: runtimeEnv ? Object.keys(runtimeEnv) : [],
-      hasRuntime: !!runtime,
       message: hasKeyButNoValue
         ? 'Environment variable key exists but value is empty. Check Cloudflare Pages: Settings → Environment Variables → Production → Ensure ASB_API_URL has a value'
         : apiUrl && !importMetaEnvIsEmpty

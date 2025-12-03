@@ -18,9 +18,14 @@ export const onRequest = defineMiddleware(async (context, next: MiddlewareNext) 
     
     if (authToken && userId) {
       try {
-        // Access env vars through Cloudflare runtime or standard way
-        const cloudflareEnv = (context as any)?.runtime?.env;
-        const apiUrl = cloudflareEnv?.ASB_API_URL || import.meta.env.ASB_API_URL;
+        // Access env vars through Cloudflare runtime (locals.runtime.env for runtime vars)
+        const localsRuntime = (context.locals as any)?.runtime;
+        const localsRuntimeEnv = localsRuntime?.env;
+        const contextRuntime = (context as any)?.runtime;
+        const contextRuntimeEnv = contextRuntime?.env;
+        const apiUrl = localsRuntimeEnv?.ASB_API_URL || 
+                       contextRuntimeEnv?.ASB_API_URL ||
+                       import.meta.env.ASB_API_URL;
         if (apiUrl) {
           const validateUrl = `${apiUrl}/api/farmers/${userId}?access_token=${authToken}`;
           const response = await fetch(validateUrl);

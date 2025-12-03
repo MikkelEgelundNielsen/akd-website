@@ -22,24 +22,31 @@ export const POST: APIRoute = async (context) => {
     }
     
     // Access Cloudflare runtime environment
-    // In Cloudflare Pages, env vars are available through import.meta.env
-    // But we also try runtime context as fallback
-    const runtime = (context as any).runtime;
-    const runtimeEnv = runtime?.env;
+    // In Astro with Cloudflare adapter, runtime env vars are in context.locals.runtime.env
+    // Build-time vars are in import.meta.env
+    const localsRuntime = (locals as any)?.runtime;
+    const localsRuntimeEnv = localsRuntime?.env;
+    const contextRuntime = (context as any).runtime;
+    const contextRuntimeEnv = contextRuntime?.env;
     
-    // Primary method: import.meta.env (standard for Cloudflare Pages)
-    // Fallback: runtime.env (Cloudflare Workers pattern)
-    const apiUrl = import.meta.env.ASB_API_URL || runtimeEnv?.ASB_API_URL;
+    // Try all possible access methods
+    const apiUrl = localsRuntimeEnv?.ASB_API_URL || 
+                   contextRuntimeEnv?.ASB_API_URL ||
+                   import.meta.env.ASB_API_URL;
     
     // Log for debugging (check Cloudflare function logs, not browser console)
     console.log('[Login API] Environment check:', {
-      hasRuntime: !!runtime,
-      hasRuntimeEnv: !!runtimeEnv,
-      runtimeEnvKeys: runtimeEnv ? Object.keys(runtimeEnv) : [],
+      hasLocalsRuntime: !!localsRuntime,
+      hasLocalsRuntimeEnv: !!localsRuntimeEnv,
+      localsRuntimeEnvKeys: localsRuntimeEnv ? Object.keys(localsRuntimeEnv) : [],
+      hasContextRuntime: !!contextRuntime,
+      hasContextRuntimeEnv: !!contextRuntimeEnv,
+      contextRuntimeEnvKeys: contextRuntimeEnv ? Object.keys(contextRuntimeEnv) : [],
       importMetaEnvKeys: Object.keys(import.meta.env),
       hasImportMetaEnvASB: !!import.meta.env.ASB_API_URL,
       importMetaEnvASBValue: import.meta.env.ASB_API_URL || 'NOT SET',
-      runtimeEnvASBValue: runtimeEnv?.ASB_API_URL || 'NOT SET',
+      localsRuntimeEnvASBValue: localsRuntimeEnv?.ASB_API_URL || 'NOT SET',
+      contextRuntimeEnvASBValue: contextRuntimeEnv?.ASB_API_URL || 'NOT SET',
       finalApiUrl: apiUrl ? 'SET' : 'NOT SET',
       finalApiUrlValue: apiUrl || 'NOT SET'
     });
