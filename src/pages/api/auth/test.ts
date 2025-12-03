@@ -7,31 +7,48 @@ export const GET: APIRoute = async (context) => {
   const runtime = (context as any).runtime;
   const runtimeEnv = runtime?.env;
   
+  // Get the actual value from import.meta.env (even if it's undefined/empty)
+  const importMetaEnvValue = import.meta.env.ASB_API_URL;
+  const importMetaEnvType = typeof importMetaEnvValue;
+  const importMetaEnvIsEmpty = importMetaEnvValue === '' || importMetaEnvValue === undefined || importMetaEnvValue === null;
+  
   // Primary method: import.meta.env (standard for Cloudflare Pages)
-  const apiUrl = import.meta.env.ASB_API_URL || runtimeEnv?.ASB_API_URL;
+  const apiUrl = importMetaEnvValue || runtimeEnv?.ASB_API_URL;
   
   // Get all import.meta.env keys (for debugging, but don't expose values)
   const envKeys = Object.keys(import.meta.env).filter(key => 
     !key.includes('SECRET') && !key.includes('PASSWORD') && !key.includes('TOKEN')
   );
   
+  // Check if ASB_API_URL key exists but value is empty
+  const hasKeyButNoValue = envKeys.includes('ASB_API_URL') && importMetaEnvIsEmpty;
+  
   return new Response(
     JSON.stringify({ 
-      configured: !!apiUrl,
+      configured: !!apiUrl && !importMetaEnvIsEmpty,
       apiUrl: apiUrl || 'NOT SET',
       accessMethods: {
-        importMetaEnv: import.meta.env.ASB_API_URL || 'NOT SET',
+        importMetaEnv: importMetaEnvValue || 'NOT SET',
+        importMetaEnvType: importMetaEnvType,
+        importMetaEnvIsEmpty: importMetaEnvIsEmpty,
         runtimeEnv: runtimeEnv?.ASB_API_URL || 'NOT SET'
+      },
+      diagnostics: {
+        hasKeyInKeys: envKeys.includes('ASB_API_URL'),
+        hasKeyButNoValue: hasKeyButNoValue,
+        keyExistsButValueEmpty: hasKeyButNoValue
       },
       availableEnvKeys: envKeys,
       runtimeEnvKeys: runtimeEnv ? Object.keys(runtimeEnv) : [],
       hasRuntime: !!runtime,
-      message: apiUrl 
-        ? 'Environment variable is accessible' 
+      message: hasKeyButNoValue
+        ? 'Environment variable key exists but value is empty. Check Cloudflare Pages: Settings → Environment Variables → Production → Ensure ASB_API_URL has a value'
+        : apiUrl && !importMetaEnvIsEmpty
+        ? 'Environment variable is accessible'
         : 'Environment variable is NOT accessible. Check Cloudflare Pages settings: Settings → Environment Variables → Production'
     }), 
     { 
-      status: apiUrl ? 200 : 500,
+      status: apiUrl && !importMetaEnvIsEmpty ? 200 : 500,
       headers: { 'Content-Type': 'application/json' }
     }
   );
