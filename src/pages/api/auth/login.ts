@@ -19,12 +19,23 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       );
     }
     
-    const apiUrl = import.meta.env.ASB_API_URL;
+    // Check environment variable - try both Cloudflare and standard ways
+    const apiUrl = import.meta.env.ASB_API_URL || (globalThis as any).ASB_API_URL;
     
-    if (!apiUrl) {
-      console.error('ASB_API_URL environment variable is not set');
+    console.log('Environment check:', {
+      hasImportMetaEnv: !!import.meta.env.ASB_API_URL,
+      importMetaEnvValue: import.meta.env.ASB_API_URL ? 'SET' : 'NOT SET',
+      hasGlobalThis: !!(globalThis as any).ASB_API_URL,
+      finalApiUrl: apiUrl ? 'SET' : 'NOT SET'
+    });
+    
+    if (!apiUrl || apiUrl.trim() === '') {
+      console.error('ASB_API_URL environment variable is not set or is empty');
       return new Response(
-        JSON.stringify({ message: 'Login-systemet er ikke korrekt konfigureret. Kontakt venligst support.' }), 
+        JSON.stringify({ 
+          message: 'Login-systemet er ikke korrekt konfigureret. Kontakt venligst support.',
+          error: 'ASB_API_URL_MISSING'
+        }), 
         { 
           status: 500,
           headers: {
@@ -35,22 +46,49 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     }
     
     // Call Loopback 3 login endpoint (farmers model)
-    console.log('Calling Avlerinfo API:', `${apiUrl}/api/farmers/login`);
-    const response = await fetch(`${apiUrl}/api/farmers/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        username,
-        password,
-      }),
-    });
+    const loginUrl = `${apiUrl}/api/farmers/login`;
+    console.log('Calling Avlerinfo API:', loginUrl);
+    
+    let response: Response;
+    try {
+      response = await fetch(loginUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username,
+          password,
+        }),
+      });
+    } catch (fetchError) {
+      console.error('Fetch error:', fetchError);
+      return new Response(
+        JSON.stringify({ 
+          message: 'Vi kan ikke forbinde til login-systemet lige nu. Prøv venligst igen om lidt.',
+          error: 'NETWORK_ERROR',
+          details: fetchError instanceof Error ? fetchError.message : 'Unknown error'
+        }), 
+        { 
+          status: 500,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+    }
     
     console.log('Avlerinfo API response status:', response.status);
+    console.log('Avlerinfo API response ok:', response.ok);
     
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
+      let errorData: any = {};
+      try {
+        errorData = await response.json();
+      } catch (e) {
+        const text = await response.text().catch(() => '');
+        errorData = { text };
+      }
       console.log('Login failed:', errorData);
       return new Response(
         JSON.stringify({ 
@@ -65,7 +103,27 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       );
     }
     
-    const data = await response.json();
+    let data: any;
+    try {
+      data = await response.json();
+    } catch (parseError) {
+      console.error('JSON parse error:', parseError);
+      const text = await response.text().catch(() => '');
+      console.error('Response text:', text);
+      return new Response(
+        JSON.stringify({ 
+          message: 'Der opstod et problem med login-systemet. Prøv venligst igen om lidt.',
+          error: 'INVALID_RESPONSE'
+        }), 
+        { 
+          status: 500,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+    }
+    
     console.log('Avlerinfo API response data:', data);
     
     // Loopback 3 typically returns { id: 'token', userId: 'userId', ... }
@@ -75,8 +133,12 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     console.log('User ID:', userId);
     
     if (!token) {
+      console.error('No token in response:', data);
       return new Response(
-        JSON.stringify({ message: 'Der opstod et problem med login-systemet. Prøv venligst igen om lidt.' }), 
+        JSON.stringify({ 
+          message: 'Der opstod et problem med login-systemet. Prøv venligst igen om lidt.',
+          error: 'NO_TOKEN_RECEIVED'
+        }), 
         { 
           status: 500,
           headers: {
@@ -118,8 +180,16 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     
   } catch (error) {
     console.error('Login error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorStack = error instanceof Error ? error.stack : undefined;
+    console.error('Error details:', { errorMessage, errorStack });
+    
     return new Response(
-      JSON.stringify({ message: 'Vi kan ikke forbinde til login-systemet lige nu. Prøv venligst igen om lidt.' }), 
+      JSON.stringify({ 
+        message: 'Vi kan ikke forbinde til login-systemet lige nu. Prøv venligst igen om lidt.',
+        error: 'UNEXPECTED_ERROR',
+        details: import.meta.env.PROD ? undefined : errorMessage // Only show details in dev
+      }), 
       { 
         status: 500,
         headers: {
