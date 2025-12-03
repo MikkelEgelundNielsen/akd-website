@@ -53,10 +53,10 @@ export const GET: APIRoute = async (context) => {
         contextRuntimeEnvKeys: contextRuntimeEnv ? Object.keys(contextRuntimeEnv) : []
       },
       availableEnvKeys: envKeys,
-      message: hasKeyButNoValue
+      message: isConfigured
+        ? 'Environment variable is accessible and configured correctly!'
+        : hasKeyButNoValue
         ? 'Environment variable key exists but value is empty. Check Cloudflare Pages: Settings → Environment Variables → Production → Ensure ASB_API_URL has a value'
-        : apiUrl && !importMetaEnvIsEmpty
-        ? 'Environment variable is accessible'
         : 'Environment variable is NOT accessible. Check Cloudflare Pages settings: Settings → Environment Variables → Production'
     }), 
     { 
