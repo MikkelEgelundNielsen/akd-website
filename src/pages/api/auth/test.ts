@@ -28,10 +28,11 @@ export const GET: APIRoute = async (context) => {
   
   // Check if ASB_API_URL key exists but value is empty
   const hasKeyButNoValue = envKeys.includes('ASB_API_URL') && importMetaEnvIsEmpty;
+  const isConfigured = !!apiUrl && apiUrl !== 'NOT SET' && apiUrl.trim() !== '';
   
   return new Response(
     JSON.stringify({ 
-      configured: !!apiUrl && !importMetaEnvIsEmpty,
+      configured: isConfigured,
       apiUrl: apiUrl || 'NOT SET',
       accessMethods: {
         localsRuntimeEnv: localsRuntimeEnv?.ASB_API_URL || 'NOT SET',
@@ -59,7 +60,7 @@ export const GET: APIRoute = async (context) => {
         : 'Environment variable is NOT accessible. Check Cloudflare Pages settings: Settings → Environment Variables → Production'
     }), 
     { 
-      status: apiUrl && !importMetaEnvIsEmpty ? 200 : 500,
+      status: isConfigured ? 200 : 500,
       headers: { 'Content-Type': 'application/json' }
     }
   );
