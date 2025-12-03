@@ -3,7 +3,13 @@ import type { APIRoute } from 'astro';
 export const prerender = false;
 
 export const POST: APIRoute = async (context) => {
-  const { request, cookies, locals } = context;
+  const { request, cookies } = context;
+  
+  // Access Cloudflare runtime environment
+  // In Cloudflare Pages/Workers, env vars are passed through runtime.env
+  const runtime = (context as any).runtime;
+  const env = runtime?.env || {};
+  
   try {
     const { username, password } = await request.json();
     
@@ -20,23 +26,20 @@ export const POST: APIRoute = async (context) => {
       );
     }
     
-    // Check environment variable - try multiple ways to access it
-    // In Cloudflare Pages, env vars should be available through import.meta.env
-    // But we also try runtime.env as a fallback
-    const runtimeEnv = (context as any)?.runtime?.env || (locals as any)?.runtime?.env;
-    const apiUrl = runtimeEnv?.ASB_API_URL || 
-                   import.meta.env.ASB_API_URL || 
-                   (globalThis as any).ASB_API_URL;
+    // Check environment variable - try Cloudflare runtime env first, then import.meta.env
+    // In Cloudflare Pages, env vars set in dashboard are available through runtime.env
+    const apiUrl = env.ASB_API_URL || import.meta.env.ASB_API_URL;
     
     console.log('Environment check:', {
-      hasRuntimeEnv: !!runtimeEnv,
-      hasRuntimeVar: !!runtimeEnv?.ASB_API_URL,
+      hasRuntime: !!runtime,
+      hasEnv: !!env,
+      envKeys: env ? Object.keys(env) : [],
+      hasRuntimeVar: !!env.ASB_API_URL,
+      runtimeVarValue: env.ASB_API_URL || 'NOT SET',
       hasImportMetaEnv: !!import.meta.env.ASB_API_URL,
       importMetaEnvValue: import.meta.env.ASB_API_URL || 'NOT SET',
-      hasGlobalThis: !!(globalThis as any).ASB_API_URL,
       finalApiUrl: apiUrl ? 'SET' : 'NOT SET',
-      apiUrlValue: apiUrl || 'NOT SET',
-      allEnvKeys: runtimeEnv ? Object.keys(runtimeEnv) : 'N/A'
+      apiUrlValue: apiUrl || 'NOT SET'
     });
     
     if (!apiUrl || apiUrl.trim() === '') {
