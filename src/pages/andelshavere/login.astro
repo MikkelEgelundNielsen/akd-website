@@ -6,7 +6,7 @@ export const prerender = false; // This page must be server-rendered for authent
 // If already logged in, redirect to dashboard
 const authToken = Astro.cookies.get('akd_auth_token')?.value;
 if (authToken) {
-  return Astro.redirect('/andelshavere/dashboard');
+  return Astro.redirect('/andelshavere/levering-og-kampagne');
 }
 ---
 
@@ -14,15 +14,15 @@ if (authToken) {
   title="Login - For Andelshavere"
   description="Log ind til andelshaver-området hos AKD Danmark"
 >
-  <section class="py-16 md:py-24 min-h-screen flex items-center justify-center">
+  <section class="flex justify-center pt-12 md:pt-16 lg:pt-20 pb-16 pb-28 md:pb-48">
     <div class="container-custom max-w-md">
-      <h1 class="text-4xl md:text-5xl font-serif text-forest-green mb-8 text-center">
-        For Andelshavere
+      <h1 class="text-3xl md:text-4xl font-serif text-forest-green mb-8 text-center">
+        For andelshavere
       </h1>
       
       <div class="bg-light p-8 rounded-lg shadow-lg">
         <p class="text-charcoal mb-6 text-center">
-          Log ind for at få adgang til nyheder, kampagner, rådgivning og Avlerinfo.
+          Log ind for at få adgang til nyheder, kampagner, rådgivning og avlerinfo.
         </p>
         
         <form id="login-form" class="space-y-6">

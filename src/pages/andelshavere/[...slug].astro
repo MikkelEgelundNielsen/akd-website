@@ -1,0 +1,375 @@
+---
+import AndelshavereLayout from '@/layouts/AndelshavereLayout.astro'
+import TextPage from '@/components/templates/TextPage.astro'
+import PortableText from '@/components/sanity/PortableText.astro'
+import { sanityClient } from '@/lib/sanity'
+import { generalPageBySlugQuery, allGeneralPagesQuery } from '@/lib/sanityQueries'
+import { portableTextToHtml } from '@/lib/portableTextSerializer'
+import type { GeneralPage } from '@/types/sanity'
+
+// This page requires authentication via middleware
+export const prerender = false;
+
+// Get the slug from params
+const { slug } = Astro.params
+const rawSlug = Array.isArray(slug) ? slug.join('/') : slug
+// Prepend '/andelshavere/' to match the full slug in Sanity (with leading slash)
+const pageSlug = `/andelshavere/${rawSlug}`
+
+// Debug logging
+console.log('Andelshavere catch-all route:')
+console.log('  Raw slug param:', slug)
+console.log('  Full pageSlug:', pageSlug)
+
+// Fetch the page from Sanity
+const page: GeneralPage | null = await sanityClient.fetch(generalPageBySlugQuery(pageSlug))
+
+console.log('  Page found:', !!page)
+console.log('  Page title:', page?.title)
+
+if (!page) {
+  // Page not found - return 404
+  console.log('  Redirecting to 404')
+  return Astro.redirect('/404')
+}
+
+// Convert headline to HTML (with mint accent support)
+const headlineHtml = page.headline ? portableTextToHtml(page.headline, { addHeadingIds: false }) : page.title
+
+// Prepare sections for TOC
+const sections = page.showTableOfContents && page.tableOfContents 
+  ? page.tableOfContents.map(section => ({
+      id: section.id,
+      title: section.title
+    }))
+  : []
+
+// Get SEO metadata
+const metaTitle = page.seo?.metaTitle || `${page.title} | AKD Danmark`
+const metaDescription = page.seo?.metaDescription || ''
+---
+
+<AndelshavereLayout 
+  title={metaTitle}
+  description={metaDescription}
+>
+  <!-- Hero Section -->
+  <section class="relative bg-warm-light pt-12 md:pt-16 lg:pt-20 pb-16 section-after-nav">
+    <div class="container-custom">
+      {page.preHeader && (
+        <p class="text-mint font-bold text-sm uppercase tracking-wide text-center mb-6">
+          {page.preHeader}
+        </p>
+      )}
+      
+      <h1 class="font-sans font-extrabold text-charcoal text-3xl md:text-4xl lg:text-[52px] !leading-tight text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <span class="block" set:html={headlineHtml} />
+      </h1>
+    </div>
+  </section>
+
+  <!-- Content Section with TOC -->
+  <section class="relative bg-warm-light pb-16 md:pb-24">
+    <div class="container-custom">
+      <div class="bg-white rounded-lg shadow-lg p-8 md:p-12 lg:p-16">
+        <div class="content-with-toc">
+          
+          <!-- Main Content Area -->
+          <div class="main-content">
+            <!-- Table of Contents - Mobile (Accordion) -->
+            {sections.length > 0 && (
+              <div class="lg:hidden mb-8" id="mobile-toc">
+                <button 
+                  type="button"
+                  class="w-full bg-warm-light rounded-lg p-4 flex items-center justify-between text-left hover:bg-light transition-colors"
+                  aria-expanded="false"
+                  aria-controls="mobile-toc-content"
+                  id="mobile-toc-toggle"
+                >
+                  <span class="text-xs font-bold text-charcoal uppercase tracking-wide flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                    Indhold på denne side
+                  </span>
+                  <svg 
+                    class="w-5 h-5 text-charcoal transition-transform duration-200" 
+                    id="mobile-toc-icon"
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                  </svg>
+                </button>
+                <div 
+                  class="overflow-hidden transition-all duration-200 max-h-0" 
+                  id="mobile-toc-content"
+                  aria-hidden="true"
+                >
+                  <nav class="bg-warm-light rounded-b-lg px-4 pb-4" aria-label="Indholdsfortegnelse">
+                    <ul class="space-y-1 pt-2">
+                      {sections.map((section) => (
+                        <li>
+                          <a 
+                            href={`#${section.id}`}
+                            class:list={[
+                              "block text-sm text-charcoal hover:text-burnt-orange transition-colors py-2 px-3 rounded",
+                              section.level === 3 && "pl-6 text-charcoal/80"
+                            ]}
+                          >
+                            {section.title}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </nav>
+                </div>
+              </div>
+            )}
+            
+            <article class="prose-akd">
+              <PortableText 
+                content={page.content} 
+                addHeadingIds={true}
+              />
+              
+              {page.updatedAt && (
+                <p class="text-sm text-charcoal/70 mt-12">
+                  Denne side er senest opdateret: {new Date(page.updatedAt).toLocaleDateString('da-DK', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                  })}
+                </p>
+              )}
+            </article>
+          </div>
+          
+          <!-- Table of Contents - Desktop (Sticky) -->
+          {sections.length > 0 && (
+            <aside class="toc-sidebar">
+              <div class="sticky top-32" id="toc-wrapper">
+                <nav class="bg-warm-light rounded-lg" aria-label="Indholdsfortegnelse">
+                  <h2 class="text-[14px] font-sans font-bold text-charcoal uppercase tracking-wide mb-4 flex items-center gap-2 px-6 pt-6">
+                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 18" aria-hidden="true">
+                      <path fill="currentColor" d="M3.12 0H.937A.94.94 0 0 0 0 .938v2.181a.94.94 0 0 0 .938.938h2.181a.94.94 0 0 0 .938-.938V.938A.94.94 0 0 0 3.119 0m.312 3.12a.313.313 0 0 1-.313.312H.938a.313.313 0 0 1-.313-.313V.938A.313.313 0 0 1 .938.625h2.181a.313.313 0 0 1 .313.313zM5.967 1.36h10.35a.313.313 0 0 0 0-.625H5.967a.313.313 0 0 0 0 .625M5.966 3.322h5.713a.312.312 0 0 0 0-.625H5.966a.313.313 0 0 0 0 .625M3.12 6.722H.937A.94.94 0 0 0 0 7.659v2.182a.94.94 0 0 0 .938.938h2.181a.94.94 0 0 0 .938-.938V7.659a.94.94 0 0 0-.938-.937m.312 3.119a.313.313 0 0 1-.313.313H.938a.313.313 0 0 1-.313-.313V7.659a.313.313 0 0 1 .313-.312h2.181a.313.313 0 0 1 .313.312zM16.317 7.456H5.967a.313.313 0 0 0 0 .625h10.35a.312.312 0 0 0 0-.625M5.966 10.044h5.713a.313.313 0 0 0 0-.625H5.966a.313.313 0 0 0 0 .625M3.12 13.443H.937a.94.94 0 0 0-.938.938v2.182a.94.94 0 0 0 .938.937h2.181a.94.94 0 0 0 .938-.937V14.38a.94.94 0 0 0-.938-.938m.312 3.12a.313.313 0 0 1-.313.312H.938a.313.313 0 0 1-.313-.312V14.38a.313.313 0 0 1 .313-.313h2.181a.313.313 0 0 1 .313.313zM16.317 14.178H5.967a.312.312 0 0 0 0 .625h10.35a.313.313 0 0 0 0-.625M11.68 16.14H5.966a.313.313 0 0 0 0 .625h5.712a.312.312 0 0 0 0-.625"/>
+                    </svg>
+                    Indhold på denne side
+                  </h2>
+                  <ul class="space-y-3 pb-6" id="toc-list">
+                    {sections.map((section) => (
+                      <li>
+                        <a 
+                          href={`#${section.id}`}
+                          class:list={[
+                            "toc-link block text-sm text-charcoal hover:text-burnt-orange transition-colors py-2.5 border-l-4 border-r-4 border-l-transparent border-r-transparent",
+                            section.level === 3 ? "pl-9 pr-6 text-charcoal/80" : "px-6"
+                          ]}
+                          data-target={section.id}
+                        >
+                          {section.title}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              </div>
+            </aside>
+          )}
+        </div>
+      </div>
+    </div>
+  </section>
+</AndelshavereLayout>
+
+<script>
+  // Mobile TOC Toggle
+  const mobileToggle = document.getElementById('mobile-toc-toggle');
+  const mobileContent = document.getElementById('mobile-toc-content');
+  const mobileIcon = document.getElementById('mobile-toc-icon');
+  
+  if (mobileToggle && mobileContent && mobileIcon) {
+    mobileToggle.addEventListener('click', () => {
+      const isExpanded = mobileToggle.getAttribute('aria-expanded') === 'true';
+      
+      mobileToggle.setAttribute('aria-expanded', (!isExpanded).toString());
+      mobileContent.setAttribute('aria-hidden', isExpanded.toString());
+      
+      if (isExpanded) {
+        mobileContent.style.maxHeight = '0';
+        mobileIcon.style.transform = 'rotate(0deg)';
+      } else {
+        mobileContent.style.maxHeight = mobileContent.scrollHeight + 'px';
+        mobileIcon.style.transform = 'rotate(180deg)';
+      }
+    });
+    
+    // Collapse TOC when clicking a link
+    const mobileLinks = mobileContent.querySelectorAll('a');
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        mobileToggle.setAttribute('aria-expanded', 'false');
+        mobileContent.setAttribute('aria-hidden', 'true');
+        mobileContent.style.maxHeight = '0';
+        mobileIcon.style.transform = 'rotate(0deg)';
+      });
+    });
+  }
+  
+  // Desktop Scroll Spy (only on desktop)
+  if (window.innerWidth >= 1024) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const id = entry.target.getAttribute('id');
+          const tocLink = document.querySelector(`.toc-link[data-target="${id}"]`);
+          
+          if (entry.isIntersecting) {
+            // Remove active class from all links
+            document.querySelectorAll('.toc-link').forEach((link) => {
+              link.classList.remove('border-l-mint', 'border-r-mint', 'bg-light', 'text-burnt-orange', 'font-semibold');
+              link.classList.add('border-l-transparent', 'border-r-transparent');
+            });
+            
+            // Add active class to current link
+            if (tocLink) {
+              tocLink.classList.remove('border-l-transparent', 'border-r-transparent');
+              tocLink.classList.add('border-l-mint', 'border-r-mint', 'bg-light', 'text-burnt-orange', 'font-semibold');
+            }
+          }
+        });
+      },
+      {
+        rootMargin: '-100px 0px -66%',
+        threshold: 0
+      }
+    );
+    
+    // Observe all sections (H2 and H3)
+    const sections = document.querySelectorAll('[id]');
+    sections.forEach((section) => {
+      if (section.tagName === 'H2' || section.tagName === 'H3') {
+        observer.observe(section);
+      }
+    });
+  }
+  
+  // Smooth scroll for all anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        const offset = 120; // Account for fixed navigation
+        const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
+        window.scrollTo({
+          top: targetPosition,
+          behavior: 'smooth'
+        });
+      }
+    });
+  });
+</script>
+
+<style>
+  /* Layout for content with TOC */
+  .content-with-toc {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  @media (min-width: 1024px) {
+    .content-with-toc {
+      flex-direction: row;
+      gap: 3rem;
+    }
+  }
+  
+  @media (min-width: 1280px) {
+    .content-with-toc {
+      gap: 4rem;
+    }
+  }
+  
+  .main-content {
+    flex: 1;
+    max-width: 48rem;
+  }
+  
+  .toc-sidebar {
+    display: none;
+  }
+  
+  @media (min-width: 1024px) {
+    .toc-sidebar {
+      display: block;
+      width: 16rem;
+      flex-shrink: 0;
+    }
+  }
+  
+  @media (min-width: 1280px) {
+    .toc-sidebar {
+      width: 18rem;
+    }
+  }
+
+  .prose-akd {
+    @apply text-charcoal;
+  }
+  
+  .prose-akd :global(h2) {
+    @apply font-serif font-bold italic text-charcoal text-[34px] leading-tight mb-6 mt-12 first:mt-0;
+    scroll-margin-top: 120px;
+  }
+  
+  .prose-akd :global(h3) {
+    @apply font-sans font-semibold text-charcoal text-[28px] leading-tight mb-4 mt-8;
+    scroll-margin-top: 120px;
+  }
+  
+  .prose-akd :global(h4) {
+    @apply font-sans font-semibold text-charcoal text-xl leading-tight mb-3 mt-6;
+    scroll-margin-top: 120px;
+  }
+  
+  .prose-akd :global(p) {
+    @apply text-base text-charcoal leading-relaxed mb-4;
+  }
+  
+  .prose-akd :global(ul),
+  .prose-akd :global(ol) {
+    @apply text-base text-charcoal leading-relaxed mb-4 ml-6;
+  }
+  
+  .prose-akd :global(li) {
+    @apply mb-2;
+  }
+  
+  .prose-akd :global(ul li) {
+    @apply list-disc;
+  }
+  
+  .prose-akd :global(ol li) {
+    @apply list-decimal;
+  }
+  
+  .prose-akd :global(a) {
+    @apply text-burnt-orange hover:text-amber transition-colors underline;
+  }
+  
+  .prose-akd :global(strong) {
+    @apply font-semibold;
+  }
+  
+  .prose-akd :global(.callout) {
+    @apply bg-light border-l-4 border-mint p-6 rounded-r-lg my-6;
+  }
+  
+  .prose-akd :global(.callout p:last-child) {
+    @apply mb-0;
+  }
+</style>
+

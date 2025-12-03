@@ -387,3 +387,4 @@ The prose styling is defined in the `<style>` block of `TextPage.astro`. Common 
 - `/src/pages/cookie-privatlivspolitik.astro` - Example implementation
 - `/src/styles/global.css` - Global typography base styles
 
+

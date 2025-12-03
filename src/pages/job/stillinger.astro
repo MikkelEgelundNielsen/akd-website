@@ -1,101 +1,155 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro'
+import JobCard from '@/components/job/JobCard.astro'
+import ContentBox from '@/components/sections/ContentBox.astro'
 
 export const prerender = true; // Pre-render this page at build time
 ---
 
 <BaseLayout 
   title="Ledige Stillinger"
-  description="Se alle ledige stillinger hos AKD Danmark"
+  description="Se alle ledige stillinger hos AKD Danmark. Vi søger nye kolleger i Brande og Toftlund."
   navTheme="light"
 >
-  <section class="section-after-nav bg-light">
+  <!-- Hero Section -->
+  <section class="relative bg-warm-light pt-12 md:pt-16 lg:pt-20 pb-16 section-after-nav">
     <div class="container-custom">
-      <h1 class="text-4xl md:text-5xl lg:text-6xl font-serif text-forest-green mb-8">
-        Ledige Stillinger
-      </h1>
-      <p class="text-lg md:text-xl text-charcoal leading-relaxed max-w-3xl mb-12">
-        Her finder du alle vores aktuelle jobannoncer. Vi opdaterer løbende, når nye stillinger bliver ledige.
+      <!-- Pre-headline -->
+      <p class="text-mint font-bold text-base mb-6 uppercase tracking-wide text-center">
+        AKD VOKSER - VI ANSÆTTER NU
       </p>
-
-      <!-- Example job listings -->
-      <div class="space-y-6">
-        <article class="card hover:shadow-lg transition-shadow">
-          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
-            <h2 class="text-2xl font-serif text-forest-green">
-              Produktionstekniker
-            </h2>
-            <span class="text-sm font-semibold text-burnt-orange bg-burnt-orange/10 px-3 py-1 rounded-full self-start">
-              Fuldtid
-            </span>
-          </div>
-          <p class="text-charcoal mb-4">
-            Vi søger en erfaren produktionstekniker til vores fabrik i Brande. Du kommer til at arbejde med optimering af produktionsprocesser og sikre høj kvalitet.
-          </p>
-          <div class="flex flex-wrap gap-4 text-sm text-charcoal/70 mb-6">
-            <span>📍 Brande</span>
-            <span>📅 Opslået 5. nov. 2024</span>
-          </div>
-          <a href="#" class="btn-primary">
-            Læs mere og ansøg
-          </a>
-        </article>
-
-        <article class="card hover:shadow-lg transition-shadow">
-          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
-            <h2 class="text-2xl font-serif text-forest-green">
-              IT-supporter
-            </h2>
-            <span class="text-sm font-semibold text-burnt-orange bg-burnt-orange/10 px-3 py-1 rounded-full self-start">
-              Fuldtid
-            </span>
-          </div>
-          <p class="text-charcoal mb-4">
-            Vil du være med til at drive og udvikle vores IT-infrastruktur? Vi søger en dygtig IT-supporter, der kan hjælpe vores medarbejdere med tekniske udfordringer.
-          </p>
-          <div class="flex flex-wrap gap-4 text-sm text-charcoal/70 mb-6">
-            <span>📍 Brande</span>
-            <span>📅 Opslået 3. nov. 2024</span>
-          </div>
-          <a href="#" class="btn-primary">
-            Læs mere og ansøg
-          </a>
-        </article>
-
-        <article class="card hover:shadow-lg transition-shadow">
-          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
-            <h2 class="text-2xl font-serif text-forest-green">
-              Lagermedarbejder
-            </h2>
-            <span class="text-sm font-semibold text-amber bg-amber/10 px-3 py-1 rounded-full self-start">
-              Deltid
-            </span>
-          </div>
-          <p class="text-charcoal mb-4">
-            Vi søger en fleksibel lagermedarbejder på deltid til varemodtagelse, plukning og emballering. Erfaring med truck er en fordel.
-          </p>
-          <div class="flex flex-wrap gap-4 text-sm text-charcoal/70 mb-6">
-            <span>📍 Brande</span>
-            <span>📅 Opslået 1. nov. 2024</span>
-          </div>
-          <a href="#" class="btn-primary">
-            Læs mere og ansøg
-          </a>
-        </article>
-      </div>
-
-      <div class="mt-12 p-8 bg-forest-green/5 rounded-lg border border-forest-green/10">
-        <h3 class="text-2xl font-serif text-forest-green mb-4">
-          Kunne ikke finde noget passende?
-        </h3>
-        <p class="text-charcoal mb-6">
-          Send os en uopfordret ansøgning. Vi er altid interesserede i at høre fra dygtige kandidater.
+      
+      <!-- Main Headline -->
+      <h1 class="text-center mb-8 md:mb-12 max-w-4xl mx-auto">
+        <span class="block font-sans font-extrabold text-4xl md:text-5xl lg:text-[52px] text-charcoal uppercase leading-tight">
+          VI SØGER <span class="italic font-medium text-mint lowercase" style="font-family: 'Lora', serif;">nye kolleger</span><br/> I BRANDE OG TOFTLUND
+        </span>
+      </h1>
+      
+      <!-- Body Text -->
+      <div class="max-w-4xl mx-auto text-center">
+        <p class="text-charcoal text-base md:text-lg leading-relaxed">
+          AKD vokser - og vi har brug for flere dygtige hænder og hoveder. Her finder du alle aktuelle stillinger. Uanset om du er procesoperatør, lagermedarbejder eller maskinmester, får du oplæring, moderne rammer og kolleger, der bakker dig op.
         </p>
-        <a href="/job/ansoegning" class="btn-secondary">
-          Send uopfordret ansøgning
+      </div>
+    </div>
+  </section>
+
+  <!-- Job Listings Section -->
+  <section class="relative bg-warm-light pt-24 md:pt-32 lg:pt-20 pb-32 md:pb-48">
+    <div class="container-custom">
+      <div class="max-w-5xl mx-auto">
+        <h2 class="font-serif italic text-3xl md:text-4xl text-charcoal text-center mb-8 md:mb-12">
+          Ledige stillinger – vi søger lige nu
+        </h2>
+        
+        <!-- Job Cards -->
+        <div class="space-y-4 mb-8">
+          <JobCard
+            title="Smed eller klejnsmed"
+            description="Bliv en del af et stærkt teknisk team"
+            location="Toftlund"
+            href="/job/stillinger"
+          />
+          
+          <JobCard
+            title="Procesoperatør"
+            description="Indgå i et team, der samarbejder tæt"
+            location="Brande"
+            href="/job/stillinger"
+          />
+          
+          <JobCard
+            title="Procesoperatør"
+            description="Bliv en del af et fast team med din holdmakker"
+            location="Toftlund"
+            href="/job/stillinger"
+          />
+          
+          <JobCard
+            title="Vejehusoperatør"
+            description="Bliv en vigtig brik i vores sæsonbaserede produktion"
+            location="Toftlund"
+            href="/job/stillinger"
+          />
+        </div>
+        
+        <!-- Bottom CTAs -->
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-6 mt-12">
+          <!-- Secondary CTA -->
+          <a href="/job/ansoegning" class="btn-secondary">
+            Send en uopfordret ansøgning
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </a>
+          
+          <!-- Primary CTA -->
+          <a href="/job/moed-vores-medarbejdere" class="btn-primary">
+            <span>Mød vores medarbejdere</span>
+            <span class="btn-icon-circle">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+              </svg>
+            </span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Choose AKD Section -->
+  <section class="relative bg-forest-green pt-1 pb-16 md:pb-24">
+    <ContentBox
+      variant="light"
+      layout="full-width"
+      preHeader="Hvorfor vælge AKD?"
+      headline="Mere end et job – en del af fællesskabet"
+      imageUrl="/images/hvofor-vaelge-akd.png"
+      imageAlt="Medarbejdere hos AKD i kontrolrum"
+      pullUp={100}
+      items={[
+        {
+          title: 'Fællesskab i hverdagen',
+          description: 'Du bliver en del af et andelsselskab, hvor fællesskabet er fundamentet. Der er plads til at hjælpe hinanden, grine sammen og være stolte af det, vi skaber.',
+          icon: 'check'
+        },
+        {
+          title: 'Udvikling og oplæring',
+          description: 'Hos os starter du ikke alene. Vi giver grundig oplæring, tilbyder efteruddannelse og sørger for, at du kan vokse i takt med dine opgaver.',
+          icon: 'check'
+        },
+        {
+          title: 'Tryghed og sikkerhed',
+          description: 'Hos AKD kan du stole på, at tingene er i orden. Vi investerer i moderne anlæg, gode arbejdsforhold og sikkerhed hver eneste dag.',
+          icon: 'check'
+        }
+      ]}
+    />
+  </section>
+
+  <!-- Bottom CTA Section -->
+  <section class="relative bg-forest-green pb-16 md:pb-24">
+    <div class="container-custom">
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+        <!-- Secondary CTA -->
+        <a href="/job/moed-vores-medarbejdere" class="btn-secondary">
+          Mød vores medarbejdere
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+          </svg>
+        </a>
+        
+        <!-- Primary CTA -->
+        <a href="/job/at-arbejde-hos-akd" class="btn-primary">
+          <span>Læs mere om at arbejde hos AKD</span>
+          <span class="btn-icon-circle">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </span>
         </a>
       </div>
     </div>
   </section>
 </BaseLayout>
-

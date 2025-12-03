@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro'
+import EmployeeStoryBox from '@/components/job/EmployeeStoryBox.astro'
 
 export const prerender = true; // Pre-render this page at build time
 ---
@@ -9,162 +10,112 @@ export const prerender = true; // Pre-render this page at build time
   description="Hør om hverdagen hos AKD fra nogle af vores medarbejdere"
   navTheme="light"
 >
-  <section class="section-after-nav bg-light">
+  <!-- Hero Section -->
+  <section class="relative bg-warm-light pt-12 md:pt-16 lg:pt-20 pb-8 md:pb-12 section-after-nav">
     <div class="container-custom">
-      <h1 class="text-4xl md:text-5xl lg:text-6xl font-serif text-forest-green mb-8">
-        Mød vores medarbejdere
-      </h1>
-      <p class="text-lg md:text-xl text-charcoal leading-relaxed max-w-3xl mb-12">
-        Få et indblik i hverdagen hos AKD gennem historier fra nogle af vores medarbejdere.
+      <!-- Pre-headline -->
+      <p class="text-mint font-bold text-base mb-6 uppercase tracking-wide text-center">
+        MØD VORES MEDARBEJDERE
       </p>
-
-      <!-- Employee profiles -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-        <!-- Employee 1 -->
-        <article class="card">
-          <div class="aspect-square bg-forest-green/10 rounded-lg mb-4 flex items-center justify-center">
-            <svg class="w-24 h-24 text-forest-green/30" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-            </svg>
-          </div>
-          <h2 class="text-2xl font-serif text-forest-green mb-2">
-            Mette Hansen
-          </h2>
-          <p class="text-sm font-semibold text-burnt-orange mb-3">
-            Produktionstekniker
-          </p>
-          <p class="text-charcoal mb-4">
-            "Jeg har arbejdet hos AKD i 8 år, og det er den bedste beslutning jeg har taget. Der er en fantastisk kollegial stemning, og jeg får løbende mulighed for efteruddannelse."
-          </p>
-          <a href="#" class="link-mint">
-            Læs hele historien →
-          </a>
-        </article>
-
-        <!-- Employee 2 -->
-        <article class="card">
-          <div class="aspect-square bg-forest-green/10 rounded-lg mb-4 flex items-center justify-center">
-            <svg class="w-24 h-24 text-forest-green/30" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-            </svg>
-          </div>
-          <h2 class="text-2xl font-serif text-forest-green mb-2">
-            Lars Pedersen
-          </h2>
-          <p class="text-sm font-semibold text-burnt-orange mb-3">
-            Procesoperatør
-          </p>
-          <p class="text-charcoal mb-4">
-            "Det er spændende at være med til at producere et produkt, der bruges i hele verden. Jeg sætter pris på, at vi altid arbejder med fokus på kvalitet og bæredygtighed."
-          </p>
-          <a href="#" class="link-mint">
-            Læs hele historien →
-          </a>
-        </article>
-
-        <!-- Employee 3 -->
-        <article class="card">
-          <div class="aspect-square bg-forest-green/10 rounded-lg mb-4 flex items-center justify-center">
-            <svg class="w-24 h-24 text-forest-green/30" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-            </svg>
-          </div>
-          <h2 class="text-2xl font-serif text-forest-green mb-2">
-            Sarah Nielsen
-          </h2>
-          <p class="text-sm font-semibold text-burnt-orange mb-3">
-            Kvalitetskontrollør
-          </p>
-          <p class="text-charcoal mb-4">
-            "Kvalitetsarbejdet hos AKD er meget systematisk og professionelt. Vi har adgang til moderne udstyr, og der er stort fokus på at vedligeholde høje standarder."
-          </p>
-          <a href="#" class="link-mint">
-            Læs hele historien →
-          </a>
-        </article>
-
-        <!-- Employee 4 -->
-        <article class="card">
-          <div class="aspect-square bg-forest-green/10 rounded-lg mb-4 flex items-center justify-center">
-            <svg class="w-24 h-24 text-forest-green/30" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-            </svg>
-          </div>
-          <h2 class="text-2xl font-serif text-forest-green mb-2">
-            Michael Christensen
-          </h2>
-          <p class="text-sm font-semibold text-burnt-orange mb-3">
-            Lagerekspedient
-          </p>
-          <p class="text-charcoal mb-4">
-            "Jeg startede som lærling for 5 år siden og blev fastansat bagefter. AKD investerer i sine unge medarbejdere og giver gode muligheder for udvikling."
-          </p>
-          <a href="#" class="link-mint">
-            Læs hele historien →
-          </a>
-        </article>
-
-        <!-- Employee 5 -->
-        <article class="card">
-          <div class="aspect-square bg-forest-green/10 rounded-lg mb-4 flex items-center justify-center">
-            <svg class="w-24 h-24 text-forest-green/30" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-            </svg>
-          </div>
-          <h2 class="text-2xl font-serif text-forest-green mb-2">
-            Anne Sørensen
-          </h2>
-          <p class="text-sm font-semibold text-burnt-orange mb-3">
-            HR-koordinator
-          </p>
-          <p class="text-charcoal mb-4">
-            "Det er dejligt at arbejde i et firma, hvor medarbejdertrivslen virkelig betyder noget. Vi har mange sociale arrangementer og et godt fællesskab på tværs af afdelingerne."
-          </p>
-          <a href="#" class="link-mint">
-            Læs hele historien →
-          </a>
-        </article>
-
-        <!-- Employee 6 -->
-        <article class="card">
-          <div class="aspect-square bg-forest-green/10 rounded-lg mb-4 flex items-center justify-center">
-            <svg class="w-24 h-24 text-forest-green/30" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-            </svg>
-          </div>
-          <h2 class="text-2xl font-serif text-forest-green mb-2">
-            Thomas Andersen
-          </h2>
-          <p class="text-sm font-semibold text-burnt-orange mb-3">
-            Vedligeholdelsesmekaniker
-          </p>
-          <p class="text-charcoal mb-4">
-            "Arbejdet er meget varieret, og jeg bliver udfordret hver dag. Det er givende at være med til at holde produktionen kørende og løse tekniske udfordringer."
-          </p>
-          <a href="#" class="link-mint">
-            Læs hele historien →
-          </a>
-        </article>
-      </div>
-
-      <!-- CTA Section -->
-      <div class="bg-forest-green text-white p-8 md:p-12 rounded-lg text-center">
-        <h2 class="text-3xl md:text-4xl font-serif mb-4">
-          Kunne du tænke dig at blive en del af teamet?
-        </h2>
-        <p class="text-lg md:text-xl mb-8 max-w-2xl mx-auto">
-          Se vores ledige stillinger, eller send os en uopfordret ansøgning.
+      
+      <!-- Main Headline -->
+      <h1 class="text-center mb-8 md:mb-12 max-w-4xl mx-auto">
+        <span class="block font-sans font-extrabold text-4xl md:text-5xl lg:text-[52px] text-charcoal uppercase leading-tight">
+          HISTORIER <span class="italic font-medium text-mint lowercase" style="font-family: 'Lora', serif;">fra hverdagen</span> PÅ FABRIKKERNE I BRANDE OG TOFTLUND
+        </span>
+      </h1>
+      
+      <!-- Body Text -->
+      <div class="max-w-4xl mx-auto text-center space-y-4">
+        <p class="text-charcoal text-base md:text-lg leading-relaxed">
+          Hverdagens bedste ambassadører er dem, der allerede arbejder her. Vi er 88 kolleger fordelt på to fabrikker. Nogle har været her i 25 år, andre startede for få måneder siden. Fælles for os er, at vi løfter i flok og holder fabrikkerne kørende.
         </p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <a href="/job/stillinger" class="btn-primary">
-            Se ledige stillinger
-          </a>
-          <a href="/job/at-arbejde-hos-akd" class="btn-secondary bg-white text-forest-green border-white hover:bg-warm-light hover:border-warm-light">
-            Læs mere om at arbejde hos AKD
-          </a>
-        </div>
+        <p class="text-charcoal text-base md:text-lg leading-relaxed">
+          Hør deres historier og bliv klogere på, hvordan det er at være en del af AKD.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Employee Stories Section -->
+  <section class="relative bg-warm-light py-16 md:py-24">
+    <div class="container-custom space-y-8 md:space-y-12">
+      <!-- Gustav Story -->
+      <EmployeeStoryBox
+        quote="Jeg startede som elev og fik hurtigt ansvar. Det bedste er, at man bliver taget seriøst fra dag ét – og der er altid en kollega, der hjælper, hvis man har brug for det."
+        name="Gustav"
+        title="procesoperatør"
+        location="Brande"
+        description="Startede som elev for 3 år siden og arbejder nu som procesoperatør i produktionen."
+        imageUrl="/images/moed-vores-medarbejdere/Medarbejdere-69.jpg"
+        imageAlt="Gustav, procesoperatør hos AKD i Brande"
+        backgroundColor="forest-green"
+        imagePosition="left"
+      />
+
+      <!-- Pia Story -->
+      <EmployeeStoryBox
+        quote="Jeg kan godt lide detaljerne i arbejdet. Man ved, at det man gør, har betydning for både fabrikkens drift og for vores andelshavere."
+        name="Søren"
+        title="kvalitetskontrol"
+        location="Toftlund"
+        description="Har arbejdet hos AKD i 7 år, med ansvar for at sikre at kartoflerne lever op til kvalitetskravene gennem hele produktionen."
+        imageUrl="/images/moed-vores-medarbejdere/Medarbejdere-8.jpg"
+        imageAlt="Søren, kvalitetskontrol hos AKD i Toftlund"
+        backgroundColor="charcoal"
+        imagePosition="right"
+      />
+
+      <!-- Jens Story -->
+      <EmployeeStoryBox
+        quote="Jeg har set udviklingen tæt på. Det er stadig de samme værdier – fællesskab og ordentlighed – men maskinerne er blevet endnu mere moderne."
+        name="Jens"
+        title="procesoperatør"
+        location="Brande"
+        description="Har været hos AKD i 18 år, kender fabrikken og anlæggene ud og ind."
+        imageUrl="/images/moed-vores-medarbejdere/Medarbejdere-58.jpg"
+        imageAlt="Jens, procesoperatør hos AKD i Brande"
+        backgroundColor="forest-green"
+        imagePosition="left"
+      />
+
+      <!-- Preben Story -->
+      <EmployeeStoryBox
+        quote="Jeg kan godt lide, at tingene er i orden her. Maskinerne er moderne, og vi får den tid og oplæring, vi har brug for. Det giver en tryghed, der betyder meget i hverdagen."
+        name="Preben"
+        title="vedligehold"
+        location="Toftlund"
+        description="Har været hos AKD i 11 år og arbejder med drift og vedligehold af fabrikkens maskiner."
+        imageUrl="/images/moed-vores-medarbejdere/Medarbejdere-20.jpg"
+        imageAlt="Preben, vedligehold hos AKD i Toftlund"
+        backgroundColor="charcoal"
+        imagePosition="right"
+      />
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="relative bg-warm-light pb-16 md:pb-24">
+    <div class="container-custom">
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+        <!-- Secondary CTA -->
+        <a href="/job/ansoegning" class="btn-secondary">
+          Send en uopfordret ansøgning
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+          </svg>
+        </a>
+        
+        <!-- Primary CTA -->
+        <a href="/job/stillinger" class="btn-primary">
+          <span>Se vores ledige stillinger</span>
+          <span class="btn-icon-circle">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </span>
+        </a>
       </div>
     </div>
   </section>
 </BaseLayout>
-

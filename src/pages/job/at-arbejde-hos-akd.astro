@@ -1,81 +1,304 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro'
+import ContentBox from '@/components/sections/ContentBox.astro'
 
 export const prerender = true; // Pre-render this page at build time
 ---
 
 <BaseLayout 
   title="At arbejde hos AKD"
-  description="Lær mere om, hvordan det er at arbejde hos AKD Danmark"
+  description="Lær mere om, hvordan det er at arbejde hos AKD. Fællesskab, tryghed og udvikling i hverdagen."
   navTheme="light"
 >
-  <section class="section-after-nav bg-light">
+  <!-- Hero Section -->
+  <section class="relative bg-warm-light pt-12 md:pt-16 lg:pt-20 pb-16 pb-28 md:pb-48 section-after-nav">
     <div class="container-custom">
-      <h1 class="text-4xl md:text-5xl lg:text-6xl font-serif text-forest-green mb-8">
-        At arbejde hos AKD
-      </h1>
-      <p class="text-lg md:text-xl text-charcoal leading-relaxed max-w-3xl mb-12">
-        AKD er et moderne andelsselskab med stærke rødder i dansk tradition. Vi værdsætter faglighed, samarbejde og innovation.
+      <!-- Pre-headline -->
+      <p class="text-mint font-bold text-base mb-6 uppercase tracking-wide text-center">
+        Job & karriere
       </p>
+      
+      <!-- Main Headline -->
+      <h1 class="text-center mb-8 md:mb-12 max-w-4xl mx-auto">
+        <span class="block font-sans font-extrabold text-4xl md:text-5xl lg:text-[52px] text-charcoal uppercase leading-tight">
+          DIN KARRIERRE <span class="italic font-medium text-mint lowercase" style="font-family: 'Lora', serif;">kan gro</span> HOS KMC
+        </span>
+      </h1>
+      
+      <!-- Body Text -->
+      <div class="max-w-4xl mx-auto text-center space-y-6">
+        <p class="text-charcoal text-base md:text-lg leading-relaxed">
+          Hos AKD laver vi hverdagsingredienser med omtanke. Vi vokser og søger dygtige folk på fabrikkerne i Brande og Toftlund. Vi tilbyder moderne anlæg, ordnede forhold, gode kollegaer og ansvar fra dag ét.
+        </p>
+        <p class="text-charcoal text-base md:text-lg leading-relaxed">
+          Vi investerer i oplæring, sikkerhed og ordentlige vilkår – hver eneste dag. Er du praktisk anlagt, stabil og glad for godt udstyr? Så er her et godt sted at starte.
+        </p>
+      </div>
+    </div>
+  </section>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-        <div class="card">
-          <h2 class="text-2xl font-serif text-forest-green mb-4">
-            Vores værdier
-          </h2>
-          <ul class="space-y-3 text-charcoal">
-            <li class="flex items-start gap-3">
-              <span class="text-mint text-xl">✓</span>
-              <span><strong class="font-semibold">Jordnær:</strong> Vi holder fødderne på jorden og kommunikerer ærligt</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <span class="text-mint text-xl">✓</span>
-              <span><strong class="font-semibold">Præcis:</strong> Vi leverer kvalitet i alt, hvad vi gør</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <span class="text-mint text-xl">✓</span>
-              <span><strong class="font-semibold">Imødekommende:</strong> Vi møder alle med respekt og åbenhed</span>
-            </li>
-          </ul>
+  <!-- Content Box Section -->
+  <section class="relative bg-forest-green pt-1 pb-16 md:pb-24">
+    <ContentBox
+      variant="light"
+      preHeader="At arbejde hos AKD"
+      headline="Fællesskab, tryghed og udvikling i hverdagen"
+      imageUrl="/images/at-arbejde-hos-akd/Medarbejdere-44.jpg"
+      imageAlt="Medarbejdere hos AKD i produktionen"
+      pullUp={100}
+      items={[
+        {
+          title: 'Kultur & værdier',
+          description: 'KMC bygger på stærke værdier. Vi passer på hinanden, vi deler viden, og vi arbejder side om side med fokus på sikkerhed og kvalitet.',
+          icon: 'arrow'
+        },
+        {
+          title: 'Udvikling & efteruddannelse',
+          description: 'Vi tror på, at du aldrig stopper med at lære. Derfor tilbyder vi oplæring fra første dag, efteruddannelse, og muligheder for at udvikle dig både fagligt og personligt.',
+          icon: 'arrow'
+        },
+        {
+          title: 'Personalegoder & personaleforening',
+          description: 'Vi vil gerne have, at det er rart at gå på arbejde. Derfor tilbyder vi frokostordning, ordnede forhold, sociale aktiviteter og en aktiv personaleforening.',
+          icon: 'arrow'
+        }
+      ]}
+    />
+  </section>
+
+  <!-- Photo Grid Section -->
+  <section class="relative bg-forest-green py-16 md:py-24">
+    <div class="container-custom">
+    
+      <h2 class="text-white text-center text-3xl md:text-4xl font-serif font-bold italic mb-12">
+        Hverdagsbilleder fra AKD
+      </h2>
+      
+      <div class="photo-grid" id="photo-grid">
+
+        <div class="photo-grid-item">
+          <img src="/images/at-arbejde-hos-akd/Mask group-7.png" alt="Hverdagsbillede fra AKD" loading="lazy" />
         </div>
-
-        <div class="card">
-          <h2 class="text-2xl font-serif text-forest-green mb-4">
-            Fordele
-          </h2>
-          <ul class="space-y-3 text-charcoal">
-            <li class="flex items-start gap-3">
-              <span class="text-burnt-orange text-xl">•</span>
-              <span>Konkurrencedygtig løn og gode pensionsforhold</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <span class="text-burnt-orange text-xl">•</span>
-              <span>Mulighed for efteruddannelse og faglig udvikling</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <span class="text-burnt-orange text-xl">•</span>
-              <span>Gode kollegiale fællesskaber</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <span class="text-burnt-orange text-xl">•</span>
-              <span>Moderne faciliteter og arbejdspladser</span>
-            </li>
-          </ul>
+        <div class="photo-grid-item">
+          <img src="/images/at-arbejde-hos-akd/Mask group-12.png" alt="Hverdagsbillede fra AKD" loading="lazy" />
+        </div>
+        <div class="photo-grid-item">
+          <img src="/images/at-arbejde-hos-akd/Mask group-6.png" alt="Hverdagsbillede fra AKD" loading="lazy" />
+        </div>
+        <div class="photo-grid-item">
+          <img src="/images/at-arbejde-hos-akd/Mask group-9.png" alt="Hverdagsbillede fra AKD" loading="lazy" />
+        </div>
+        <div class="photo-grid-item">
+          <img src="/images/at-arbejde-hos-akd/Mask group-1.png" alt="Hverdagsbillede fra AKD" loading="lazy" />
+        </div>
+        
+        <div class="photo-grid-item">
+          <img src="/images/at-arbejde-hos-akd/Mask group-3.png" alt="Hverdagsbillede fra AKD" loading="lazy" />
+        </div>
+       
+        <div class="photo-grid-item">
+          <img src="/images/at-arbejde-hos-akd/Mask group-2.png" alt="Hverdagsbillede fra AKD" loading="lazy" />
+        </div>
+        <div class="photo-grid-item">
+          <img src="/images/at-arbejde-hos-akd/Mask group-10.png" alt="Hverdagsbillede fra AKD" loading="lazy" />
+        </div>
+        <div class="photo-grid-item">
+          <img src="/images/at-arbejde-hos-akd/Mask group-4.png" alt="Hverdagsbillede fra AKD" loading="lazy" />
+        </div>
+        <div class="photo-grid-item">
+          <img src="/images/at-arbejde-hos-akd/Mask group-11.png" alt="Hverdagsbillede fra AKD" loading="lazy" />
+        </div>
+        
+        <div class="photo-grid-item">
+          <img src="/images/at-arbejde-hos-akd/Mask group-5.png" alt="Hverdagsbillede fra AKD" loading="lazy" />
+        </div>
+        <div class="photo-grid-item">
+          <img src="/images/at-arbejde-hos-akd/Mask group-8.png" alt="Hverdagsbillede fra AKD" loading="lazy" />
         </div>
       </div>
+    </div>
+  </section>
 
-      <div class="bg-forest-green text-white p-8 rounded-lg">
-        <h2 class="text-3xl font-serif mb-4">
-          Klar til at blive en del af teamet?
-        </h2>
-        <p class="text-lg mb-6 max-w-2xl">
-          Se vores ledige stillinger og find dit næste job hos AKD.
-        </p>
+  <!-- CTA Section -->
+  <section class="relative bg-forest-green pb-16 md:pb-24">
+    <div class="container-custom">
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+        <!-- Secondary CTA -->
+        <a href="/job/moed-vores-medarbejdere" class="btn-secondary">
+          Mød vores medarbejdere
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+          </svg>
+        </a>
+        
+        <!-- Primary CTA -->
         <a href="/job/stillinger" class="btn-primary">
-          Se ledige stillinger
+          <span>Se ledige stillinger</span>
+          <span class="btn-icon-circle">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </span>
         </a>
       </div>
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .photo-grid {
+    position: relative;
+    width: 100%;
+  }
+  
+  .photo-grid-item {
+    position: absolute;
+    width: calc(100% / 1 - 1.5rem);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    transition: opacity 0.5s ease;
+    opacity: 0;
+  }
+  
+  .photo-grid-item.loaded {
+    opacity: 1;
+  }
+  
+  .photo-grid-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+  
+  @media (min-width: 640px) {
+    .photo-grid-item {
+      width: calc(100% / 2 - 1rem);
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .photo-grid-item {
+      width: calc(100% / 3 - 1.33rem);
+    }
+  }
+</style>
+
+<script>
+  function initMasonry() {
+    const grid = document.getElementById('photo-grid');
+    if (!grid) return;
+    
+    const items = Array.from(grid.querySelectorAll('.photo-grid-item'));
+    if (items.length === 0) return;
+    
+    // Calculate number of columns based on screen size
+    function getColumnCount() {
+      if (window.innerWidth >= 1024) return 3;
+      if (window.innerWidth >= 640) return 2;
+      return 1;
+    }
+    
+    // Calculate gap based on screen size
+    function getGap() {
+      if (window.innerWidth >= 1024) return 20; // 2rem = 32px, but using 20px for calculation
+      if (window.innerWidth >= 640) return 16; // 1rem = 16px
+      return 24; // 1.5rem = 24px
+    }
+    
+    function layoutMasonry() {
+      const columnCount = getColumnCount();
+      const gap = getGap();
+      const containerWidth = grid.offsetWidth;
+      const columnWidth = (containerWidth - (gap * (columnCount - 1))) / columnCount;
+      
+      // Initialize column heights
+      const columnHeights = new Array(columnCount).fill(0);
+      
+      items.forEach((item) => {
+        // Temporarily position item to measure it
+        item.style.width = `${columnWidth}px`;
+        item.style.position = 'absolute';
+        item.style.visibility = 'hidden';
+        item.style.top = '0';
+        item.style.left = '0';
+        
+        // Force a reflow to get accurate measurements
+        void item.offsetHeight;
+        
+        // Get actual height
+        const itemHeight = item.offsetHeight || 300;
+        
+        // Find the shortest column
+        const shortestColumnIndex = columnHeights.indexOf(Math.min(...columnHeights));
+        
+        // Calculate position
+        const left = shortestColumnIndex * (columnWidth + gap);
+        const top = columnHeights[shortestColumnIndex];
+        
+        // Set final position
+        item.style.left = `${left}px`;
+        item.style.top = `${top}px`;
+        item.style.visibility = 'visible';
+        
+        // Update column height
+        columnHeights[shortestColumnIndex] += itemHeight + gap;
+      });
+      
+      // Set container height to accommodate all items
+      const maxHeight = Math.max(...columnHeights);
+      grid.style.height = `${maxHeight}px`;
+    }
+    
+    // Wait for all images to load
+    const images = items.map(item => item.querySelector('img')).filter(Boolean);
+    let loadedCount = 0;
+    
+    const checkAndLayout = () => {
+      loadedCount++;
+      if (loadedCount === images.length) {
+        // Force a reflow to ensure images are rendered
+        grid.offsetHeight;
+        
+        // Small delay to ensure images are fully rendered
+        requestAnimationFrame(() => {
+          layoutMasonry();
+          // Show items with fade-in
+          items.forEach(item => item.classList.add('loaded'));
+        });
+      }
+    };
+    
+    if (images.length === 0) {
+      layoutMasonry();
+      items.forEach(item => item.classList.add('loaded'));
+    } else {
+      images.forEach(img => {
+        if (img.complete && img.naturalHeight > 0) {
+          checkAndLayout();
+        } else {
+          img.addEventListener('load', checkAndLayout, { once: true });
+          img.addEventListener('error', checkAndLayout, { once: true });
+        }
+      });
+    }
+    
+    // Re-layout on window resize
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        layoutMasonry();
+      }, 250);
+    });
+  }
+  
+  // Initialize on page load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMasonry);
+  } else {
+    initMasonry();
+  }
+</script>
 

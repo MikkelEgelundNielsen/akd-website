@@ -70,3 +70,4 @@ Check `.cursor/rules/` for comprehensive guidelines:
 - `typography.mdc` - Text styling
 - `accessibility.mdc` - A11y requirements
 
+

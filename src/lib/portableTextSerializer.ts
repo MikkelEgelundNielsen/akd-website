@@ -103,7 +103,8 @@ function serializeBlock(block: any, options: SerializerOptions): string {
         const h2Id = options.addHeadingIds ? ` id="${slugify(getTextContent(block))}"` : ''
         return `<h2${h2Id}>${children}</h2>`
       case 'h3':
-        return `<h3>${children}</h3>`
+        const h3Id = options.addHeadingIds ? ` id="${slugify(getTextContent(block))}"` : ''
+        return `<h3${h3Id}>${children}</h3>`
       case 'h4':
         return `<h4>${children}</h4>`
       case 'normal':
@@ -172,18 +173,19 @@ export function portableTextToPlainText(blocks: any[]): string {
 }
 
 /**
- * Create TOC from H2 headings in Portable Text
+ * Create TOC from H2 and H3 headings in Portable Text
  */
-export function extractTableOfContents(blocks: any[]): Array<{id: string, title: string}> {
+export function extractTableOfContents(blocks: any[]): Array<{id: string, title: string, level: 2 | 3}> {
   if (!blocks || !Array.isArray(blocks)) return []
   
   return blocks
-    .filter(block => block._type === 'block' && block.style === 'h2')
+    .filter(block => block._type === 'block' && (block.style === 'h2' || block.style === 'h3'))
     .map(block => {
       const title = getTextContent(block)
       return {
         id: slugify(title),
-        title
+        title,
+        level: block.style === 'h2' ? 2 : 3
       }
     })
 }

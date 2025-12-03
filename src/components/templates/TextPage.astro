@@ -2,6 +2,7 @@
 interface Section {
   id: string
   title: string
+  level?: 2 | 3
 }
 
 interface Props {
@@ -14,7 +15,7 @@ const { preHeader, headline, sections } = Astro.props
 ---
 
 <!-- Hero Section -->
-<section class="relative bg-warm-light pt-24 md:pt-32 lg:pt-40 pb-16 md:pb-24 section-after-nav">
+<section class="relative bg-warm-light pt-24 md:pt-16 lg:pt-20 pb-16 md:pb-24 section-after-nav">
   <div class="container-custom">
     {preHeader && (
       <p class="text-mint font-bold text-sm uppercase tracking-wide text-center mb-6">
@@ -22,7 +23,7 @@ const { preHeader, headline, sections } = Astro.props
       </p>
     )}
     
-    <h1 class="font-sans font-extrabold text-charcoal text-3xl md:text-4xl lg:text-[52px] leading-tight text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h1 class="font-sans font-extrabold text-charcoal text-3xl md:text-4xl lg:text-[52px] !leading-tight text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <span class="block" set:html={headline} />
     </h1>
   </div>
@@ -73,7 +74,10 @@ const { preHeader, headline, sections } = Astro.props
                     <li>
                       <a 
                         href={`#${section.id}`}
-                        class="block text-sm text-charcoal hover:text-burnt-orange transition-colors py-2 px-3 rounded"
+                        class:list={[
+                          "block text-sm text-charcoal hover:text-burnt-orange transition-colors py-2 px-3 rounded",
+                          section.level === 3 && "pl-6 text-charcoal/80"
+                        ]}
                       >
                         {section.title}
                       </a>
@@ -104,7 +108,10 @@ const { preHeader, headline, sections } = Astro.props
                 <li>
                   <a 
                     href={`#${section.id}`}
-                    class="toc-link block text-sm text-charcoal hover:text-burnt-orange transition-colors py-2.5 px-6 border-l-4 border-r-4 border-l-transparent border-r-transparent"
+                    class:list={[
+                      "toc-link block text-sm text-charcoal hover:text-burnt-orange transition-colors py-2.5 border-l-4 border-r-4 border-l-transparent border-r-transparent",
+                      section.level === 3 ? "pl-9 pr-6 text-charcoal/80" : "px-6"
+                    ]}
                     data-target={section.id}
                   >
                     {section.title}
@@ -183,10 +190,10 @@ const { preHeader, headline, sections } = Astro.props
       }
     );
     
-    // Observe all sections
+    // Observe all sections (H2 and H3)
     const sections = document.querySelectorAll('[id]');
     sections.forEach((section) => {
-      if (section.tagName === 'H2') {
+      if (section.tagName === 'H2' || section.tagName === 'H3') {
         observer.observe(section);
       }
     });

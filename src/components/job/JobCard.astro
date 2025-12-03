@@ -1,0 +1,32 @@
+---
+interface Props {
+  title: string
+  description: string
+  location: string
+  href?: string
+}
+
+const { title, description, location, href = '/job/stillinger' } = Astro.props
+---
+
+<a href={href} class="block bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 group">
+  <div class="flex items-center justify-between">
+    <div class="flex-1">
+      <h4 class="font-sans font-bold text-xl md:text-2xl text-charcoal mb-2">
+        {title}
+      </h4>
+      <p class="text-charcoal/70 text-base md:text-lg italic">
+        {description}
+      </p>
+    </div>
+    <div class="ml-6 flex items-center gap-3">
+      <span class="text-charcoal font-semibold text-base md:text-lg">
+        {location}
+      </span>
+      <svg class="w-6 h-6 text-mint transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+      </svg>
+    </div>
+  </div>
+</a>
+

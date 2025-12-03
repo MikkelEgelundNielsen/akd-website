@@ -47,3 +47,4 @@ import { sanityClient } from '@/lib/sanity'
 - [ ] Tailwind classes only (no inline styles)
 - [ ] Color contrast meets WCAG AA
 
+

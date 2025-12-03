@@ -114,3 +114,4 @@ All content is in Danish (da-DK):
 - Number format: 1.234,56
 - Tone: Jordnær, præcis, imødekommende
 
+

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import ContentBox from '@/components/sections/ContentBox.astro'
+import JobCard from '@/components/job/JobCard.astro'
 
 export const prerender = true; // Pre-render this page at build time
 ---
@@ -85,7 +86,7 @@ export const prerender = true; // Pre-render this page at build time
       variant="light"
       preHeader="AKD i tal"
       headline="Et stærkt fællesskab med kapacitet til mere"
-      imageUrl="https://placehold.co/1200x800/2B5329/FFFFFF?text=AKD+Fabrik"
+      imageUrl="/images/siloer.png"
       imageAlt="AKD's fabriksanlæg i Brande med karakteristiske silo og produktionsbygninger"
       pullUp={true}
       items={[
@@ -158,93 +159,33 @@ export const prerender = true; // Pre-render this page at build time
         
         <!-- Job Cards -->
         <div class="space-y-4 mb-8">
-          <!-- Job 1 -->
-          <a href="/job/stillinger" class="block bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 group">
-            <div class="flex items-center justify-between">
-              <div class="flex-1">
-                <h4 class="font-sans font-bold text-xl md:text-2xl text-charcoal mb-2">
-                  Smed eller klejnsmed
-                </h4>
-                <p class="text-charcoal/70 text-base md:text-lg italic">
-                  Bliv en del af et stærkt teknisk team
-                </p>
-              </div>
-              <div class="ml-6 flex items-center gap-3">
-                <span class="text-charcoal font-semibold text-base md:text-lg">
-                  AKD/Sønderjylland
-                </span>
-                <svg class="w-6 h-6 text-mint transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                </svg>
-              </div>
-            </div>
-          </a>
+          <JobCard
+            title="Smed eller klejnsmed"
+            description="Bliv en del af et stærkt teknisk team"
+            location="AKD/Sønderjylland"
+            href="/job/stillinger"
+          />
           
-          <!-- Job 2 -->
-          <a href="/job/stillinger" class="block bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 group">
-            <div class="flex items-center justify-between">
-              <div class="flex-1">
-                <h4 class="font-sans font-bold text-xl md:text-2xl text-charcoal mb-2">
-                  Procesoperatør
-                </h4>
-                <p class="text-charcoal/70 text-base md:text-lg italic">
-                  Indgå i et team, der samarbejder tæt
-                </p>
-              </div>
-              <div class="ml-6 flex items-center gap-3">
-                <span class="text-charcoal font-semibold text-base md:text-lg">
-                  AKD/Midtjylland
-                </span>
-                <svg class="w-6 h-6 text-mint transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                </svg>
-              </div>
-            </div>
-          </a>
+          <JobCard
+            title="Procesoperatør"
+            description="Indgå i et team, der samarbejder tæt"
+            location="AKD/Midtjylland"
+            href="/job/stillinger"
+          />
           
-          <!-- Job 3 -->
-          <a href="/job/stillinger" class="block bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 group">
-            <div class="flex items-center justify-between">
-              <div class="flex-1">
-                <h4 class="font-sans font-bold text-xl md:text-2xl text-charcoal mb-2">
-                  Procesoperatør
-                </h4>
-                <p class="text-charcoal/70 text-base md:text-lg italic">
-                  Bliv en del af et fast team med din holdmakker
-                </p>
-              </div>
-              <div class="ml-6 flex items-center gap-3">
-                <span class="text-charcoal font-semibold text-base md:text-lg">
-                  AKD/Sønderjylland
-                </span>
-                <svg class="w-6 h-6 text-mint transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                </svg>
-              </div>
-            </div>
-          </a>
+          <JobCard
+            title="Procesoperatør"
+            description="Bliv en del af et fast team med din holdmakker"
+            location="AKD/Sønderjylland"
+            href="/job/stillinger"
+          />
           
-          <!-- Job 4 -->
-          <a href="/job/stillinger" class="block bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 group">
-            <div class="flex items-center justify-between">
-              <div class="flex-1">
-                <h4 class="font-sans font-bold text-xl md:text-2xl text-charcoal mb-2">
-                  Vejehusoperatør
-                </h4>
-                <p class="text-charcoal/70 text-base md:text-lg italic">
-                  Bliv en vigtig brik i vores sæsonbaserede produktion
-                </p>
-              </div>
-              <div class="ml-6 flex items-center gap-3">
-                <span class="text-charcoal font-semibold text-base md:text-lg">
-                  AKD/Sønderjylland
-                </span>
-                <svg class="w-6 h-6 text-mint transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                </svg>
-              </div>
-            </div>
-          </a>
+          <JobCard
+            title="Vejehusoperatør"
+            description="Bliv en vigtig brik i vores sæsonbaserede produktion"
+            location="AKD/Sønderjylland"
+            href="/job/stillinger"
+          />
         </div>
         
         <!-- Bottom CTAs -->
@@ -278,10 +219,15 @@ export const prerender = true; // Pre-render this page at build time
       variant="dark"
       preHeader="Bliv andelshaver"
       headline="Som andelshaver i AKD får du en stabil aftager, faglig sparring og klare vilkår."
-      imageUrl="https://placehold.co/1200x800/8FD5A6/26251E?text=Andelshaver"
+      imageUrl="/images/employee.png"
       imageAlt="Andelshaver i traktor under høst med moderne udstyr"
       pullUp={false}
       items={[
+        {
+          title: 'Fællesskab & indflydelse',
+          description: 'Andelsselskab med gennemsigtighed og stemme.',
+          icon: 'check'
+        },
         {
           title: 'Stabil aftagning',
           description: 'Tydelige aftaler og kampagnevilkår, år efter år.',
@@ -290,11 +236,6 @@ export const prerender = true; // Pre-render this page at build time
         {
           title: 'Faglig rådgivning',
           description: 'Agro-teamet hjælper med dyrkning, optagning og lagring.',
-          icon: 'check'
-        },
-        {
-          title: 'Fællesskab & indflydelse',
-          description: 'Andelsselskab med gennemsigtighed og stemme.',
           icon: 'check'
         },
         {
@@ -324,7 +265,7 @@ export const prerender = true; // Pre-render this page at build time
       variant="light"
       preHeader="Ansvar i praksis"
       headline="Vi bruger hele kartoflen og laver biprodukter til ny værdi."
-      imageUrl="https://placehold.co/1200x800/2B5329/FFFFFF?text=Produktion"
+      imageUrl="/images/pakkeriet.png"
       imageAlt="Produktion af kartoffelmel og biprodukter på moderne udstyr"
       pullUp={true}
       items={[

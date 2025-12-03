@@ -47,7 +47,15 @@ const navigationItems = navigation?.menuItems || []
       role="list"
     >
       {navigationItems.map((item) => {
-        const isActive = currentPath.startsWith(item.href)
+        // Check if current path matches the item itself
+        const matchesItem = currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href))
+        
+        // Check if current path matches any sub-item
+        const matchesSubItem = item.subItems && item.subItems.length > 0 
+          ? item.subItems.some(subItem => currentPath.startsWith(subItem.href) && subItem.href !== '/')
+          : false
+        
+        const isActive = matchesItem || matchesSubItem
         const hasChildren = item.subItems && item.subItems.length > 0
         
         return (

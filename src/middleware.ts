@@ -8,68 +8,86 @@ const publicRoutes = ['/andelshavere/login'];
 export const onRequest = defineMiddleware(async (context, next: MiddlewareNext) => {
   const { url, cookies, redirect } = context;
   
-  // Check if this is a public route
+  // Check if this is a public route - if so, skip all auth checks
   const isPublicRoute = publicRoutes.some(route => url.pathname === route);
   
   if (isPublicRoute) {
+    // Still check for auth cookies to set user for LoginButton, but don't validate
+    const authToken = cookies.get('akd_auth_token')?.value;
+    const userId = cookies.get('akd_user_id')?.value;
+    
+    if (authToken && userId) {
+      try {
+        const apiUrl = import.meta.env.ASB_API_URL;
+        if (apiUrl) {
+          const validateUrl = `${apiUrl}/api/farmers/${userId}?access_token=${authToken}`;
+          const response = await fetch(validateUrl);
+          if (response.ok) {
+            const user = await response.json();
+            context.locals.user = user;
+          }
+        }
+      } catch (error) {
+        // Silently fail on public routes
+      }
+    }
+    
     return next();
   }
   
-  // Check if the current path is protected
+  // Check if the current path is protected (excluding public routes)
   const isProtectedRoute = protectedRoutes.some(route => 
     url.pathname.startsWith(route)
   );
   
-  if (isProtectedRoute) {
-    // Get auth token and user ID from cookies
-    const authToken = cookies.get('akd_auth_token')?.value;
-    const userId = cookies.get('akd_user_id')?.value;
-    
-    console.log('[Middleware] Checking protected route:', url.pathname);
-    console.log('[Middleware] Auth token present:', !!authToken);
-    console.log('[Middleware] User ID present:', !!userId);
-    
-    if (!authToken || !userId) {
-      // No token, redirect to login
-      console.log('[Middleware] No token or user ID found, redirecting to login');
-      return redirect('/andelshavere/login');
-    }
-    
-    // Validate token by fetching farmer data with token
+  // Get auth token and user ID from cookies (check on all routes)
+  const authToken = cookies.get('akd_auth_token')?.value;
+  const userId = cookies.get('akd_user_id')?.value;
+  
+  // If we have auth cookies, validate them and set user on all pages
+  if (authToken && userId) {
     try {
       const apiUrl = import.meta.env.ASB_API_URL;
       
-      if (!apiUrl) {
-        console.error('ASB_API_URL environment variable is not set');
-        return redirect('/andelshavere/login');
+      if (apiUrl) {
+        // Try to fetch farmer data using the userId and access_token
+        const validateUrl = `${apiUrl}/api/farmers/${userId}?access_token=${authToken}`;
+        console.log('[Middleware] Validating auth on:', url.pathname);
+        const response = await fetch(validateUrl);
+        
+        if (response.ok) {
+          // Token is valid, attach user to locals for use in pages (including LoginButton)
+          const user = await response.json();
+          context.locals.user = user;
+          console.log('[Middleware] User set on locals for:', url.pathname, 'User ID:', user?.id);
+        } else {
+          // Invalid token, clear cookies
+          console.log('[Middleware] Token validation failed, status:', response.status);
+          cookies.delete('akd_auth_token', { path: '/' });
+          cookies.delete('akd_user_id', { path: '/' });
+          
+          // Only redirect if this is a protected route
+          if (isProtectedRoute) {
+            return redirect('/andelshavere/login');
+          }
+        }
+      } else {
+        console.log('[Middleware] ASB_API_URL not set, skipping auth validation');
       }
-      
-      // Try to fetch farmer data using the userId and access_token
-      const validateUrl = `${apiUrl}/api/farmers/${userId}?access_token=${authToken}`;
-      console.log('[Middleware] Validating token by fetching farmer:', validateUrl);
-      const response = await fetch(validateUrl);
-      
-      console.log('[Middleware] Validation response status:', response.status);
-      
-      if (!response.ok) {
-        // Invalid token, clear cookies and redirect
-        console.log('[Middleware] Token validation failed, clearing cookies');
-        const errorText = await response.text().catch(() => 'No error details');
-        console.log('[Middleware] Error response:', errorText);
-        cookies.delete('akd_auth_token', { path: '/' });
-        cookies.delete('akd_user_id', { path: '/' });
-        return redirect('/andelshavere/login');
-      }
-      
-      // Token is valid, attach user to locals for use in pages
-      const user = await response.json();
-      console.log('[Middleware] Token valid, farmer data loaded');
-      context.locals.user = user;
-      
     } catch (error) {
       console.error('[Middleware] Auth validation failed:', error);
       cookies.delete('akd_auth_token', { path: '/' });
       cookies.delete('akd_user_id', { path: '/' });
+      
+      // Only redirect if this is a protected route
+      if (isProtectedRoute) {
+        return redirect('/andelshavere/login');
+      }
+    }
+  } else {
+    console.log('[Middleware] No auth cookies found on:', url.pathname);
+    if (isProtectedRoute) {
+      // No token and this is a protected route, redirect to login
       return redirect('/andelshavere/login');
     }
   }

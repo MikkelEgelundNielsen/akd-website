@@ -180,6 +180,7 @@ export const articlesByCategoryQuery = (category: string) => `*[_type == "articl
 }`
 
 // Andelshavere Navigation
+// Note: Internal links expect slugs like "/andelshavere/levering-og-kampagne" in Sanity (with leading slash)
 export const andelshavereNavigationQuery = `*[_type == "andelshavereNavigation"][0] {
   _id,
   title,
@@ -187,7 +188,7 @@ export const andelshavereNavigationQuery = `*[_type == "andelshavereNavigation"]
     label,
     linkType,
     "href": select(
-      linkType == "internal" && defined(internalLink) => "/" + internalLink->slug.current,
+      linkType == "internal" && defined(internalLink) => internalLink->slug.current,
       linkType == "manual" => manualUrl,
       "/"
     ),
