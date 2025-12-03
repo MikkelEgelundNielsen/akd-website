@@ -30,9 +30,12 @@ export const POST: APIRoute = async (context) => {
     const contextRuntimeEnv = contextRuntime?.env;
     
     // Try all possible access methods
-    const apiUrl = localsRuntimeEnv?.ASB_API_URL || 
-                   contextRuntimeEnv?.ASB_API_URL ||
-                   import.meta.env.ASB_API_URL;
+    const apiUrlRaw = localsRuntimeEnv?.ASB_API_URL || 
+                      contextRuntimeEnv?.ASB_API_URL ||
+                      import.meta.env.ASB_API_URL;
+    
+    // Remove trailing slash if present to avoid double slashes
+    const apiUrl = apiUrlRaw ? apiUrlRaw.toString().replace(/\/+$/, '') : null;
     
     // Log for debugging (check Cloudflare function logs, not browser console)
     console.log('[Login API] Environment check:', {
@@ -102,19 +105,38 @@ export const POST: APIRoute = async (context) => {
     
     console.log('Avlerinfo API response status:', response.status);
     console.log('Avlerinfo API response ok:', response.ok);
+    console.log('Avlerinfo API response headers:', Object.fromEntries(response.headers.entries()));
     
     if (!response.ok) {
       let errorData: any = {};
+      let errorText = '';
       try {
-        errorData = await response.json();
+        errorText = await response.text();
+        try {
+          errorData = JSON.parse(errorText);
+        } catch (e) {
+          errorData = { text: errorText };
+        }
       } catch (e) {
-        const text = await response.text().catch(() => '');
-        errorData = { text };
+        errorData = { error: 'Could not read response' };
       }
-      console.log('Login failed:', errorData);
+      console.log('Login failed - Status:', response.status);
+      console.log('Login failed - Error data:', errorData);
+      console.log('Login failed - Error text:', errorText);
+      
+      // Return more specific error messages based on status
+      let errorMessage = 'Hmm, det brugernavn eller den adgangskode kender vi ikke. Prøv venligst igen.';
+      if (response.status === 401 || response.status === 403) {
+        errorMessage = 'Hmm, det brugernavn eller den adgangskode kender vi ikke. Prøv venligst igen.';
+      } else if (response.status >= 500) {
+        errorMessage = 'Login-systemet er midlertidigt utilgængeligt. Prøv venligst igen om lidt.';
+      }
+      
       return new Response(
         JSON.stringify({ 
-          message: 'Hmm, det brugernavn eller den adgangskode kender vi ikke. Prøv venligst igen.' 
+          message: errorMessage,
+          error: 'LOGIN_FAILED',
+          status: response.status
         }), 
         { 
           status: 401,

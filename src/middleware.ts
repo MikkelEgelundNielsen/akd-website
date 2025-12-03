@@ -23,9 +23,11 @@ export const onRequest = defineMiddleware(async (context, next: MiddlewareNext) 
         const localsRuntimeEnv = localsRuntime?.env;
         const contextRuntime = (context as any)?.runtime;
         const contextRuntimeEnv = contextRuntime?.env;
-        const apiUrl = localsRuntimeEnv?.ASB_API_URL || 
-                       contextRuntimeEnv?.ASB_API_URL ||
-                       import.meta.env.ASB_API_URL;
+        const apiUrlRaw = localsRuntimeEnv?.ASB_API_URL || 
+                          contextRuntimeEnv?.ASB_API_URL ||
+                          import.meta.env.ASB_API_URL;
+        // Remove trailing slash if present to avoid double slashes
+        const apiUrl = apiUrlRaw ? apiUrlRaw.toString().replace(/\/+$/, '') : null;
         if (apiUrl) {
           const validateUrl = `${apiUrl}/api/farmers/${userId}?access_token=${authToken}`;
           const response = await fetch(validateUrl);
