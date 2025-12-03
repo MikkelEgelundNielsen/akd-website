@@ -6,30 +6,29 @@ export const GET: APIRoute = async (context) => {
   // Try all possible ways to access environment variables
   const runtime = (context as any).runtime;
   const runtimeEnv = runtime?.env;
-  const locals = (context as any).locals;
-  const localsRuntime = locals?.runtime;
-  const localsEnv = localsRuntime?.env;
   
-  const apiUrl = runtimeEnv?.ASB_API_URL || 
-                 localsEnv?.ASB_API_URL ||
-                 import.meta.env.ASB_API_URL ||
-                 (globalThis as any).ASB_API_URL;
+  // Primary method: import.meta.env (standard for Cloudflare Pages)
+  const apiUrl = import.meta.env.ASB_API_URL || runtimeEnv?.ASB_API_URL;
+  
+  // Get all import.meta.env keys (for debugging, but don't expose values)
+  const envKeys = Object.keys(import.meta.env).filter(key => 
+    !key.includes('SECRET') && !key.includes('PASSWORD') && !key.includes('TOKEN')
+  );
   
   return new Response(
     JSON.stringify({ 
       configured: !!apiUrl,
       apiUrl: apiUrl || 'NOT SET',
       accessMethods: {
-        runtimeEnv: runtimeEnv?.ASB_API_URL || 'NOT SET',
-        localsEnv: localsEnv?.ASB_API_URL || 'NOT SET',
         importMetaEnv: import.meta.env.ASB_API_URL || 'NOT SET',
-        globalThis: (globalThis as any).ASB_API_URL || 'NOT SET'
+        runtimeEnv: runtimeEnv?.ASB_API_URL || 'NOT SET'
       },
-      runtimeKeys: runtimeEnv ? Object.keys(runtimeEnv) : [],
-      localsEnvKeys: localsEnv ? Object.keys(localsEnv) : [],
+      availableEnvKeys: envKeys,
+      runtimeEnvKeys: runtimeEnv ? Object.keys(runtimeEnv) : [],
       hasRuntime: !!runtime,
-      hasLocalsRuntime: !!localsRuntime,
-      message: apiUrl ? 'Environment variable is accessible' : 'Environment variable is NOT accessible. Check Cloudflare Pages settings.'
+      message: apiUrl 
+        ? 'Environment variable is accessible' 
+        : 'Environment variable is NOT accessible. Check Cloudflare Pages settings: Settings → Environment Variables → Production'
     }), 
     { 
       status: apiUrl ? 200 : 500,

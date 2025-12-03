@@ -22,30 +22,26 @@ export const POST: APIRoute = async (context) => {
     }
     
     // Access Cloudflare runtime environment
-    // Try multiple ways to access env vars in Cloudflare Pages
+    // In Cloudflare Pages, env vars are available through import.meta.env
+    // But we also try runtime context as fallback
     const runtime = (context as any).runtime;
     const runtimeEnv = runtime?.env;
-    const localsRuntime = (locals as any)?.runtime;
-    const localsEnv = localsRuntime?.env;
     
-    // Try all possible ways to access the environment variable
-    const apiUrl = runtimeEnv?.ASB_API_URL || 
-                   localsEnv?.ASB_API_URL ||
-                   import.meta.env.ASB_API_URL ||
-                   (globalThis as any).ASB_API_URL;
+    // Primary method: import.meta.env (standard for Cloudflare Pages)
+    // Fallback: runtime.env (Cloudflare Workers pattern)
+    const apiUrl = import.meta.env.ASB_API_URL || runtimeEnv?.ASB_API_URL;
     
-    console.log('Environment check:', {
-      hasContextRuntime: !!runtime,
-      hasContextRuntimeEnv: !!runtimeEnv,
-      contextRuntimeEnvKeys: runtimeEnv ? Object.keys(runtimeEnv) : [],
-      hasLocalsRuntime: !!localsRuntime,
-      hasLocalsEnv: !!localsEnv,
-      localsEnvKeys: localsEnv ? Object.keys(localsEnv) : [],
-      hasImportMetaEnv: !!import.meta.env.ASB_API_URL,
-      importMetaEnvValue: import.meta.env.ASB_API_URL || 'NOT SET',
-      hasGlobalThis: !!(globalThis as any).ASB_API_URL,
+    // Log for debugging (check Cloudflare function logs, not browser console)
+    console.log('[Login API] Environment check:', {
+      hasRuntime: !!runtime,
+      hasRuntimeEnv: !!runtimeEnv,
+      runtimeEnvKeys: runtimeEnv ? Object.keys(runtimeEnv) : [],
+      importMetaEnvKeys: Object.keys(import.meta.env),
+      hasImportMetaEnvASB: !!import.meta.env.ASB_API_URL,
+      importMetaEnvASBValue: import.meta.env.ASB_API_URL || 'NOT SET',
+      runtimeEnvASBValue: runtimeEnv?.ASB_API_URL || 'NOT SET',
       finalApiUrl: apiUrl ? 'SET' : 'NOT SET',
-      apiUrlValue: apiUrl || 'NOT SET'
+      finalApiUrlValue: apiUrl || 'NOT SET'
     });
     
     if (!apiUrl || apiUrl.trim() === '') {
