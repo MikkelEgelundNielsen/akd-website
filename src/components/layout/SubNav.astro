@@ -32,11 +32,14 @@ const bgColor = theme === 'dark' ? 'bg-forest-green' : 'bg-warm-light'
       >
         <ul class="flex items-center gap-4 md:gap-6 justify-end min-w-max" role="list">
           {items.map((item) => {
-            const isActive = currentPath === item.href
+            // Ensure href starts with /
+            const href = item.href.startsWith('/') ? item.href : `/${item.href}`
+            // Check if current path matches exactly or is a sub-page
+            const isActive = currentPath === href || (href !== '/' && currentPath.startsWith(href + '/'))
             return (
               <li>
                 <a
-                  href={item.href}
+                  href={href}
                   class={`sub-nav-link ${textColor} ${isActive ? 'active' : ''}`}
                   aria-current={isActive ? 'page' : undefined}
                 >
