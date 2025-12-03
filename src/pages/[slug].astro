@@ -14,12 +14,28 @@ export const prerender = true;
 export async function getStaticPaths() {
   const pages = await sanityClient.fetch(allGeneralPagesQuery)
   
-  console.log('Generated paths for pages:', pages.map((p: any) => p.slug.current).join(', '))
+  // Filter out pages that start with /andelshavere/ - those are handled by /andelshavere/[...slug].astro
+  // Also filter out pages with slashes (multi-segment paths) as [slug] only handles single segments
+  const filteredPages = pages.filter((page: any) => {
+    const slug = page.slug?.current || ''
+    // Normalize slug for checking (remove leading slash)
+    const normalizedSlug = slug.startsWith('/') ? slug.slice(1) : slug
+    // Exclude /andelshavere/ pages and any slug with slashes (multi-segment)
+    return !normalizedSlug.startsWith('andelshavere/') && !normalizedSlug.includes('/')
+  })
   
-  return pages.map((page: any) => ({
-    params: { slug: page.slug.current },
-    props: { page }
-  }))
+  console.log('Generated paths for pages:', filteredPages.map((p: any) => p.slug.current).join(', '))
+  
+  return filteredPages.map((page: any) => {
+    const slug = page.slug.current
+    // Remove leading slash for single-segment route
+    const slugParam = slug.startsWith('/') ? slug.slice(1) : slug
+    
+    return {
+      params: { slug: slugParam },
+      props: { page }
+    }
+  })
 }
 
 // Get the page data from props or fetch it in SSR mode
@@ -27,9 +43,14 @@ let { page } = Astro.props as { page: GeneralPage }
 
 // In SSR mode, page might not be provided, so fetch it from Sanity
 if (!page) {
-  const slug = Astro.params.slug
-  // generalPageBySlugQuery is a function that returns a query string
-  page = await sanityClient.fetch(generalPageBySlugQuery(slug || ''))
+  const slugParam = Astro.params.slug || ''
+  // Try with and without leading slash since Sanity slugs may vary
+  const slugWithSlash = slugParam.startsWith('/') ? slugParam : `/${slugParam}`
+  const slugWithoutSlash = slugParam.startsWith('/') ? slugParam.slice(1) : slugParam
+  
+  // Try both formats
+  page = await sanityClient.fetch(generalPageBySlugQuery(slugWithSlash)) ||
+         await sanityClient.fetch(generalPageBySlugQuery(slugWithoutSlash))
   
   if (!page) {
     // Page not found - return 404
