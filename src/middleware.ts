@@ -18,7 +18,9 @@ export const onRequest = defineMiddleware(async (context, next: MiddlewareNext) 
     
     if (authToken && userId) {
       try {
-        const apiUrl = import.meta.env.ASB_API_URL;
+        // Access env vars through Cloudflare runtime or standard way
+        const cloudflareEnv = (context as any)?.runtime?.env;
+        const apiUrl = cloudflareEnv?.ASB_API_URL || import.meta.env.ASB_API_URL;
         if (apiUrl) {
           const validateUrl = `${apiUrl}/api/farmers/${userId}?access_token=${authToken}`;
           const response = await fetch(validateUrl);
@@ -47,7 +49,9 @@ export const onRequest = defineMiddleware(async (context, next: MiddlewareNext) 
   // If we have auth cookies, validate them and set user on all pages
   if (authToken && userId) {
     try {
-      const apiUrl = import.meta.env.ASB_API_URL;
+      // Access env vars through Cloudflare runtime or standard way
+      const cloudflareEnv = (context as any)?.runtime?.env;
+      const apiUrl = cloudflareEnv?.ASB_API_URL || import.meta.env.ASB_API_URL;
       
       if (apiUrl) {
         // Try to fetch farmer data using the userId and access_token

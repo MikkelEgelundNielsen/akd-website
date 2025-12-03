@@ -2,7 +2,8 @@ import type { APIRoute } from 'astro';
 
 export const prerender = false;
 
-export const POST: APIRoute = async ({ request, cookies }) => {
+export const POST: APIRoute = async (context) => {
+  const { request, cookies, locals } = context;
   try {
     const { username, password } = await request.json();
     
@@ -19,14 +20,23 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       );
     }
     
-    // Check environment variable - try both Cloudflare and standard ways
-    const apiUrl = import.meta.env.ASB_API_URL || (globalThis as any).ASB_API_URL;
+    // Check environment variable - try multiple ways to access it
+    // In Cloudflare Pages, env vars should be available through import.meta.env
+    // But we also try runtime.env as a fallback
+    const runtimeEnv = (context as any)?.runtime?.env || (locals as any)?.runtime?.env;
+    const apiUrl = runtimeEnv?.ASB_API_URL || 
+                   import.meta.env.ASB_API_URL || 
+                   (globalThis as any).ASB_API_URL;
     
     console.log('Environment check:', {
+      hasRuntimeEnv: !!runtimeEnv,
+      hasRuntimeVar: !!runtimeEnv?.ASB_API_URL,
       hasImportMetaEnv: !!import.meta.env.ASB_API_URL,
-      importMetaEnvValue: import.meta.env.ASB_API_URL ? 'SET' : 'NOT SET',
+      importMetaEnvValue: import.meta.env.ASB_API_URL || 'NOT SET',
       hasGlobalThis: !!(globalThis as any).ASB_API_URL,
-      finalApiUrl: apiUrl ? 'SET' : 'NOT SET'
+      finalApiUrl: apiUrl ? 'SET' : 'NOT SET',
+      apiUrlValue: apiUrl || 'NOT SET',
+      allEnvKeys: runtimeEnv ? Object.keys(runtimeEnv) : 'N/A'
     });
     
     if (!apiUrl || apiUrl.trim() === '') {
