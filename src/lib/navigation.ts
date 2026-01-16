@@ -25,7 +25,6 @@ export const navigationItems: NavItem[] = [
     href: '/bliv-andelshaver',
     children: [
       { label: 'Fordele', href: '/bliv-andelshaver/fordele' },
-      { label: 'Sådan bliver du andelshaver', href: '/bliv-andelshaver/hvordan' },
       { label: 'Priser og betingelser', href: '/bliv-andelshaver/priser' },
     ]
   },

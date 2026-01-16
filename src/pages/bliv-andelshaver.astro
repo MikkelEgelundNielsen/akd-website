@@ -1,0 +1,830 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import ContentBox from '@/components/sections/ContentBox.astro'
+import ContactCard from '@/components/ui/ContactCard.astro'
+import IconLink from '@/components/ui/IconLink.astro'
+import ProcessSteps from '@/components/sections/ProcessSteps.astro'
+import FAQAccordion from '@/components/sections/FAQAccordion.astro'
+
+export const prerender = true;
+
+// Process steps data
+const processSteps = [
+  {
+    number: 1,
+    title: 'Første kontakt',
+    description: 'Du tager kontakt til AKD Agro. Samtalen er uforpligtende og tager udgangspunkt i dine arealer, erfaring og muligheder.'
+  },
+  {
+    number: 2,
+    title: 'Overblik og afklaring',
+    description: 'Vi gennemgår andelstanken, leveringsret og -pligt, økonomi i avlen og praktiske forhold omkring levering og afregning.'
+  },
+  {
+    number: 3,
+    title: 'Andele',
+    description: 'Du kan selv undersøge andele til salg via Køb & Salg. Alternativt kan du blive skrevet på AKD\'s interesseliste og få besked, når der bliver andele ledige.'
+  },
+  {
+    number: 4,
+    title: 'Opstart',
+    description: 'Når andele er på plads, hjælper AKD Agro dig videre med rådgivning, planlægning og evt. finansiering.'
+  }
+]
+
+// FAQ data
+const faqItems = [
+  {
+    question: 'Hvad koster det at blive andelshaver?',
+    answer: 'Prisen på andele fastsættes af markedet og afhænger af udbud og efterspørgsel. Aktuelle priser kan ses på avlerinfo.dk\'s Køb & Salg-portal, hvor andelshavere annoncerer andele til salg. Bjarne Thisgaard (Agrochef) kan hjælpe dig med at forstå prisniveauet og dine muligheder, også hvis du har brug for finansiering.'
+  },
+  {
+    question: 'Hvor mange andele skal jeg have for at dyrke fx 10 ha?',
+    answer: 'Det afhænger af forventet udbytte og din leveringsret. Som tommelfingerregel svarer én andel til retten til at levere ca. 1.000 kg kartofler. I praksis laver AKD altid en konkret vurdering baseret på dine arealer og forventninger.'
+  },
+  {
+    question: 'Hvilket udbytte kan man forvente?',
+    answer: 'Udbyttet varierer med sorter, jordtype, klima og dyrkningspraksis. Mange avlere ligger typisk i intervallet 40–50 tons pr. hektar, men variationen kan være stor. AKD Agro hjælper med en realistisk vurdering af potentialet på netop dine marker.'
+  },
+  {
+    question: 'Hvordan bliver kartoflerne afregnet?',
+    answer: 'Afregningen sker ud fra leveret mængde og stivelsesprocent. Under kampagnen udbetales aconto, og den endelige afregning sker efter generalforsamlingen, når årets resultat er opgjort.'
+  },
+  {
+    question: 'Hvornår får man restbetalingen?',
+    answer: 'Restbetalingen falder normalt efter generalforsamlingen i foråret, når årsregnskabet er godkendt. Den konkrete timing meldes ud i god tid til alle andelshavere.'
+  },
+  {
+    question: 'Hvilke investeringer kræver det at komme i gang?',
+    answer: 'Det afhænger af dit setup. Der skal som minimum være udstyr til plantning, pleje og optagning. Mange avlere samarbejder om maskiner eller benytter maskinstation. AKD Agro kan hjælpe med at vurdere den løsning, der passer bedst til dig.'
+  },
+  {
+    question: 'Kan man få hjælp til finansiering af andele?',
+    answer: 'Ja. Der findes forskellige muligheder for finansiering, herunder lån via AKD. Det gennemgås typisk som en del af den indledende dialog.'
+  },
+  {
+    question: 'Hvordan fungerer indkaldelse og transport?',
+    answer: 'Du modtager en indkaldelse med leveringstidspunkt, og transporten koordineres centralt. Det sikrer et godt flow i kampagnen og minimerer ventetid for den enkelte avler.'
+  },
+  {
+    question: 'Hvad får jeg adgang til som andelshaver?',
+    answer: 'Som andelshaver får du adgang til Avlerinfo Selvbetjening – AKD’s mobile selvbetjeningsapp. Her samles levering, afregning, dokumenter, bestillinger og viden ét sted, så du har overblik over samarbejdet med AKD i hverdagen.'
+  },
+  {
+    question: 'Kan jeg starte i mindre skala?',
+    answer: 'Ja. Mange nye avlere starter i et begrænset omfang og udvider senere. AKD hjælper med at finde en opstart, der passer til din bedrift.'
+  },
+  {
+    question: 'Skal jeg have erfaring med stivelseskartofler i forvejen?',
+    answer: 'Nej. Du behøver ikke være specialist fra dag ét. AKD Agro tilbyder rådgivning, sparring og adgang til viden, så du kommer godt fra start.'
+  },
+  {
+    question: 'Hvordan foregår opstarten som ny avler?',
+    answer: 'Opstarten starter typisk med en samtale, hvor rammer, økonomi og muligheder gennemgås. Herefter kan der laves beregninger, aftales besøg og afklares næste skridt.'
+  },
+  {
+    question: 'Kan jeg komme ud og se fabrikken eller tale med en eksisterende avler?',
+    answer: 'Ja. Det er ofte en god måde at få fornemmelsen af AKD i praksis. Spørg Bjarne, hvis du ønsker et besøg eller kontakt til en erfaren avler.'
+  }
+]
+
+// Grower life highlights
+const growerLifeHighlights = [
+  { title: 'Vintermøder og mini-avlermøder', icon: 'calendar' },
+  { title: 'Markvandringer og erfa-grupper', icon: 'users' },
+  { title: 'App og digitale værktøjer', icon: 'device' },
+  { title: 'Forsøgsarbejde i KMC Agro', icon: 'flask' },
+  { title: 'Nye sorter og NGT', icon: 'leaf' },
+  { title: 'Cirkulær produktion og protein', icon: 'recycle' }
+]
+
+// Testimonials data
+const testimonials = [
+  {
+    quote: "Som andelshaver har jeg altid følt mig som en del af noget større. Der er en ægte interesse for, at vi lykkes – både fra AKD Agro og fra de andre avlere.",
+    name: "Henning",
+    title: "Andelshaver siden 2015",
+    location: "Midtjylland"
+  },
+  {
+    quote: "Fællesskabet betyder meget. Vintermøderne og markvandringerne giver faglig sparring, og man lærer hele tiden noget nyt af de andre.",
+    name: "Mogens",
+    title: "Andelshaver siden 2008",
+    location: "Sønderjylland"
+  },
+  {
+    quote: "Jeg sætter pris på de klare vilkår og den gennemsigtighed, der er i AKD. Man ved, hvad man har at gøre med, og det gør planlægningen nemmere.",
+    name: "Thomas",
+    title: "Andelshaver siden 2019",
+    location: "Midtjylland"
+  }
+]
+---
+
+<BaseLayout 
+  title="Bliv andelshaver i AKD"
+  description="Som andelshaver i AKD får du mere end en aftager. Du bliver en del af et langsigtet fællesskab med faglig sparring, klare rammer og fuld udnyttelse af kartoflen."
+  navTheme="light"
+>
+  <!-- SECTION 1: Hero -->
+  <section class="relative bg-warm-light pt-12 md:pt-16 lg:pt-20 pb-28 md:pb-48 section-after-nav">
+    <div class="container-custom">
+      <!-- Pre-headline -->
+      <p class="text-mint font-bold text-base mb-6 uppercase tracking-wide text-center">
+        BLIV ANDELSHAVER
+      </p>
+      
+      <!-- Main Headline -->
+      <h1 class="text-center mb-8 md:mb-12 max-w-5xl mx-auto">
+        <span class="block font-sans font-extrabold text-4xl md:text-5xl lg:text-[52px] text-charcoal uppercase leading-tight">
+          EN DEL AF ET <span class="italic font-medium text-mint lowercase" style="font-family: 'Lora', serif;">stærkt fællesskab</span><br/> – FRA MARK TIL FABRIK
+        </span>
+      </h1>
+      
+      <!-- Intro Text -->
+      <div class="max-w-3xl mx-auto text-center space-y-6">
+        <p class="text-charcoal text-base md:text-lg leading-relaxed">
+          Som andelshaver i AKD får du mere end en aftager. Du bliver en del af et langsigtet fællesskab med faglig sparring, klare rammer og fuld udnyttelse af kartoflen.
+        </p>
+        <p class="text-charcoal text-base md:text-lg leading-relaxed">
+          Vi arbejder tæt sammen med vores avlere – i marken, i hverdagen og i udviklingen af fremtidens stivelsesproduktion.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION: Contact Bjarne (Overlapping) -->
+  <section class="relative bg-forest-green pt-1 pb-16 md:pb-24">
+    <div class="container-custom -mt-20 sm:-mt-24 md:-mt-28 lg:-mt-[100px]">
+      <!-- Overlapping ContentBox -->
+      <div class="bg-white rounded-lg shadow-xl overflow-hidden relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-0">
+          <!-- Image Column -->
+          <div class="relative aspect-square lg:aspect-auto min-h-[300px] lg:min-h-[400px]">
+            <img 
+              src="/images/bjarne.jpg" 
+              alt="Bjarne Pedersen, Agrochef hos AKD Agro"
+              class="absolute inset-0 w-full h-full object-cover bg-warm-light"
+            />
+          </div>
+          
+          <!-- Content Column -->
+          <div class="p-8 md:p-10 lg:p-12 flex flex-col justify-center">
+            <!-- Pre-headline -->
+            <p class="text-mint font-bold text-sm mb-4 uppercase tracking-wide">
+              Tag en snak med os
+            </p>
+            
+            <!-- Headline -->
+            <h2 class="font-sans font-extrabold text-2xl md:text-3xl text-charcoal mb-6 leading-tight">
+              Agrochef Bjarne Thisgaard<br/> – din direkte vej ind til AKD
+            </h2>
+            
+            <!-- Checkmark Items -->
+            <div class="space-y-6 mb-8">
+              <!-- Item 1 -->
+              <div class="flex items-center justify-between gap-4">
+                <div class="flex-1">
+                  <h3 class="font-sans font-bold text-lg md:text-xl text-charcoal mb-1">
+                    En uforpligtende samtale om dine muligheder
+                  </h3>
+                  <p class="text-charcoal/80 text-base leading-relaxed">
+                    Vi tager en indledende snak om din bedrift, dine arealer og om AKD kan være det rette match.
+                  </p>
+                </div>
+                <svg class="w-6 h-6 text-mint flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                </svg>
+              </div>
+              
+              <!-- Item 2 -->
+              <div class="flex items-center justify-between gap-4">
+                <div class="flex-1">
+                  <h3 class="font-sans font-bold text-lg md:text-xl text-charcoal mb-1">
+                    Personlig rådgivning om arealer, økonomi og opstart
+                  </h3>
+                  <p class="text-charcoal/80 text-base leading-relaxed">
+                    Få overblik over investeringer, driftsøkonomi og hvordan en opstart typisk foregår.
+                  </p>
+                </div>
+                <svg class="w-6 h-6 text-mint flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                </svg>
+              </div>
+              
+              <!-- Item 3 -->
+              <div class="flex items-center justify-between gap-4">
+                <div class="flex-1">
+                  <h3 class="font-sans font-bold text-lg md:text-xl text-charcoal mb-1">
+                    Klare svar om andele og vilkår
+                  </h3>
+                  <p class="text-charcoal/80 text-base leading-relaxed">
+                    Indsigt i andelstanken, leveringsret og -pligt, afregning og finansiering.
+                  </p>
+                </div>
+                <svg class="w-6 h-6 text-mint flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                </svg>
+              </div>
+            </div>
+            
+            <!-- CTA Links -->
+            <div class="flex flex-col sm:flex-row gap-4 sm:gap-6">
+              <IconLink href="tel:+4500000000" icon="phone">
+                Ring til Bjarne
+              </IconLink>
+              <IconLink href="/kontakt-akd" icon="calendar">
+                Bliv ringet op
+              </IconLink>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: Value Pillars -->
+  <section id="fordelevedakd" class="relative bg-forest-green pt-16 md:pt-24 pb-16 md:pb-24 scroll-mt-32">
+    <div class="container-custom">
+      <!-- Section Header -->
+      <p class="text-mint font-bold text-base mb-4 uppercase tracking-wide text-center">
+        Fordele ved AKD
+      </p>
+      <h2 class="text-center mb-12 md:mb-16 max-w-3xl mx-auto">
+        <span class="block font-sans font-extrabold text-3xl md:text-4xl lg:text-[44px] text-white uppercase leading-tight">
+          HVORFOR <span class="italic font-medium text-mint lowercase" style="font-family: 'Lora', serif;">VÆLGE</span> AKD?
+        </span>
+      </h2>
+      
+      <!-- Value Pillars Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 max-w-4xl mx-auto">
+        <!-- Pillar 1 -->
+        <div class="flex gap-4">
+          <div class="flex-shrink-0 mt-1">
+            <svg class="w-6 h-6 text-mint" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-sans font-bold text-xl text-white mb-2">Fællesskab og indflydelse</h3>
+            <p class="text-white/90 leading-relaxed">Andelstanken i praksis – ejerskab, generalforsamling og løbende dialog.</p>
+          </div>
+        </div>
+        
+        <!-- Pillar 2 -->
+        <div class="flex gap-4">
+          <div class="flex-shrink-0 mt-1">
+            <svg class="w-6 h-6 text-mint" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-sans font-bold text-xl text-white mb-2">Stabil aftager og klare vilkår</h3>
+            <p class="text-white/90 leading-relaxed">Leveringsret, gennemsigtighed og afregning, du kan planlægge efter.</p>
+          </div>
+        </div>
+        
+        <!-- Pillar 3 -->
+        <div class="flex gap-4">
+          <div class="flex-shrink-0 mt-1">
+            <svg class="w-6 h-6 text-mint" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-sans font-bold text-xl text-white mb-2">Faglig rådgivning hele vejen</h3>
+            <p class="text-white/90 leading-relaxed">AKD Agro og KMC Agro hjælper med dyrkning, sorter, sygdomme og udbytte.</p>
+          </div>
+        </div>
+        
+        <!-- Pillar 4 -->
+        <div class="flex gap-4">
+          <div class="flex-shrink-0 mt-1">
+            <svg class="w-6 h-6 text-mint" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-sans font-bold text-xl text-white mb-2">Et stærkt økosystem</h3>
+            <p class="text-white/90 leading-relaxed">Fra læggekartofler og protamylasse til cirkulær udnyttelse og international afsætning.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: Process Steps -->
+  <section id="trinfortrin" class="relative bg-warm-light pt-16 md:pt-24 pb-16 md:pb-24 scroll-mt-32">
+    <div class="container-custom">
+      <!-- Section Header -->
+      <p class="text-mint font-bold text-base mb-4 uppercase tracking-wide text-center">
+        Trin for trin
+      </p>
+      <h2 class="text-center mb-12 md:mb-16 max-w-3xl mx-auto">
+        <span class="block font-sans font-extrabold text-3xl md:text-4xl lg:text-[44px] text-charcoal uppercase leading-tight">
+          SÅDAN <span class="italic font-medium text-mint lowercase" style="font-family: 'Lora', serif;">kommer du</span> I GANG
+        </span>
+      </h2>
+      
+      <!-- Steps -->
+      <div class="max-w-2xl mx-auto mb-12">
+        <ProcessSteps steps={processSteps} variant="light" />
+      </div>
+      
+      <!-- CTAs -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+        <a href="/andelshavere/koeb-salg" class="btn-secondary">
+          Se andele til salg
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+          </svg>
+        </a>
+        <a href="/kontakt/interesseliste" class="btn-primary">
+          <span>Skriv dig på interesselisten</span>
+          <span class="btn-icon-circle">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  
+
+  <!-- SECTION 4: More Than Shares -->
+  <section id="livetsomakdavler" class="relative bg-forest-green pt-16 md:pt-24 pb-16 md:pb-24 scroll-mt-32">
+    <div class="container-custom">
+      <!-- Section Header -->
+      <p class="text-mint font-bold text-base mb-4 uppercase tracking-wide text-center">
+        Livet som AKD-avler
+      </p>
+      <h2 class="text-center mb-8 max-w-3xl mx-auto">
+        <span class="block font-sans font-extrabold text-3xl md:text-4xl lg:text-[44px] text-white uppercase leading-tight">
+          MERE END <span class="italic font-medium text-mint lowercase" style="font-family: 'Lora', serif;">kartofler</span>
+        </span>
+      </h2>
+      <p class="text-white/90 text-center text-base md:text-lg max-w-2xl mx-auto mb-12 md:mb-16">
+        Som andelshaver får du adgang til et aktivt fællesskab med faglige arrangementer, digitale værktøjer og løbende udvikling.
+      </p>
+      
+      <!-- Highlights Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
+        {growerLifeHighlights.map((item) => (
+          <div class="flex items-center gap-4 bg-white/10 rounded-lg p-4 md:p-5">
+            <div class="w-10 h-10 rounded-full bg-mint/20 flex items-center justify-center flex-shrink-0">
+              <svg class="w-5 h-5 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+            </div>
+            <span class="text-white font-medium">{item.title}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  
+
+  <!-- SECTION: Photo Grid - Hverdagsbilleder fra avlerne -->
+  <section class="relative bg-forest-green py-16 md:py-24">
+    <div class="container-custom">
+      <h2 class="text-white text-center text-3xl md:text-4xl font-serif font-bold italic mb-12">
+        Hverdagsbilleder fra avlerne
+      </h2>
+      
+      <div class="avler-photo-grid" id="avler-photo-grid">
+        <div class="avler-photo-grid-item">
+          <img src="/images/at-arbejde-hos-akd/Mask group-7.png" alt="Hverdagsbillede fra AKD-avler" />
+        </div>
+        <div class="avler-photo-grid-item">
+          <img src="/images/at-arbejde-hos-akd/Mask group-12.png" alt="Hverdagsbillede fra AKD-avler" />
+        </div>
+        <div class="avler-photo-grid-item">
+          <img src="/images/at-arbejde-hos-akd/Mask group-6.png" alt="Hverdagsbillede fra AKD-avler" />
+        </div>
+        <div class="avler-photo-grid-item">
+          <img src="/images/at-arbejde-hos-akd/Mask group-9.png" alt="Hverdagsbillede fra AKD-avler" />
+        </div>
+        <div class="avler-photo-grid-item">
+          <img src="/images/at-arbejde-hos-akd/Mask group-1.png" alt="Hverdagsbillede fra AKD-avler" />
+        </div>
+        <div class="avler-photo-grid-item">
+          <img src="/images/at-arbejde-hos-akd/Mask group-3.png" alt="Hverdagsbillede fra AKD-avler" />
+        </div>
+        <div class="avler-photo-grid-item">
+          <img src="/images/at-arbejde-hos-akd/Mask group-2.png" alt="Hverdagsbillede fra AKD-avler" />
+        </div>
+        <div class="avler-photo-grid-item">
+          <img src="/images/at-arbejde-hos-akd/Mask group-10.png" alt="Hverdagsbillede fra AKD-avler" />
+        </div>
+        <div class="avler-photo-grid-item">
+          <img src="/images/at-arbejde-hos-akd/Mask group-4.png" alt="Hverdagsbillede fra AKD-avler" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION: Testimonials (Avlerhistorier) -->
+  <section class="relative bg-warm-light pt-16 md:pt-24 pb-16 md:pb-24">
+    <div class="container-custom">
+      <!-- Section Header -->
+      <p class="text-mint font-bold text-base mb-4 uppercase tracking-wide text-center">
+        Avlerhistorier
+      </p>
+      <h2 class="text-center mb-12 md:mb-16 max-w-3xl mx-auto">
+        <span class="block font-sans font-extrabold text-3xl md:text-4xl lg:text-[44px] text-charcoal uppercase leading-tight">
+          Erfaringer og perspektiver <br/><span class="italic font-medium text-mint lowercase" style="font-family: 'Lora', serif;">fra vores avlere</span>
+        </span>
+      </h2>
+      
+      <!-- Testimonials Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+        {testimonials.map((testimonial) => (
+          <div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+            <!-- Quote Icon -->
+            <svg class="w-8 h-8 text-mint mb-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
+            </svg>
+            
+            <!-- Quote Text -->
+            <blockquote class="font-serif italic text-lg md:text-xl text-charcoal leading-relaxed mb-6">
+              "{testimonial.quote}"
+            </blockquote>
+            
+            <!-- Author -->
+            <div>
+              <p class="font-sans font-semibold text-forest-green">{testimonial.name}</p>
+              <p class="text-charcoal/70 text-sm">{testimonial.title}, {testimonial.location}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION: Avlerinfo Selvbetjening -->
+  <section class="relative bg-forest-green text-white pt-16 md:pt-24 pb-16 md:pb-24">
+    <div class="container-custom">
+      <!-- Section Header -->
+      <p class="text-mint font-bold text-base mb-4 uppercase tracking-wide text-center">
+        Avlerinfo Selvbetjening
+      </p>
+      <h2 class="text-center mb-8 max-w-3xl mx-auto">
+        <span class="block font-sans font-extrabold text-3xl md:text-4xl lg:text-[44px] text-white uppercase leading-tight">
+          DIGITALT OVERBLIK <span class="italic font-medium text-mint lowercase" style="font-family: 'Lora', serif;">for andelshavere</span> – DIREKTE PÅ MOBILEN
+        </span>
+      </h2>
+      <div class="max-w-2xl mx-auto text-center mb-12 md:mb-16">
+        <p class="text-white/90 text-base md:text-lg leading-relaxed mb-4">
+          Avlerinfo Selvbetjening er AKD's mobile platform til andelshavere.
+        </p>
+        <p class="text-white/90 text-base md:text-lg leading-relaxed">
+          Her samler vi drift, levering, dokumenter og viden, så du har overblik – også når hverdagen er travl.
+        </p>
+      </div>
+      
+      <!-- Features Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto mb-12 md:mb-16">
+        <!-- Feature 1 -->
+        <div class="bg-white/10 rounded-lg p-5 md:p-6">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-full bg-mint/20 flex items-center justify-center flex-shrink-0 mt-1">
+              <svg class="w-5 h-5 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-white font-bold text-lg mb-2">Mobil adgang – altid ved hånden</h3>
+              <p class="text-white/80 text-sm leading-relaxed">ASB er en mobil app, udviklet til brug i marken, i maskinhuset og på farten.</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Feature 2 -->
+        <div class="bg-white/10 rounded-lg p-5 md:p-6">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-full bg-mint/20 flex items-center justify-center flex-shrink-0 mt-1">
+              <svg class="w-5 h-5 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-white font-bold text-lg mb-2">Drift & levering i realtid</h3>
+              <p class="text-white/80 text-sm leading-relaxed">Følg din leveringsplan, se vejehusstatus, ventetider og historiske data – live under kampagnen.</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Feature 3 -->
+        <div class="bg-white/10 rounded-lg p-5 md:p-6">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-full bg-mint/20 flex items-center justify-center flex-shrink-0 mt-1">
+              <svg class="w-5 h-5 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-white font-bold text-lg mb-2">Dokumenter samlet og forståelige</h3>
+              <p class="text-white/80 text-sm leading-relaxed">Vejeboner, afregninger, bestillinger og aftaler hænger sammen, så du slipper for mapper, pdf'er og mails.</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Feature 4 -->
+        <div class="bg-white/10 rounded-lg p-5 md:p-6">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-full bg-mint/20 flex items-center justify-center flex-shrink-0 mt-1">
+              <svg class="w-5 h-5 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-white font-bold text-lg mb-2">Bestil digitalt</h3>
+              <p class="text-white/80 text-sm leading-relaxed">Bestil læggekartofler, protamylasse, lejeaftaler og forkampagne direkte i app'en – med mulighed for løbende ændringer.</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Feature 5 -->
+        <div class="bg-white/10 rounded-lg p-5 md:p-6">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-full bg-mint/20 flex items-center justify-center flex-shrink-0 mt-1">
+              <svg class="w-5 h-5 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-white font-bold text-lg mb-2">Overblik over økonomi og historik</h3>
+              <p class="text-white/80 text-sm leading-relaxed">Se afregninger og leverancer kronologisk opdelt efter år og måned – let at gennemskue.</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Feature 6 -->
+        <div class="bg-white/10 rounded-lg p-5 md:p-6">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-full bg-mint/20 flex items-center justify-center flex-shrink-0 mt-1">
+              <svg class="w-5 h-5 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-white font-bold text-lg mb-2">Viden der hjælper i praksis</h3>
+              <p class="text-white/80 text-sm leading-relaxed">Direkte adgang til sortsinfo, skimmelvarsling, vidensbase og nyheder fra AKD og KMC Agro.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- CTA -->
+      <div class="text-center">
+        <a href="/andelshavere/avlerinfo-selvbetjening" class="btn-primary">
+          <span>Læs mere om Avlerinfo Selvbetjening</span>
+          <span class="btn-icon-circle">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+
+  
+  <!-- SECTION: FAQ -->
+  <section id="faq" class="relative bg-light pt-16 md:pt-24 pb-16 md:pb-24 scroll-mt-32">
+    <div class="container-custom">
+      <!-- Section Header -->
+      <p class="text-mint font-bold text-base mb-4 uppercase tracking-wide text-center">
+        FAQ
+      </p>
+      <h2 class="text-center mb-12 md:mb-16 max-w-3xl mx-auto">
+        <span class="block font-sans font-extrabold text-3xl md:text-4xl lg:text-[44px] text-charcoal uppercase leading-tight">
+          OFTE STILLEDE spørgsmål FRA NYE AVLERE
+        </span>
+      </h2>
+      
+      <!-- FAQ Accordion -->
+      <div class="max-w-3xl mx-auto mb-12">
+        <FAQAccordion items={faqItems} variant="light" />
+      </div>
+      
+      <!-- Link to full terms -->
+      <div class="text-center">
+        <a href="/vilkaar-betingelser" class="btn-secondary">
+          Se vilkår og betingelser
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION: Final CTA -->
+  <section class="relative bg-charcoal pt-16 md:pt-24 pb-16 md:pb-24">
+    <div class="container-custom">
+      <!-- Section Header -->
+      <h2 class="mb-6 max-w-3xl mx-auto text-center">
+        <span class="block font-sans font-extrabold text-3xl md:text-4xl lg:text-[44px] text-white uppercase leading-tight">
+          KLAR TIL AT <span class="italic font-medium text-mint lowercase" style="font-family: 'Lora', serif;">tage næste</span> SKRIDT?
+        </span>
+      </h2>
+      
+      <p class="text-white/90 text-base md:text-lg max-w-2xl mx-auto mb-10 md:mb-12 text-center">
+        Uanset om du er klar nu, eller bare vil høre mere, er du velkommen til at tage kontakt. Vi tager gerne en snak – og hjælper dig med at vurdere, om AKD er det rette match.
+      </p>
+      
+      <!-- Contact Card -->
+      <div class="max-w-3xl mx-auto mb-10">
+        <div class="bg-white rounded-lg shadow-xl overflow-hidden">
+          <div class="flex flex-col sm:flex-row">
+            <!-- Image Column -->
+            <div class="sm:w-1/3 aspect-square relative bg-warm-light">
+              <img 
+                src="/images/bjarne.jpg" 
+                alt="Bjarne Thisgaard, Agrochef" 
+                class="w-full h-full object-cover"
+              />
+            </div>
+            
+            <!-- Content Column -->
+            <div class="sm:w-2/3 p-6 md:p-8 flex flex-col justify-center">
+              <h3 class="font-sans font-bold text-xl md:text-2xl text-charcoal mb-6 leading-tight">
+                Tag en snak med vores Agrochef Bjarne Thisgaard
+              </h3>
+              
+              <!-- CTA Links -->
+              <div class="flex flex-col sm:flex-row gap-4 sm:gap-6">
+                <IconLink href="tel:+4500000000" icon="phone">
+                  Ring til Bjarne
+                </IconLink>
+                <IconLink href="/kontakt-akd" icon="calendar">
+                  Bliv ringet op
+                </IconLink>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+ <!-- CTAs -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+        <a href="/andelshavere/koeb-salg" class="btn-secondary">
+          Se andele til salg
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+          </svg>
+        </a>
+        <a href="/kontakt/interesseliste" class="btn-primary">
+          <span>Skriv dig på interesselisten</span>
+          <span class="btn-icon-circle">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </span>
+        </a>
+      </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .avler-photo-grid {
+    position: relative;
+    width: 100%;
+  }
+  
+  .avler-photo-grid-item {
+    position: absolute;
+    width: calc(100% / 1 - 1.5rem);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    transition: opacity 0.5s ease;
+    opacity: 0;
+  }
+  
+  .avler-photo-grid-item.loaded {
+    opacity: 1;
+  }
+  
+  .avler-photo-grid-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+  
+  @media (min-width: 640px) {
+    .avler-photo-grid-item {
+      width: calc(100% / 2 - 1rem);
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .avler-photo-grid-item {
+      width: calc(100% / 3 - 1.33rem);
+    }
+  }
+</style>
+
+<script>
+  function initAvlerMasonry() {
+    const grid = document.getElementById('avler-photo-grid');
+    if (!grid) return;
+    
+    const items = Array.from(grid.querySelectorAll('.avler-photo-grid-item'));
+    if (items.length === 0) return;
+    
+    function getColumnCount() {
+      if (window.innerWidth >= 1024) return 3;
+      if (window.innerWidth >= 640) return 2;
+      return 1;
+    }
+    
+    function getGap() {
+      if (window.innerWidth >= 1024) return 20;
+      if (window.innerWidth >= 640) return 16;
+      return 24;
+    }
+    
+    function layoutMasonry() {
+      const columnCount = getColumnCount();
+      const gap = getGap();
+      const containerWidth = grid.offsetWidth;
+      const columnWidth = (containerWidth - (gap * (columnCount - 1))) / columnCount;
+      
+      const columnHeights = new Array(columnCount).fill(0);
+      
+      items.forEach((item) => {
+        item.style.width = `${columnWidth}px`;
+        item.style.position = 'absolute';
+        item.style.visibility = 'hidden';
+        item.style.top = '0';
+        item.style.left = '0';
+        
+        void item.offsetHeight;
+        
+        const itemHeight = item.offsetHeight || 300;
+        const shortestColumnIndex = columnHeights.indexOf(Math.min(...columnHeights));
+        
+        const left = shortestColumnIndex * (columnWidth + gap);
+        const top = columnHeights[shortestColumnIndex];
+        
+        item.style.left = `${left}px`;
+        item.style.top = `${top}px`;
+        item.style.visibility = 'visible';
+        
+        columnHeights[shortestColumnIndex] += itemHeight + gap;
+      });
+      
+      const maxHeight = Math.max(...columnHeights);
+      grid.style.height = `${maxHeight}px`;
+    }
+    
+    const images = items.map(item => item.querySelector('img')).filter(Boolean);
+    let loadedCount = 0;
+    
+    const checkAndLayout = () => {
+      loadedCount++;
+      if (loadedCount === images.length) {
+        grid.offsetHeight;
+        requestAnimationFrame(() => {
+          layoutMasonry();
+          items.forEach(item => item.classList.add('loaded'));
+        });
+      }
+    };
+    
+    if (images.length === 0) {
+      layoutMasonry();
+      items.forEach(item => item.classList.add('loaded'));
+    } else {
+      images.forEach(img => {
+        if (img.complete && img.naturalHeight > 0) {
+          checkAndLayout();
+        } else {
+          img.addEventListener('load', checkAndLayout, { once: true });
+          img.addEventListener('error', checkAndLayout, { once: true });
+        }
+      });
+    }
+    
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        layoutMasonry();
+      }, 250);
+    });
+  }
+  
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAvlerMasonry);
+  } else {
+    initAvlerMasonry();
+  }
+</script>

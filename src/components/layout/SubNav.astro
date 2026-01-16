@@ -32,15 +32,25 @@ const bgColor = theme === 'dark' ? 'bg-forest-green' : 'bg-warm-light'
       >
         <ul class="flex items-center gap-4 md:gap-6 justify-end min-w-max" role="list">
           {items.map((item) => {
-            // Ensure href starts with /
-            const href = item.href.startsWith('/') ? item.href : `/${item.href}`
-            // Check if current path matches exactly or is a sub-page
-            const isActive = currentPath === href || (href !== '/' && currentPath.startsWith(href + '/'))
+            // Skip items without href
+            if (!item.href) return null
+            
+            // Check if this is an anchor link (starts with #)
+            const isAnchor = item.href.startsWith('#')
+            
+            // For anchor links, keep as-is; for regular links, ensure href starts with /
+            const href = isAnchor 
+              ? item.href 
+              : (item.href.startsWith('/') ? item.href : `/${item.href}`)
+            
+            // Check if current path matches exactly or is a sub-page (only for non-anchor links)
+            const isActive = !isAnchor && (currentPath === href || (href !== '/' && currentPath.startsWith(href + '/')))
+            
             return (
               <li>
                 <a
                   href={href}
-                  class={`sub-nav-link ${textColor} ${isActive ? 'active' : ''}`}
+                  class={`sub-nav-link ${textColor} ${isActive ? 'active' : ''} ${isAnchor ? 'anchor-link' : ''}`}
                   aria-current={isActive ? 'page' : undefined}
                 >
                   {item.label}

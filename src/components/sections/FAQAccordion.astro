@@ -1,0 +1,286 @@
+---
+/**
+ * FAQAccordion Component
+ * Expandable FAQ items with smooth animations. Click to reveal/hide answers.
+ * 
+ * Usage:
+ * <FAQAccordion
+ *   items={[
+ *     { question: 'Question 1?', answer: 'Answer 1...' },
+ *     { question: 'Question 2?', answer: 'Answer 2...' },
+ *   ]}
+ * />
+ */
+
+interface FAQItem {
+  question: string
+  answer: string
+}
+
+interface Props {
+  items: FAQItem[]
+  variant?: 'light' | 'dark'
+}
+
+const { 
+  items,
+  variant = 'light'
+} = Astro.props
+
+const isDark = variant === 'dark'
+---
+
+<div class="faq-accordion" data-faq-accordion>
+  {items.map((item, index) => (
+    <div 
+      class:list={[
+        'faq-item',
+        isDark ? 'faq-item-dark' : 'faq-item-light'
+      ]}
+      data-faq-item
+    >
+      <button
+        type="button"
+        class="faq-question"
+        aria-expanded="false"
+        aria-controls={`faq-answer-${index}`}
+        data-faq-trigger
+      >
+        <span class="faq-question-text">{item.question}</span>
+        <span class="faq-icon-wrapper">
+          <!-- Plus icon (shown when closed) -->
+          <svg 
+            class="faq-icon faq-icon-plus" 
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12m6-6H6"/>
+          </svg>
+          <!-- Minus icon (shown when open) -->
+          <svg 
+            class="faq-icon faq-icon-minus" 
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 12H6"/>
+          </svg>
+        </span>
+      </button>
+      <div 
+        class="faq-answer"
+        id={`faq-answer-${index}`}
+        aria-hidden="true"
+        data-faq-content
+      >
+        <div class="faq-answer-inner">
+          <p>{item.answer}</p>
+        </div>
+      </div>
+    </div>
+  ))}
+</div>
+
+<style>
+  .faq-accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .faq-item {
+    border-radius: 0.5rem;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
+  }
+  
+  .faq-item-light {
+    background: white;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  }
+  
+  .faq-item-light:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .faq-item-dark {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  .faq-item-dark:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+  
+  .faq-question {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    transition: color 0.2s ease;
+  }
+  
+  .faq-item-light .faq-question {
+    color: #26251E; /* charcoal */
+  }
+  
+  .faq-item-dark .faq-question {
+    color: white;
+  }
+  
+  .faq-question-text {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+  
+  .faq-icon-wrapper {
+    position: relative;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+  }
+  
+  .faq-icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 24px;
+    height: 24px;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+  
+  .faq-item-light .faq-icon {
+    color: #10E397; /* mint */
+  }
+  
+  .faq-item-dark .faq-icon {
+    color: #10E397; /* mint */
+  }
+  
+  .faq-icon-plus {
+    opacity: 1;
+  }
+  
+  .faq-icon-minus {
+    opacity: 0;
+  }
+  
+  .faq-item.is-open .faq-icon-plus {
+    opacity: 0;
+    transform: rotate(90deg);
+  }
+  
+  .faq-item.is-open .faq-icon-minus {
+    opacity: 1;
+  }
+  
+  .faq-answer {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.3s ease;
+  }
+  
+  .faq-answer-inner {
+    padding: 0 1.5rem 1.5rem 1.5rem;
+  }
+  
+  .faq-answer-inner p {
+    font-size: 1rem;
+    line-height: 1.7;
+    margin: 0;
+  }
+  
+  .faq-item-light .faq-answer-inner p {
+    color: rgba(38, 37, 30, 0.85); /* charcoal/85 */
+  }
+  
+  .faq-item-dark .faq-answer-inner p {
+    color: rgba(255, 255, 255, 0.85);
+  }
+  
+  /* Responsive */
+  @media (min-width: 768px) {
+    .faq-question {
+      padding: 1.5rem 2rem;
+    }
+    
+    .faq-question-text {
+      font-size: 1.125rem;
+    }
+    
+    .faq-answer-inner {
+      padding: 0 2rem 1.5rem 2rem;
+    }
+    
+    .faq-answer-inner p {
+      font-size: 1.0625rem;
+    }
+  }
+</style>
+
+<script>
+  function initFAQAccordion() {
+    const accordions = document.querySelectorAll('[data-faq-accordion]')
+    
+    accordions.forEach(accordion => {
+      const items = accordion.querySelectorAll('[data-faq-item]')
+      
+      items.forEach(item => {
+        const trigger = item.querySelector('[data-faq-trigger]')
+        const content = item.querySelector('[data-faq-content]')
+        
+        if (!trigger || !content) return
+        
+        trigger.addEventListener('click', () => {
+          const isOpen = item.classList.contains('is-open')
+          
+          // Close all other items in this accordion
+          items.forEach(otherItem => {
+            if (otherItem !== item && otherItem.classList.contains('is-open')) {
+              otherItem.classList.remove('is-open')
+              const otherTrigger = otherItem.querySelector('[data-faq-trigger]')
+              const otherContent = otherItem.querySelector('[data-faq-content]') as HTMLElement
+              if (otherTrigger) {
+                otherTrigger.setAttribute('aria-expanded', 'false')
+              }
+              if (otherContent) {
+                otherContent.style.maxHeight = '0'
+                otherContent.setAttribute('aria-hidden', 'true')
+              }
+            }
+          })
+          
+          // Toggle current item
+          if (isOpen) {
+            item.classList.remove('is-open')
+            trigger.setAttribute('aria-expanded', 'false')
+            ;(content as HTMLElement).style.maxHeight = '0'
+            content.setAttribute('aria-hidden', 'true')
+          } else {
+            item.classList.add('is-open')
+            trigger.setAttribute('aria-expanded', 'true')
+            ;(content as HTMLElement).style.maxHeight = content.scrollHeight + 'px'
+            content.setAttribute('aria-hidden', 'false')
+          }
+        })
+      })
+    })
+  }
+  
+  // Initialize on page load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initFAQAccordion)
+  } else {
+    initFAQAccordion()
+  }
+</script>

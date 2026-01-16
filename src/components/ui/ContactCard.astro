@@ -1,0 +1,203 @@
+---
+/**
+ * ContactCard Component
+ * A CTA element featuring an employee portrait, name, title, and phone number.
+ * Signals openness and personal contact.
+ * 
+ * Usage:
+ * <ContactCard
+ *   name="Bjarne Pedersen"
+ *   title="Agrochef"
+ *   phone="+45 12 34 56 78"
+ *   imageUrl="/images/employees/bjarne.jpg"
+ *   ctaText="Tal med AKD Agro"
+ *   variant="primary"
+ * />
+ */
+
+interface Props {
+  name: string
+  title: string
+  phone: string
+  imageUrl: string
+  ctaText: string
+  variant?: 'primary' | 'secondary'
+  class?: string
+}
+
+const { 
+  name, 
+  title, 
+  phone, 
+  imageUrl, 
+  ctaText,
+  variant = 'primary',
+  class: className = ''
+} = Astro.props
+
+// Format phone for tel: link (remove spaces)
+const phoneHref = `tel:${phone.replace(/\s/g, '')}`
+
+const isPrimary = variant === 'primary'
+---
+
+<a 
+  href={phoneHref}
+  class:list={[
+    'contact-card group',
+    isPrimary ? 'contact-card-primary' : 'contact-card-secondary',
+    className
+  ]}
+>
+  <!-- Portrait -->
+  <div class="contact-card-portrait">
+    <img 
+      src={imageUrl} 
+      alt={`${name}, ${title}`}
+      class="w-full h-full object-cover"
+    />
+  </div>
+  
+  <!-- Content -->
+  <div class="contact-card-content">
+    <span class="contact-card-cta">
+      {ctaText}
+      <svg class="w-4 h-4 inline-block ml-1 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+      </svg>
+    </span>
+    <span class="contact-card-name">{name}</span>
+    <span class="contact-card-title">{title}</span>
+    <span class="contact-card-phone">{phone}</span>
+  </div>
+</a>
+
+<style>
+  .contact-card {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1.5rem 0.75rem 0.75rem;
+    border-radius: 9999px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+  }
+  
+  .contact-card-primary {
+    background-color: #E87722; /* burnt-orange */
+    color: white;
+  }
+  
+  .contact-card-primary:hover {
+    background-color: #F5A623; /* amber */
+  }
+  
+  .contact-card-secondary {
+    background-color: transparent;
+    border: 2px solid #E87722;
+    color: #E87722;
+  }
+  
+  .contact-card-secondary:hover {
+    background-color: #E87722;
+    color: white;
+  }
+  
+  .contact-card-portrait {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+  }
+  
+  .contact-card-secondary .contact-card-portrait {
+    border-color: #E87722;
+  }
+  
+  .contact-card-secondary:hover .contact-card-portrait {
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+  
+  .contact-card-content {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.3;
+  }
+  
+  .contact-card-cta {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 0.125rem;
+  }
+  
+  .contact-card-name {
+    font-size: 0.875rem;
+    opacity: 0.9;
+  }
+  
+  .contact-card-title {
+    font-size: 0.75rem;
+    opacity: 0.8;
+  }
+  
+  .contact-card-phone {
+    font-size: 0.75rem;
+    opacity: 0.8;
+    font-weight: 500;
+  }
+  
+  /* Primary variant text colors */
+  .contact-card-primary .contact-card-cta {
+    color: white;
+  }
+  
+  .contact-card-primary:hover .contact-card-cta,
+  .contact-card-primary:hover .contact-card-name,
+  .contact-card-primary:hover .contact-card-title,
+  .contact-card-primary:hover .contact-card-phone {
+    color: #26251E; /* charcoal */
+  }
+  
+  /* Secondary variant text colors */
+  .contact-card-secondary .contact-card-cta,
+  .contact-card-secondary .contact-card-name,
+  .contact-card-secondary .contact-card-title,
+  .contact-card-secondary .contact-card-phone {
+    color: #E87722;
+  }
+  
+  .contact-card-secondary:hover .contact-card-cta,
+  .contact-card-secondary:hover .contact-card-name,
+  .contact-card-secondary:hover .contact-card-title,
+  .contact-card-secondary:hover .contact-card-phone {
+    color: white;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 640px) {
+    .contact-card {
+      padding: 0.5rem 1rem 0.5rem 0.5rem;
+      gap: 0.75rem;
+    }
+    
+    .contact-card-portrait {
+      width: 48px;
+      height: 48px;
+    }
+    
+    .contact-card-cta {
+      font-size: 0.875rem;
+    }
+    
+    .contact-card-name {
+      font-size: 0.8125rem;
+    }
+    
+    .contact-card-title,
+    .contact-card-phone {
+      font-size: 0.6875rem;
+    }
+  }
+</style>

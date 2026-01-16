@@ -213,7 +213,7 @@ export const prerender = true; // Pre-render this page at build time
   </section>
 
   <!-- Bliv Andelshaver Section -->
-  <section class="relative bg-forest-green text-white pt-24 md:pt-32 lg:pt-40 pb-16 md:pb-24">
+  <section class="relative bg-forest-green text-white pt-1 pb-16 md:pb-24">
     <!-- Content Box with Image and Benefits -->
     <ContentBox
       variant="dark"
@@ -221,7 +221,7 @@ export const prerender = true; // Pre-render this page at build time
       headline="Som andelshaver i AKD får du en stabil aftager, faglig sparring og klare vilkår."
       imageUrl="/images/employee.png"
       imageAlt="Andelshaver i traktor under høst med moderne udstyr"
-      pullUp={false}
+      pullUp={true}
       items={[
         {
           title: 'Fællesskab & indflydelse',
@@ -245,17 +245,142 @@ export const prerender = true; // Pre-render this page at build time
         }
       ]}
     />
-    
-    <!-- CTA Button -->
-    <div class="text-center mt-12 mb-96 sm:mb-[416px] md:mb-[448px] lg:mb-[400px]">
-      <a href="/andelshaver/bliv-andelshaver" class="btn-primary">
-        <span>Sådan bliver du andelshaver</span>
-        <span class="btn-icon-circle">
+  </section>
+
+  <!-- Avlerinfo Selvbetjening Section -->
+  <section class="relative bg-forest-green text-white pt-12 md:pt-16 pb-56 sm:pb-72 md:pb-[280px] lg:pb-[315px]">
+    <div class="container-custom">
+      <!-- Section Header -->
+      <p class="text-mint font-bold text-base mb-4 uppercase tracking-wide text-center">
+        Avlerinfo Selvbetjening
+      </p>
+      <h2 class="text-center mb-8 max-w-3xl mx-auto">
+        <span class="block font-sans font-extrabold text-3xl md:text-4xl lg:text-[44px] text-white uppercase leading-tight">
+          DIGITALT OVERBLIK <span class="italic font-medium text-mint lowercase" style="font-family: 'Lora', serif;">for andelshavere</span> – DIREKTE PÅ MOBILEN
+        </span>
+      </h2>
+      <div class="max-w-2xl mx-auto text-center mb-12 md:mb-16">
+        <p class="text-white/90 text-base md:text-lg leading-relaxed mb-4">
+          Avlerinfo Selvbetjening er AKD's mobile platform til andelshavere.
+        </p>
+        <p class="text-white/90 text-base md:text-lg leading-relaxed">
+          Her samler vi drift, levering, dokumenter og viden, så du har overblik – også når hverdagen er travl.
+        </p>
+      </div>
+      
+      <!-- Features Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto mb-12 md:mb-16">
+        <!-- Feature 1 -->
+        <div class="bg-white/10 rounded-lg p-5 md:p-6">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-full bg-mint/20 flex items-center justify-center flex-shrink-0 mt-1">
+              <svg class="w-5 h-5 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-white font-bold text-lg mb-2">Mobil adgang – altid ved hånden</h3>
+              <p class="text-white/80 text-sm leading-relaxed">ASB er en mobil app, udviklet til brug i marken, i maskinhuset og på farten.</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Feature 2 -->
+        <div class="bg-white/10 rounded-lg p-5 md:p-6">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-full bg-mint/20 flex items-center justify-center flex-shrink-0 mt-1">
+              <svg class="w-5 h-5 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-white font-bold text-lg mb-2">Drift & levering i realtid</h3>
+              <p class="text-white/80 text-sm leading-relaxed">Følg din leveringsplan, se vejehusstatus, ventetider og historiske data – live under kampagnen.</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Feature 3 -->
+        <div class="bg-white/10 rounded-lg p-5 md:p-6">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-full bg-mint/20 flex items-center justify-center flex-shrink-0 mt-1">
+              <svg class="w-5 h-5 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-white font-bold text-lg mb-2">Dokumenter samlet og forståelige</h3>
+              <p class="text-white/80 text-sm leading-relaxed">Vejeboner, afregninger, bestillinger og aftaler hænger sammen, så du slipper for mapper, pdf'er og mails.</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Feature 4 -->
+        <div class="bg-white/10 rounded-lg p-5 md:p-6">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-full bg-mint/20 flex items-center justify-center flex-shrink-0 mt-1">
+              <svg class="w-5 h-5 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-white font-bold text-lg mb-2">Bestil digitalt</h3>
+              <p class="text-white/80 text-sm leading-relaxed">Bestil læggekartofler, protamylasse, lejeaftaler og forkampagne direkte i app'en – med mulighed for løbende ændringer.</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Feature 5 -->
+        <div class="bg-white/10 rounded-lg p-5 md:p-6">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-full bg-mint/20 flex items-center justify-center flex-shrink-0 mt-1">
+              <svg class="w-5 h-5 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-white font-bold text-lg mb-2">Overblik over økonomi og historik</h3>
+              <p class="text-white/80 text-sm leading-relaxed">Se afregninger og leverancer kronologisk opdelt efter år og måned – let at gennemskue.</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Feature 6 -->
+        <div class="bg-white/10 rounded-lg p-5 md:p-6">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-full bg-mint/20 flex items-center justify-center flex-shrink-0 mt-1">
+              <svg class="w-5 h-5 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-white font-bold text-lg mb-2">Viden der hjælper i praksis</h3>
+              <p class="text-white/80 text-sm leading-relaxed">Direkte adgang til sortsinfo, skimmelvarsling, vidensbase og nyheder fra AKD og KMC Agro.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- CTAs -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8">
+        <!-- Secondary CTA -->
+        <a href="/bliv-andelshaver#kontakt" class="link-arrow">
+          Tal med os om ASB
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
           </svg>
-        </span>
-      </a>
+        </a>
+        
+        <!-- Primary CTA -->
+        <a href="/bliv-andelshaver" class="btn-primary">
+          <span>Sådan bliver du andelshaver</span>
+          <span class="btn-icon-circle">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </span>
+        </a>
+      </div>
     </div>
   </section>
 
