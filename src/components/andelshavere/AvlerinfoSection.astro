@@ -1,0 +1,95 @@
+---
+/**
+ * Avlerinfo Selvbetjening Section
+ * Showcases the mobile self-service app features
+ * Can be used on dashboard and bliv-andelshaver pages
+ */
+
+interface Props {
+  variant?: 'full' | 'compact'
+  showCTA?: boolean
+}
+
+const { variant = 'full', showCTA = true } = Astro.props
+
+// Features data
+const features = [
+  {
+    title: 'Mobil adgang – altid ved hånden',
+    description: 'Brug Avlerinfo på mobilen i marken, i maskinhuset eller på farten.',
+  },
+  {
+    title: 'Drift & levering i realtid',
+    description: 'Følg leveringsplan, vejning, ventetider og historik – live under kampagnen.',
+  },
+  {
+    title: 'Dokumenter samlet og overskuelige',
+    description: 'Vejesedler, afregninger, bestillinger og aftaler hænger sammen ét sted.',
+  },
+  {
+    title: 'Bestil og tilpas digitalt',
+    description: 'Læggekartofler, protamylasse, lejeaftaler og forkampagne håndteres direkte i app\'en.',
+  },
+]
+---
+
+<section class="relative bg-forest-green text-white pt-12 md:pt-16 pb-12 md:pb-16">
+  <div class="container-custom">
+    <!-- Section Header -->
+    <p class="text-mint font-bold text-sm mb-3 uppercase tracking-wide text-center">
+      Avlerinfo Selvbetjening
+    </p>
+    <h2 class="text-center mb-6 max-w-3xl mx-auto">
+      <span class="block font-sans font-extrabold text-2xl md:text-3xl lg:text-4xl text-white uppercase leading-tight">
+        DIT <span class="italic font-medium text-mint lowercase" style="font-family: 'Lora', serif;">DAGLIGE OVERBLIK</span> som andelshaver
+      </span>
+    </h2>
+    <div class="max-w-2xl mx-auto text-center mb-10">
+      <p class="text-white/90 text-base leading-relaxed">
+        Avlerinfo Selvbetjening er AKD's digitale platform for andelshavere. Her håndterer du det praktiske i hverdagen – drift, levering, dokumenter og aftaler – samlet ét sted, så du altid har overblik, også når der er travlt.
+      </p>
+    </div>
+    
+    <!-- Features Grid -->
+    <div class:list={[
+      "grid gap-4 md:gap-5 max-w-4xl mx-auto",
+      "grid-cols-1 sm:grid-cols-2",
+      showCTA && "mb-10"
+    ]}>
+      {features.map((feature) => (
+        <div class="bg-white/10 rounded-lg p-4 md:p-5">
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-full bg-mint/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg class="w-4 h-4 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-white font-bold text-base mb-1">{feature.title}</h3>
+              <p class="text-white/80 text-sm leading-relaxed">{feature.description}</p>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+    
+    <!-- CTA -->
+    {showCTA && (
+      <div class="text-center">
+        <a 
+          href="https://selvbetjening.avlerinfo.dk" 
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-primary"
+        >
+          <span>Læs mere om Avlerinfo Selvbetjening</span>
+          <span class="btn-icon-circle">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+            </svg>
+          </span>
+        </a>
+      </div>
+    )}
+  </div>
+</section>

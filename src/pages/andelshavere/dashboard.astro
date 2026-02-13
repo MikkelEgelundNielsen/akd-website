@@ -1,64 +1,145 @@
 ---
+/**
+ * Dashboard for Andelshavere
+ * 2-column layout featuring:
+ * - Column 1: News from AKD (Nyt fra AKD)
+ * - Column 2: Knowledge and quick access links (Faglig viden og genveje)
+ * Plus optional streamer banner for important announcements
+ * Plus Avlerinfo Selvbetjening and Next Step CTA sections
+ */
+
 import AndelshavereLayout from '@/layouts/AndelshavereLayout.astro'
-import NavigationCards from '@/components/andelshavere/NavigationCards.astro'
+import DashboardStreamer from '@/components/andelshavere/DashboardStreamer.astro'
+import NewsColumn from '@/components/andelshavere/NewsColumn.astro'
+import QuickAccessColumn from '@/components/andelshavere/QuickAccessColumn.astro'
+import AvlerinfoSection from '@/components/andelshavere/AvlerinfoSection.astro'
+import NextStepSection from '@/components/andelshavere/NextStepSection.astro'
+import { sanityClient } from '@/lib/sanity'
+import {
+  dashboardNewsQuery,
+  dashboardStreamerQuery,
+  dashboardQuickLinksQuery,
+} from '@/lib/sanityQueries'
+import type {
+  DashboardNews,
+  DashboardStreamer as DashboardStreamerType,
+  DashboardQuickLinks,
+} from '@/types/sanity'
 
 export const prerender = false; // This page must be server-rendered for authentication
 
 // User is available from middleware
 const user = Astro.locals.user;
+
+// Fetch all dashboard content from Sanity
+const [newsItems, streamer, quickLinks] = await Promise.all([
+  sanityClient.fetch<DashboardNews[]>(dashboardNewsQuery),
+  sanityClient.fetch<DashboardStreamerType>(dashboardStreamerQuery),
+  sanityClient.fetch<DashboardQuickLinks>(dashboardQuickLinksQuery),
+])
+
+// Placeholder news data for preview (used when no Sanity content exists)
+const placeholderNews: DashboardNews[] = [
+  {
+    _id: 'placeholder-1',
+    _type: 'dashboardNews',
+    title: 'Miniavlermøder med mange deltagere',
+    slug: { current: 'miniavlermoeder-2025', _type: 'slug' },
+    publishedAt: '2025-11-29T10:00:00Z',
+    category: 'generelt',
+    contentType: 'article',
+    excerpt: 'Der var ikke meget "mini" over fremmødet på de 4 miniavlermøder',
+  },
+  {
+    _id: 'placeholder-2',
+    _type: 'dashboardNews',
+    title: 'AKD søger en projektchef til barmarksprojekt',
+    slug: { current: 'projektchef-barmark', _type: 'slug' },
+    publishedAt: '2025-11-24T10:00:00Z',
+    category: 'generelt',
+    contentType: 'article',
+    excerpt: 'Vi søger en fagligt og erfaringsmæssigt velfunderet projektchef til større projekt',
+  },
+  {
+    _id: 'placeholder-3',
+    _type: 'dashboardNews',
+    title: 'Protamylassebestilling til 2026',
+    slug: { current: 'protamylasse-2026', _type: 'slug' },
+    publishedAt: '2025-11-17T10:00:00Z',
+    category: 'drift-kampagne',
+    contentType: 'article',
+    excerpt: 'Bestil protamylasse fra AKD til foråret 2026',
+  },
+  {
+    _id: 'placeholder-4',
+    _type: 'dashboardNews',
+    title: 'Maskinmester med el-teknisk baggrund',
+    slug: { current: 'maskinmester-job', _type: 'slug' },
+    publishedAt: '2025-11-11T10:00:00Z',
+    category: 'generelt',
+    contentType: 'article',
+    excerpt: 'Projektledelse, driftsoptimeringer, digitalisering og deltagelse i reparationer og vedligehold',
+  },
+  {
+    _id: 'placeholder-5',
+    _type: 'dashboardNews',
+    title: 'Vejeoperatør til AKD Midtjylland i Brande',
+    slug: { current: 'vejeoperator-brande', _type: 'slug' },
+    publishedAt: '2025-11-04T10:00:00Z',
+    category: 'generelt',
+    contentType: 'article',
+    excerpt: 'Indvejning og kvalitetskontrol',
+  },
+]
+
+// Use Sanity content if available, otherwise use placeholder
+const displayNews = newsItems && newsItems.length > 0 ? newsItems : placeholderNews
 ---
 
 <AndelshavereLayout 
   title="Dashboard - For Andelshavere"
   description="Velkommen til andelshaver-området"
 >
-  <section class="py-16 md:py-24 bg-warm-light">
+  <section class="py-12 md:py-16 bg-warm-light">
     <div class="container-custom">
-      <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-4">
+      <!-- Welcome Section -->
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
-          <h1 class="text-4xl md:text-5xl font-serif text-forest-green mb-2">
+          <h1 class="text-3xl md:text-4xl font-serif text-forest-green mb-2">
             Velkommen{user?.displayname ? `, ${user.displayname}` : ''}
           </h1>
-          <p class="text-lg text-charcoal">
-            Du er nu logget ind i andelshaver-området
+          <p class="text-charcoal/80">
+            Her finder du de seneste nyheder, faglig viden og hurtig adgang til dine vigtigste sider.
           </p>
         </div>
         <button 
           id="logout-btn"
-          class="bg-amber text-white px-6 py-3 rounded-lg hover:bg-burnt-orange transition-colors font-semibold"
+          class="bg-charcoal/10 text-charcoal px-5 py-2.5 rounded-lg hover:bg-charcoal/20 transition-colors font-medium text-sm"
           aria-label="Log ud af andelshaver-området"
         >
           Log ud
         </button>
       </div>
       
-      <!-- Dashboard Content - Navigation Cards from Sanity -->
-      <div class="mb-12">
-        <NavigationCards />
-      </div>
+      <!-- Streamer Banner (if active) -->
+      {streamer?.isActive && <DashboardStreamer streamer={streamer} />}
       
-      <!-- Quick Links Section -->
-      <div class="bg-forest-green text-white p-8 rounded-lg">
-        <h2 class="text-3xl font-serif mb-4">
-          Hurtige links
-        </h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <a href="/andelshavere/min-profil" class="hover:text-mint transition-colors">
-            → Min profil
-          </a>
-          <a href="/andelshavere/indstillinger" class="hover:text-mint transition-colors">
-            → Indstillinger
-          </a>
-          <a href="/om-akd" class="hover:text-mint transition-colors">
-            → Om AKD
-          </a>
-          <a href="/kontakt" class="hover:text-mint transition-colors">
-            → Kontakt
-          </a>
-        </div>
+      <!-- 2-Column Dashboard Grid (News takes more space) -->
+      <div class="dashboard-grid grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-6 lg:gap-8">
+        <!-- Column 1: News -->
+        <NewsColumn news={displayNews} />
+        
+        <!-- Column 2: Knowledge & Quick Access -->
+        <QuickAccessColumn quickLinks={quickLinks} />
       </div>
     </div>
   </section>
+  
+  <!-- Avlerinfo Selvbetjening Section -->
+  <AvlerinfoSection variant="compact" />
+  
+  <!-- Next Step CTA Section -->
+  <NextStepSection variant="compact" />
 </AndelshavereLayout>
 
 <script>
@@ -76,3 +157,18 @@ const user = Astro.locals.user;
   });
 </script>
 
+<style>
+  /* Ensure columns have equal height on larger screens */
+  @media (min-width: 1024px) {
+    .dashboard-grid > * {
+      height: fit-content;
+    }
+  }
+  
+  /* On medium screens (tablet), show 2 columns with same ratio */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .dashboard-grid {
+      grid-template-columns: 3fr 2fr;
+    }
+  }
+</style>

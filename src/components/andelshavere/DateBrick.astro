@@ -1,0 +1,42 @@
+---
+/**
+ * DateBrick Component
+ * Displays a date as a compact brick with day and month
+ * Used in the dashboard news column
+ */
+
+interface Props {
+  date: Date | string
+  class?: string
+}
+
+const { date, class: className = '' } = Astro.props
+
+// Parse the date
+const dateObj = typeof date === 'string' ? new Date(date) : date
+
+// Get day and month in Danish
+const day = dateObj.getDate().toString().padStart(2, '0')
+const monthNames = ['JAN', 'FEB', 'MAR', 'APR', 'MAJ', 'JUN', 'JUL', 'AUG', 'SEP', 'OKT', 'NOV', 'DEC']
+const month = monthNames[dateObj.getMonth()]
+---
+
+<div 
+  class:list={[
+    'date-brick',
+    'w-14 h-14 flex-shrink-0',
+    'bg-forest-green rounded',
+    'flex flex-col items-center justify-center',
+    className
+  ]}
+  aria-label={`${day}. ${month.toLowerCase()}`}
+>
+  <span class="text-white font-bold text-lg leading-tight">{day}</span>
+  <span class="text-white text-xs uppercase tracking-wide">{month}</span>
+</div>
+
+<style>
+  .date-brick {
+    min-width: 3.5rem;
+  }
+</style>

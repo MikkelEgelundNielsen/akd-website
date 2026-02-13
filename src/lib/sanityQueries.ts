@@ -197,3 +197,63 @@ export const andelshavereNavigationQuery = `*[_type == "andelshavereNavigation"]
   }
 }`
 
+// Dashboard News (newest first, max 5)
+export const dashboardNewsQuery = `*[_type == "dashboardNews"] | order(publishedAt desc)[0...5] {
+  _id,
+  title,
+  "slug": slug.current,
+  publishedAt,
+  category,
+  contentType,
+  excerpt,
+  link
+}`
+
+// Dashboard Streamer (singleton)
+export const dashboardStreamerQuery = `*[_type == "dashboardStreamer"][0] {
+  _id,
+  isActive,
+  icon,
+  title,
+  message,
+  link,
+  linkText
+}`
+
+// Dashboard Knowledge (singleton with expanded article references)
+export const dashboardKnowledgeQuery = `*[_type == "dashboardKnowledge"][0] {
+  _id,
+  title,
+  searchPlaceholder,
+  searchLink,
+  popularTopics[] {
+    label,
+    link
+  },
+  items[] {
+    contentType,
+    articleRef-> {
+      _id,
+      title,
+      "slug": slug.current,
+      excerpt,
+      "mainImage": mainImage.asset->url
+    },
+    manualTitle,
+    manualLink,
+    "thumbnail": thumbnail.asset->url,
+    category
+  }
+}`
+
+// Dashboard Quick Links (singleton)
+export const dashboardQuickLinksQuery = `*[_type == "dashboardQuickLinks"][0] {
+  _id,
+  title,
+  links[] {
+    label,
+    href,
+    openInNewTab
+  }
+}`
+

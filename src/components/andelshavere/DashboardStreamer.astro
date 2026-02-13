@@ -1,0 +1,56 @@
+---
+/**
+ * DashboardStreamer Component
+ * Displays an important announcement banner on the dashboard
+ * Only rendered when isActive is true
+ */
+
+import type { DashboardStreamer } from '@/types/sanity'
+
+interface Props {
+  streamer: DashboardStreamer
+}
+
+const { streamer } = Astro.props
+
+// Don't render if not active
+if (!streamer?.isActive) {
+  return null
+}
+
+// Icon mapping
+const iconMap: Record<string, string> = {
+  warning: '⚠️',
+  info: 'ℹ️',
+  urgent: '🚨',
+}
+
+const icon = iconMap[streamer.icon] || '⚠️'
+const linkText = streamer.linkText || 'Læs mere'
+---
+
+<div 
+  class="streamer-banner bg-amber/90 border-l-4 border-burnt-orange rounded-r-lg p-4 md:p-5 mb-8"
+  role="alert"
+>
+  <div class="flex items-start gap-3">
+    <span class="text-2xl flex-shrink-0" aria-hidden="true">{icon}</span>
+    <div class="flex-grow">
+      <h2 class="font-bold text-charcoal text-lg mb-1">
+        {streamer.title}
+      </h2>
+      <p class="text-charcoal/90 leading-relaxed">
+        {streamer.message}
+      </p>
+      {streamer.link && (
+        <a 
+          href={streamer.link}
+          class="inline-flex items-center gap-1 mt-3 text-charcoal font-semibold hover:text-forest-green transition-colors"
+        >
+          {linkText}
+          <span aria-hidden="true">→</span>
+        </a>
+      )}
+    </div>
+  </div>
+</div>

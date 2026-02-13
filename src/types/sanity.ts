@@ -193,3 +193,73 @@ export interface Page {
   content: PortableTextContent
 }
 
+// Dashboard Types
+
+export type DashboardCategory = 'drift-kampagne' | 'oekonomi' | 'generelt'
+
+export interface DashboardNews {
+  _id: string
+  _type: 'dashboardNews'
+  title: string
+  slug: Slug
+  publishedAt: string
+  category: DashboardCategory
+  contentType: 'article' | 'video'
+  excerpt?: string
+  link?: string
+}
+
+export interface DashboardStreamer {
+  _id: string
+  _type: 'dashboardStreamer'
+  isActive: boolean
+  icon: 'warning' | 'info' | 'urgent'
+  title: string
+  message: string
+  link?: string
+  linkText?: string
+}
+
+export interface DashboardKnowledgeTopic {
+  label: string
+  link?: string
+}
+
+export interface DashboardKnowledgeItem {
+  contentType: 'article' | 'video'
+  articleRef?: {
+    _id: string
+    title: string
+    slug: Slug
+    excerpt?: string
+    mainImage?: string
+  }
+  manualTitle?: string
+  manualLink?: string
+  thumbnail?: string
+  category?: DashboardCategory
+}
+
+export interface DashboardKnowledge {
+  _id: string
+  _type: 'dashboardKnowledge'
+  title: string
+  searchPlaceholder?: string
+  searchLink?: string
+  popularTopics?: DashboardKnowledgeTopic[]
+  items?: DashboardKnowledgeItem[]
+}
+
+export interface DashboardQuickLink {
+  label: string
+  href: string
+  openInNewTab?: boolean
+}
+
+export interface DashboardQuickLinks {
+  _id: string
+  _type: 'dashboardQuickLinks'
+  title: string
+  links?: DashboardQuickLink[]
+}
+
