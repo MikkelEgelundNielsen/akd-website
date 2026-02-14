@@ -4,7 +4,7 @@ import vue from '@astrojs/vue';
 import cloudflare from '@astrojs/cloudflare';
 
 export default defineConfig({
-  output: 'hybrid', // Hybrid mode: SSR for auth pages, pre-render for static pages
+  output: 'static', // Hybrid mode: SSR for auth pages, pre-render for static pages
   adapter: cloudflare({
     mode: 'directory'
   }),

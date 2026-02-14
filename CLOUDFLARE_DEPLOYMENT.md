@@ -162,7 +162,7 @@ Your `astro.config.mjs` is configured with:
 
 ```javascript
 export default defineConfig({
-  output: 'hybrid', // Best of both worlds
+  output: 'static', // Best of both worlds
   adapter: cloudflare({
     mode: 'directory'
   }),

@@ -11,7 +11,7 @@ Your AKD website is now ready to deploy to Cloudflare Pages with the **hybrid re
    - Removed `@astrojs/node` dependency
 
 2. **✅ Updated Astro Configuration**
-   - Changed from `output: 'server'` to `output: 'hybrid'`
+   - Changed from `output: 'server'` to `output: 'static'`
    - Switched adapter from Node to Cloudflare
    - File: `astro.config.mjs`
 

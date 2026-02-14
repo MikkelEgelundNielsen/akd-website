@@ -23,7 +23,7 @@ const { preHeader, headline, sections } = Astro.props
       </p>
     )}
     
-    <h1 class="font-sans font-extrabold text-charcoal text-3xl md:text-4xl lg:text-[52px] !leading-tight text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h1 class="font-sans font-extrabold text-charcoal text-4xl md:text-[43px] lg:text-[62px] !leading-tight text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <span class="block" set:html={headline} />
     </h1>
   </div>
@@ -270,19 +270,19 @@ const { preHeader, headline, sections } = Astro.props
   
   /* Main header (H1 is in hero, H2 is first level in content) */
   .prose-akd :global(h2) {
-    @apply font-serif font-bold italic text-charcoal text-[34px] leading-tight mb-6 mt-12 first:mt-0;
+    @apply font-serif font-bold italic text-charcoal text-[41px] leading-tight mb-6 mt-12 first:mt-0;
     scroll-margin-top: 120px;
   }
   
   /* Sub header */
   .prose-akd :global(h3) {
-    @apply font-sans font-semibold text-charcoal text-[28px] leading-tight mb-4 mt-8;
+    @apply font-sans font-semibold text-charcoal text-[34px] leading-tight mb-4 mt-8;
     scroll-margin-top: 120px;
   }
   
   /* Smaller sub header */
   .prose-akd :global(h4) {
-    @apply font-sans font-semibold text-charcoal text-xl leading-tight mb-3 mt-6;
+    @apply font-sans font-semibold text-charcoal text-2xl leading-tight mb-3 mt-6;
     scroll-margin-top: 120px;
   }
   

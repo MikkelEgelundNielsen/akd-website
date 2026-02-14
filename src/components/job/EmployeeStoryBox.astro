@@ -9,6 +9,7 @@ interface Props {
   imageAlt: string
   backgroundColor: 'forest-green' | 'charcoal'
   imagePosition: 'left' | 'right'
+  startDate?: string // ISO format: YYYY-MM-DD (CMS-ready)
 }
 
 const { 
@@ -20,12 +21,41 @@ const {
   imageUrl,
   imageAlt,
   backgroundColor,
-  imagePosition
+  imagePosition,
+  startDate
 } = Astro.props
 
 const bgColor = backgroundColor === 'forest-green' ? 'bg-forest-green' : 'bg-charcoal'
 const textColor = 'text-white'
 const accentColor = 'text-mint'
+
+// Calculate Danish tenure text from ISO date string
+function calculateTenure(dateStr: string): string {
+  const [year, month] = dateStr.split('-').map(Number)
+  const now = new Date()
+  const totalMonths = (now.getFullYear() - year) * 12 + (now.getMonth() + 1 - month)
+
+  if (totalMonths < 0) {
+    return 'Starter snart.'
+  } else if (totalMonths < 3) {
+    return 'Ansat for få måneder siden.'
+  } else if (totalMonths < 12) {
+    return `Ansat i ${totalMonths} måneder.`
+  } else {
+    const years = Math.round(totalMonths / 12)
+    return `Ansat i ${years} år.`
+  }
+}
+
+// Format ISO date to Danish display format
+function formatDanishDate(dateStr: string): string {
+  const danishMonths = ['januar', 'februar', 'marts', 'april', 'maj', 'juni', 'juli', 'august', 'september', 'oktober', 'november', 'december']
+  const [year, month, day] = dateStr.split('-').map(Number)
+  return `${day}. ${danishMonths[month - 1]} ${year}`
+}
+
+const tenureText = startDate ? calculateTenure(startDate) : ''
+const formattedDate = startDate ? formatDanishDate(startDate) : ''
 ---
 
 <div class:list={[
@@ -57,7 +87,7 @@ const accentColor = 'text-mint'
     ]}>
       <!-- Quote -->
       <blockquote class:list={[
-        'font-serif italic text-2xl md:text-3xl lg:text-4xl leading-tight mb-10 md:mb-12',
+        'font-serif italic text-[29px] md:text-[40px] lg:text-[40px] leading-[3.2rem] mb-10 md:mb-12',
         textColor
       ]}>
         {quote}
@@ -65,19 +95,21 @@ const accentColor = 'text-mint'
       
       <!-- Name and Title -->
       <p class:list={[
-        'font-sans font-semibold text-base md:text-lg mb-3',
+        'font-sans font-semibold text-lg md:text-xl mb-3',
         accentColor
       ]}>
         {name}, {title}, {location}
       </p>
       
-      <!-- Description -->
+      <!-- Description + dynamic tenure -->
       <p class:list={[
-        'text-base md:text-lg leading-relaxed',
+        'text-lg md:text-xl leading-relaxed',
         textColor
       ]}>
-        {description}
+        {description}<br/>{tenureText ? ` ${tenureText}` : ''}
       </p>
+
+      
     </div>
   </div>
 </div>

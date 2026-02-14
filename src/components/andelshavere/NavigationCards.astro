@@ -17,7 +17,7 @@ const navigation: AndelshavereNavigation | null = await sanityClient.fetch(andel
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     {navigation.menuItems.map((item) => (
       <div class="bg-light p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-        <h2 class="text-2xl font-serif text-forest-green mb-4">
+        <h2 class="text-[29px] font-serif text-forest-green mb-4">
           {item.icon && <span aria-hidden="true">{item.icon} </span>}
           {item.label}
         </h2>

@@ -37,7 +37,7 @@ const getNewsLink = (item: DashboardNews) => {
 ---
 
 <div class="news-column bg-light rounded-lg p-6">
-  <h2 class="text-2xl font-serif font-bold text-forest-green mb-6 uppercase tracking-wide">
+  <h2 class="text-[29px] font-serif font-bold text-forest-green mb-6 uppercase tracking-wide">
     Nyt fra AKD
   </h2>
   
@@ -47,7 +47,7 @@ const getNewsLink = (item: DashboardNews) => {
         <li class="news-item flex gap-4">
           <DateBrick date={item.publishedAt} />
           <div class="flex-grow min-w-0">
-            <h3 class="text-lg font-semibold text-charcoal leading-snug mb-1">
+            <h3 class="text-[22px] font-semibold text-charcoal leading-snug mb-1">
               {item.title}
             </h3>
             {item.excerpt && (
