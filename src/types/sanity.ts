@@ -263,3 +263,150 @@ export interface DashboardQuickLinks {
   links?: DashboardQuickLink[]
 }
 
+// Employee Story (individual document)
+export interface EmployeeStory {
+  _id: string
+  _type: 'employeeStory'
+  name: string
+  jobTitle: string
+  department: string
+  location: string
+  quote: string
+  description: string
+  image: string       // resolved URL from GROQ
+  imageAlt: string
+  startDate: string   // ISO date
+}
+
+// Page Hero (reusable object)
+export interface PageHero {
+  preHeadline?: string
+  headline?: PortableTextBlock[]
+  introText?: PortableTextBlock[]
+}
+
+// Meet Employees Page (singleton)
+export interface MeetEmployeesPageDepartment {
+  title: string
+  employees: EmployeeStory[]
+}
+
+export interface MeetEmployeesPage {
+  _id: string
+  _type: 'meetEmployeesPage'
+  title: string
+  hero?: PageHero
+  departments: MeetEmployeesPageDepartment[]
+  primaryCtaText?: string
+  primaryCtaUrl?: string
+  secondaryCtaText?: string
+  secondaryCtaUrl?: string
+  seo?: SEO
+}
+
+// Job Listing (individual document)
+export interface JobListing {
+  _id: string
+  _type: 'jobListing'
+  title: string
+  slug: string              // resolved from slug.current in GROQ
+  description: string
+  location: string
+  department?: string
+  isActive: boolean
+  publishedAt?: string
+  body?: PortableTextBlock[] // rich text for the detail page
+  applicationUrl?: string
+  applicationDeadline?: string
+  contactName?: string
+  contactPhone?: string
+  contactEmail?: string
+  externalPartner?: string
+  employees?: EmployeeStory[] // expanded references for the detail page
+  seo?: SEO
+}
+
+// Photo Gallery (reusable document)
+export interface PhotoGalleryImage {
+  url: string
+  alt: string
+}
+
+export interface PhotoGallery {
+  _id: string
+  _type: 'photoGallery'
+  title: string
+  images: PhotoGalleryImage[]
+}
+
+// Content Box Section (reusable object)
+export interface ContentBoxItem {
+  title: string
+  description: string
+  icon: 'arrow' | 'check'
+  href?: string
+}
+
+export interface ContentBoxSection {
+  variant?: 'light' | 'dark'
+  layout?: 'split' | 'full-width'
+  preHeader?: string
+  headline: string
+  image: string       // resolved URL from GROQ
+  imageAlt: string
+  pullUp?: number
+  items: ContentBoxItem[]
+}
+
+// Working at AKD Page (singleton)
+export interface WorkingAtAkdPage {
+  _id: string
+  _type: 'workingAtAkdPage'
+  title: string
+  hero?: PageHero
+  contentBox?: ContentBoxSection
+  photoGallery?: PhotoGallery
+  primaryCtaText?: string
+  primaryCtaUrl?: string
+  secondaryCtaText?: string
+  secondaryCtaUrl?: string
+  seo?: SEO
+}
+
+// Open Application Page (singleton)
+export interface OpenApplicationPage {
+  _id: string
+  _type: 'openApplicationPage'
+  title: string
+  hero?: PageHero
+  body?: PortableTextBlock[]
+  contactEmail: string
+  contactName?: string
+  contactTitle?: string
+  contactPhone?: string
+  primaryCtaText?: string
+  primaryCtaUrl?: string
+  secondaryCtaText?: string
+  secondaryCtaUrl?: string
+  seo?: SEO
+}
+
+// Job Listings Page (singleton)
+export interface JobListingsPage {
+  _id: string
+  _type: 'jobListingsPage'
+  title: string
+  hero?: PageHero
+  listingsHeadline?: string
+  listingsCtaPrimaryText?: string
+  listingsCtaPrimaryUrl?: string
+  listingsCtaSecondaryText?: string
+  listingsCtaSecondaryUrl?: string
+  contentBox?: ContentBoxSection
+  bottomCtaPrimaryText?: string
+  bottomCtaPrimaryUrl?: string
+  bottomCtaSecondaryText?: string
+  bottomCtaSecondaryUrl?: string
+  seo?: SEO
+}
+

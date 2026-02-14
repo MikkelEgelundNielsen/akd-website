@@ -257,3 +257,219 @@ export const dashboardQuickLinksQuery = `*[_type == "dashboardQuickLinks"][0] {
   }
 }`
 
+// Meet Employees Page (singleton with expanded employee references)
+export const meetEmployeesPageQuery = `*[_type == "meetEmployeesPage"][0] {
+  _id,
+  title,
+  hero {
+    preHeadline,
+    headline,
+    introText
+  },
+  departments[] {
+    title,
+    employees[]-> {
+      _id,
+      name,
+      jobTitle,
+      department,
+      location,
+      quote,
+      description,
+      "image": image.asset->url,
+      "imageAlt": image.alt,
+      startDate
+    }
+  },
+  primaryCtaText,
+  primaryCtaUrl,
+  secondaryCtaText,
+  secondaryCtaUrl,
+  seo {
+    metaTitle,
+    metaDescription,
+    "openGraphImage": openGraphImage.asset->url,
+    noIndex
+  }
+}`
+
+// Employees by department (for reuse on job pages etc.)
+export const employeesByDepartmentQuery = (department: string) =>
+  `*[_type == "employeeStory" && department == "${department}"] | order(name asc) {
+    _id,
+    name,
+    jobTitle,
+    department,
+    location,
+    quote,
+    description,
+    "image": image.asset->url,
+    "imageAlt": image.alt,
+    startDate
+  }`
+
+// All employees
+export const allEmployeesQuery = `*[_type == "employeeStory"] | order(name asc) {
+  _id,
+  name,
+  jobTitle,
+  department,
+  location,
+  quote,
+  description,
+  "image": image.asset->url,
+  "imageAlt": image.alt,
+  startDate
+}`
+
+// ── Content Box helper (shared projection) ──
+const contentBoxProjection = `{
+  variant,
+  layout,
+  preHeader,
+  headline,
+  "image": image.asset->url,
+  "imageAlt": image.alt,
+  pullUp,
+  items[] {
+    title,
+    description,
+    icon,
+    href
+  }
+}`
+
+// Working at AKD Page (singleton with expanded photoGallery)
+export const workingAtAkdPageQuery = `*[_type == "workingAtAkdPage"][0] {
+  _id,
+  title,
+  hero {
+    preHeadline,
+    headline,
+    introText
+  },
+  "contentBox": contentBox ${contentBoxProjection},
+  photoGallery-> {
+    _id,
+    title,
+    images[] {
+      "url": asset->url,
+      alt
+    }
+  },
+  primaryCtaText,
+  primaryCtaUrl,
+  secondaryCtaText,
+  secondaryCtaUrl,
+  seo {
+    metaTitle,
+    metaDescription,
+    "openGraphImage": openGraphImage.asset->url,
+    noIndex
+  }
+}`
+
+// Job Listings Page (singleton)
+export const jobListingsPageQuery = `*[_type == "jobListingsPage"][0] {
+  _id,
+  title,
+  hero {
+    preHeadline,
+    headline,
+    introText
+  },
+  listingsHeadline,
+  listingsCtaPrimaryText,
+  listingsCtaPrimaryUrl,
+  listingsCtaSecondaryText,
+  listingsCtaSecondaryUrl,
+  "contentBox": contentBox ${contentBoxProjection},
+  bottomCtaPrimaryText,
+  bottomCtaPrimaryUrl,
+  bottomCtaSecondaryText,
+  bottomCtaSecondaryUrl,
+  seo {
+    metaTitle,
+    metaDescription,
+    "openGraphImage": openGraphImage.asset->url,
+    noIndex
+  }
+}`
+
+// Open Application Page (singleton)
+export const openApplicationPageQuery = `*[_type == "openApplicationPage"][0] {
+  _id,
+  title,
+  hero {
+    preHeadline,
+    headline,
+    introText
+  },
+  body,
+  contactEmail,
+  contactName,
+  contactTitle,
+  contactPhone,
+  primaryCtaText,
+  primaryCtaUrl,
+  secondaryCtaText,
+  secondaryCtaUrl,
+  seo {
+    metaTitle,
+    metaDescription,
+    "openGraphImage": openGraphImage.asset->url,
+    noIndex
+  }
+}`
+
+// Active job listings (ordered by publishedAt)
+export const activeJobListingsQuery = `*[_type == "jobListing" && isActive == true] | order(publishedAt desc) {
+  _id,
+  title,
+  "slug": slug.current,
+  description,
+  location,
+  department,
+  isActive,
+  publishedAt,
+  applicationDeadline
+}`
+
+// Job listing by slug (detail page)
+export const jobListingBySlugQuery = (slug: string) =>
+  `*[_type == "jobListing" && slug.current == "${slug}"][0] {
+    _id,
+    title,
+    "slug": slug.current,
+    description,
+    location,
+    department,
+    isActive,
+    publishedAt,
+    body,
+    applicationUrl,
+    applicationDeadline,
+    contactName,
+    contactPhone,
+    contactEmail,
+    externalPartner,
+    employees[]-> {
+      _id,
+      name,
+      jobTitle,
+      department,
+      location,
+      quote,
+      description,
+      "image": image.asset->url,
+      "imageAlt": image.alt,
+      startDate
+    },
+    seo {
+      metaTitle,
+      metaDescription,
+      "openGraphImage": openGraphImage.asset->url,
+      noIndex
+    }
+  }`
+

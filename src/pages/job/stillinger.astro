@@ -2,13 +2,66 @@
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import JobCard from '@/components/job/JobCard.astro'
 import ContentBox from '@/components/sections/ContentBox.astro'
+import { sanityClient } from '@/lib/sanity'
+import { jobListingsPageQuery, activeJobListingsQuery } from '@/lib/sanityQueries'
+import { portableTextToHtml } from '@/lib/portableTextSerializer'
+import type { JobListingsPage, JobListing } from '@/types/sanity'
 
-export const prerender = true; // Pre-render this page at build time
+export const prerender = true;
+
+// Fetch page config and active listings in parallel
+let page: JobListingsPage | null = null
+let listings: JobListing[] = []
+try {
+  ;[page, listings] = await Promise.all([
+    sanityClient.fetch<JobListingsPage>(jobListingsPageQuery),
+    sanityClient.fetch<JobListing[]>(activeJobListingsQuery),
+  ])
+} catch (error) {
+  console.error('Error fetching Job Listings page from Sanity:', error)
+}
+
+// Convert hero portable text to HTML
+const headlineHtml = page?.hero?.headline
+  ? portableTextToHtml(page.hero.headline, { addHeadingIds: false })
+  : 'VI SØGER <span class="font-serif italic text-mint">nye kolleger</span> I BRANDE OG TOFTLUND'
+
+const introHtml = page?.hero?.introText
+  ? portableTextToHtml(page.hero.introText, { addHeadingIds: false })
+  : ''
+
+// SEO
+const metaTitle = page?.seo?.metaTitle || 'Ledige Stillinger'
+const metaDescription = page?.seo?.metaDescription || 'Se alle ledige stillinger hos AKD Danmark. Vi søger nye kolleger i Brande og Toftlund.'
+
+// Fallbacks
+const preHeadline = page?.hero?.preHeadline || 'AKD VOKSER - VI ANSÆTTER NU'
+const listingsHeadline = page?.listingsHeadline || 'Ledige stillinger – vi søger lige nu'
+
+// Listings CTAs
+const listingsCtaPrimaryText = page?.listingsCtaPrimaryText || 'Mød vores medarbejdere'
+const listingsCtaPrimaryUrl = page?.listingsCtaPrimaryUrl || '/job/moed-vores-medarbejdere'
+const listingsCtaSecondaryText = page?.listingsCtaSecondaryText || 'Send en uopfordret ansøgning'
+const listingsCtaSecondaryUrl = page?.listingsCtaSecondaryUrl || '/job/ansoegning'
+
+// ContentBox data
+const contentBox = page?.contentBox
+const contentBoxItems = contentBox?.items || [
+  { title: 'Fællesskab i hverdagen', description: 'Du bliver en del af et andelsselskab, hvor fællesskabet er fundamentet. Der er plads til at hjælpe hinanden, grine sammen og være stolte af det, vi skaber.', icon: 'check' as const },
+  { title: 'Udvikling og oplæring', description: 'Hos os starter du ikke alene. Vi giver grundig oplæring, tilbyder efteruddannelse og sørger for, at du kan vokse i takt med dine opgaver.', icon: 'check' as const },
+  { title: 'Tryghed og sikkerhed', description: 'Hos AKD kan du stole på, at tingene er i orden. Vi investerer i moderne anlæg, gode arbejdsforhold og sikkerhed hver eneste dag.', icon: 'check' as const },
+]
+
+// Bottom CTAs
+const bottomCtaPrimaryText = page?.bottomCtaPrimaryText || 'Læs mere om at arbejde hos AKD'
+const bottomCtaPrimaryUrl = page?.bottomCtaPrimaryUrl || '/job/at-arbejde-hos-akd'
+const bottomCtaSecondaryText = page?.bottomCtaSecondaryText || 'Mød vores medarbejdere'
+const bottomCtaSecondaryUrl = page?.bottomCtaSecondaryUrl || '/job/moed-vores-medarbejdere'
 ---
 
 <BaseLayout 
-  title="Ledige Stillinger"
-  description="Se alle ledige stillinger hos AKD Danmark. Vi søger nye kolleger i Brande og Toftlund."
+  title={metaTitle}
+  description={metaDescription}
   navTheme="light"
 >
   <!-- Hero Section -->
@@ -16,22 +69,18 @@ export const prerender = true; // Pre-render this page at build time
     <div class="container-custom">
       <!-- Pre-headline -->
       <p class="text-mint font-bold text-base mb-6 uppercase tracking-wide text-center">
-        AKD VOKSER - VI ANSÆTTER NU
+        {preHeadline}
       </p>
       
       <!-- Main Headline -->
       <h1 class="text-center mb-8 md:mb-12 max-w-4xl mx-auto">
-        <span class="block font-sans font-extrabold text-[43px] md:text-[58px] lg:text-[62px] text-charcoal uppercase leading-tight">
-          VI SØGER <span class="italic font-medium text-mint lowercase" style="font-family: 'Lora', serif;">nye kolleger</span><br/> I BRANDE OG TOFTLUND
-        </span>
+        <span class="block font-sans font-extrabold text-[43px] md:text-[58px] lg:text-[62px] text-charcoal uppercase leading-tight [&_.font-serif]:lowercase [&_.font-serif]:font-medium" set:html={headlineHtml} />
       </h1>
       
       <!-- Body Text -->
-      <div class="max-w-4xl mx-auto text-center">
-        <p class="text-charcoal text-lg md:text-xl leading-relaxed">
-          AKD vokser - og vi har brug for flere dygtige hænder og hoveder. Her finder du alle aktuelle stillinger. Uanset om du er procesoperatør, lagermedarbejder eller maskinmester, får du oplæring, moderne rammer og kolleger, der bakker dig op.
-        </p>
-      </div>
+      {introHtml && (
+        <div class="max-w-4xl mx-auto text-center [&_p]:text-charcoal [&_p]:text-lg [&_p]:md:text-xl [&_p]:leading-relaxed" set:html={introHtml} />
+      )}
     </div>
   </section>
 
@@ -40,53 +89,38 @@ export const prerender = true; // Pre-render this page at build time
     <div class="container-custom">
       <div class="max-w-5xl mx-auto">
         <h2 class="font-serif italic text-4xl md:text-[43px] text-charcoal text-center mb-8 md:mb-12">
-          Ledige stillinger – vi søger lige nu
+          {listingsHeadline}
         </h2>
         
         <!-- Job Cards -->
-        <div class="space-y-4 mb-8">
-          <JobCard
-            title="Smed eller klejnsmed"
-            description="Bliv en del af et stærkt teknisk team"
-            location="Toftlund"
-            href="/job/stillinger"
-          />
-          
-          <JobCard
-            title="Procesoperatør"
-            description="Indgå i et team, der samarbejder tæt"
-            location="Brande"
-            href="/job/stillinger"
-          />
-          
-          <JobCard
-            title="Procesoperatør"
-            description="Bliv en del af et fast team med din holdmakker"
-            location="Toftlund"
-            href="/job/stillinger"
-          />
-          
-          <JobCard
-            title="Vejehusoperatør"
-            description="Bliv en vigtig brik i vores sæsonbaserede produktion"
-            location="Toftlund"
-            href="/job/stillinger"
-          />
-        </div>
+        {listings.length > 0 ? (
+          <div class="space-y-4 mb-8">
+            {listings.map((job) => (
+              <JobCard
+                title={job.title}
+                description={job.description}
+                location={job.location}
+                href={`/job/stillinger/${job.slug}`}
+              />
+            ))}
+          </div>
+        ) : (
+          <p class="text-center text-charcoal/70 text-lg mb-8">
+            Der er ingen ledige stillinger lige nu. Hold øje med siden eller send en uopfordret ansøgning.
+          </p>
+        )}
         
-        <!-- Bottom CTAs -->
+        <!-- Listings CTAs -->
         <div class="flex flex-col sm:flex-row items-center justify-center gap-6 mt-12">
-          <!-- Secondary CTA -->
-          <a href="/job/ansoegning" class="btn-secondary">
-            Send en uopfordret ansøgning
+          <a href={listingsCtaSecondaryUrl} class="btn-secondary">
+            {listingsCtaSecondaryText}
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
             </svg>
           </a>
           
-          <!-- Primary CTA -->
-          <a href="/job/moed-vores-medarbejdere" class="btn-primary">
-            <span>Mød vores medarbejdere</span>
+          <a href={listingsCtaPrimaryUrl} class="btn-primary">
+            <span>{listingsCtaPrimaryText}</span>
             <span class="btn-icon-circle">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
@@ -101,30 +135,14 @@ export const prerender = true; // Pre-render this page at build time
   <!-- Why Choose AKD Section -->
   <section class="relative bg-forest-green pt-1 pb-16 md:pb-24">
     <ContentBox
-      variant="light"
-      layout="full-width"
-      preHeader="Hvorfor vælge AKD?"
-      headline="Mere end et job – en del af fællesskabet"
-      imageUrl="/images/hvofor-vaelge-akd.png"
-      imageAlt="Medarbejdere hos AKD i kontrolrum"
-      pullUp={100}
-      items={[
-        {
-          title: 'Fællesskab i hverdagen',
-          description: 'Du bliver en del af et andelsselskab, hvor fællesskabet er fundamentet. Der er plads til at hjælpe hinanden, grine sammen og være stolte af det, vi skaber.',
-          icon: 'check'
-        },
-        {
-          title: 'Udvikling og oplæring',
-          description: 'Hos os starter du ikke alene. Vi giver grundig oplæring, tilbyder efteruddannelse og sørger for, at du kan vokse i takt med dine opgaver.',
-          icon: 'check'
-        },
-        {
-          title: 'Tryghed og sikkerhed',
-          description: 'Hos AKD kan du stole på, at tingene er i orden. Vi investerer i moderne anlæg, gode arbejdsforhold og sikkerhed hver eneste dag.',
-          icon: 'check'
-        }
-      ]}
+      variant={contentBox?.variant || 'light'}
+      layout={contentBox?.layout || 'full-width'}
+      preHeader={contentBox?.preHeader || 'Hvorfor vælge AKD?'}
+      headline={contentBox?.headline || 'Mere end et job – en del af fællesskabet'}
+      imageUrl={contentBox?.image || '/images/hvofor-vaelge-akd.png'}
+      imageAlt={contentBox?.imageAlt || 'Medarbejdere hos AKD i kontrolrum'}
+      pullUp={contentBox?.pullUp || 100}
+      items={contentBoxItems}
     />
   </section>
 
@@ -132,17 +150,15 @@ export const prerender = true; // Pre-render this page at build time
   <section class="relative bg-forest-green pb-16 md:pb-24">
     <div class="container-custom">
       <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
-        <!-- Secondary CTA -->
-        <a href="/job/moed-vores-medarbejdere" class="btn-secondary">
-          Mød vores medarbejdere
+        <a href={bottomCtaSecondaryUrl} class="btn-secondary">
+          {bottomCtaSecondaryText}
           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
           </svg>
         </a>
         
-        <!-- Primary CTA -->
-        <a href="/job/at-arbejde-hos-akd" class="btn-primary">
-          <span>Læs mere om at arbejde hos AKD</span>
+        <a href={bottomCtaPrimaryUrl} class="btn-primary">
+          <span>{bottomCtaPrimaryText}</span>
           <span class="btn-icon-circle">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>

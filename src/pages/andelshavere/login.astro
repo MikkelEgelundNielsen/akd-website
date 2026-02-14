@@ -6,7 +6,7 @@ export const prerender = false; // This page must be server-rendered for authent
 // If already logged in, redirect to dashboard
 const authToken = Astro.cookies.get('akd_auth_token')?.value;
 if (authToken) {
-  return Astro.redirect('/andelshavere/levering-og-kampagne');
+  return Astro.redirect('/andelshavere/dashboard');
 }
 ---
 

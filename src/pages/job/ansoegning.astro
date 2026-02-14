@@ -1,0 +1,182 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import { sanityClient } from '@/lib/sanity'
+import { openApplicationPageQuery } from '@/lib/sanityQueries'
+import { portableTextToHtml } from '@/lib/portableTextSerializer'
+import type { OpenApplicationPage } from '@/types/sanity'
+
+export const prerender = true;
+
+// Fetch page data from Sanity
+let page: OpenApplicationPage | null = null
+try {
+  page = await sanityClient.fetch<OpenApplicationPage>(openApplicationPageQuery)
+} catch (error) {
+  console.error('Error fetching Open Application page from Sanity:', error)
+}
+
+// Convert hero portable text to HTML
+const headlineHtml = page?.hero?.headline
+  ? portableTextToHtml(page.hero.headline, { addHeadingIds: false })
+  : 'VI VIL GERNE <span class="font-serif italic text-mint">høre fra dig</span>'
+
+const introHtml = page?.hero?.introText
+  ? portableTextToHtml(page.hero.introText, { addHeadingIds: false })
+  : '<p>Selvom vi ikke har en ledig stilling, der matcher dig lige nu, er du altid velkommen til at sende en uopfordret ansøgning. Vi er en virksomhed i vækst, og vi er altid interesserede i at møde dygtige og engagerede mennesker.</p>'
+
+// Body content
+const bodyHtml = page?.body
+  ? portableTextToHtml(page.body, { addHeadingIds: false })
+  : ''
+
+// SEO
+const metaTitle = page?.seo?.metaTitle || 'Send en uopfordret ansøgning – AKD Danmark'
+const metaDescription = page?.seo?.metaDescription || 'Er du interesseret i at arbejde hos AKD? Send en uopfordret ansøgning og fortæl os, hvad du kan bidrage med.'
+
+// Fallbacks
+const preHeadline = page?.hero?.preHeadline || 'Uopfordret ansøgning'
+const contactEmail = page?.contactEmail || 'job@akd.dk'
+const contactName = page?.contactName || ''
+const contactTitle = page?.contactTitle || ''
+const contactPhone = page?.contactPhone || ''
+
+// CTAs
+const primaryCtaText = page?.primaryCtaText || 'Se ledige stillinger'
+const primaryCtaUrl = page?.primaryCtaUrl || '/job/stillinger'
+const secondaryCtaText = page?.secondaryCtaText || 'Mød vores medarbejdere'
+const secondaryCtaUrl = page?.secondaryCtaUrl || '/job/moed-vores-medarbejdere'
+---
+
+<BaseLayout 
+  title={metaTitle}
+  description={metaDescription}
+  navTheme="light"
+>
+  <!-- Hero Section -->
+  <section class="relative bg-warm-light pt-12 md:pt-16 lg:pt-20 pb-16 section-after-nav">
+    <div class="container-custom">
+      <!-- Pre-headline -->
+      <p class="text-mint font-bold text-base mb-6 uppercase tracking-wide text-center">
+        {preHeadline}
+      </p>
+      
+      <!-- Main Headline -->
+      <h1 class="text-center mb-8 md:mb-12 max-w-4xl mx-auto">
+        <span class="block font-sans font-extrabold text-[43px] md:text-[58px] lg:text-[62px] text-charcoal uppercase leading-tight [&_.font-serif]:lowercase [&_.font-serif]:font-medium" set:html={headlineHtml} />
+      </h1>
+      
+      <!-- Intro Text -->
+      <div class="max-w-3xl mx-auto text-center [&_p]:text-charcoal [&_p]:text-lg [&_p]:md:text-xl [&_p]:leading-relaxed" set:html={introHtml} />
+    </div>
+  </section>
+
+  <!-- Content Card -->
+  <section class="relative bg-warm-light pb-16 md:pb-24">
+    <div class="container-custom">
+      <div class="bg-white rounded-2xl shadow-md overflow-hidden max-w-4xl mx-auto">
+
+        <!-- Body Content (from Sanity) -->
+        {bodyHtml ? (
+          <div class="px-8 md:px-12 lg:px-16 py-12 md:py-16">
+            <div class="max-w-3xl prose-akd [&_h2]:font-sans [&_h2]:font-bold [&_h2]:text-2xl [&_h2]:md:text-3xl [&_h2]:text-charcoal [&_h2]:mt-10 [&_h2]:mb-4 [&_h3]:font-sans [&_h3]:font-bold [&_h3]:text-xl [&_h3]:md:text-2xl [&_h3]:text-charcoal [&_h3]:mt-8 [&_h3]:mb-3 [&_p]:text-charcoal/80 [&_p]:text-lg [&_p]:leading-relaxed [&_p]:mb-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-4 [&_ul_li]:text-charcoal/80 [&_ul_li]:text-lg [&_ul_li]:leading-relaxed [&_ul_li]:mb-2 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:mb-4 [&_ol_li]:text-charcoal/80 [&_ol_li]:text-lg [&_ol_li]:leading-relaxed [&_ol_li]:mb-2 [&_strong]:text-charcoal [&_a]:text-mint [&_a]:underline [&_a:hover]:text-charcoal" set:html={bodyHtml} />
+          </div>
+        ) : (
+          <div class="px-8 md:px-12 lg:px-16 py-12 md:py-16">
+            <div class="max-w-3xl">
+              <h2 class="font-sans font-bold text-2xl md:text-3xl text-charcoal mb-6">
+                Sådan sender du en uopfordret ansøgning
+              </h2>
+              <p class="text-charcoal/80 text-lg leading-relaxed mb-4">
+                Vi modtager gerne din uopfordrede ansøgning, uanset om du har erfaring fra fødevareindustrien, landbruget eller helt andre brancher. Det vigtigste er, at du er engageret og har lyst til at gøre en forskel.
+              </p>
+              <h3 class="font-sans font-bold text-xl md:text-2xl text-charcoal mt-8 mb-3">
+                Din ansøgning bør indeholde
+              </h3>
+              <ul class="list-disc pl-6 mb-6 space-y-2">
+                <li class="text-charcoal/80 text-lg leading-relaxed">En kort beskrivelse af dig selv og din baggrund</li>
+                <li class="text-charcoal/80 text-lg leading-relaxed">Hvad du kan bidrage med hos AKD</li>
+                <li class="text-charcoal/80 text-lg leading-relaxed">Hvilken type stilling eller afdeling du er interesseret i</li>
+                <li class="text-charcoal/80 text-lg leading-relaxed">Dit CV (vedhæft gerne som PDF)</li>
+              </ul>
+              <p class="text-charcoal/80 text-lg leading-relaxed mb-4">
+                Vi gennemgår alle ansøgninger og vender tilbage, hvis vi ser en mulighed for et match. Vi opbevarer din ansøgning i op til 6 måneder, så vi kan kontakte dig, hvis der opstår en relevant stilling.
+              </p>
+            </div>
+          </div>
+        )}
+
+        <!-- Contact & Send Application -->
+        <div class="border-t border-charcoal/10 px-8 md:px-12 lg:px-16 py-10 md:py-12 bg-warm-light">
+          <h2 class="font-sans font-bold text-2xl md:text-3xl text-charcoal mb-4">
+            Send din ansøgning
+          </h2>
+          <p class="text-charcoal/70 text-lg mb-6">
+            Send din ansøgning og dit CV til nedenstående email. Vi behandler alle henvendelser fortroligt.
+          </p>
+
+          <!-- Email CTA -->
+          <a href={`mailto:${contactEmail}?subject=Uopfordret ansøgning`} class="btn-primary inline-flex mb-8">
+            <span>{contactEmail}</span>
+            <span class="btn-icon-circle">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+              </svg>
+            </span>
+          </a>
+
+          <!-- Contact Person -->
+          {contactName && (
+            <div class="flex flex-wrap gap-x-12 gap-y-4 text-sm">
+              <div>
+                <span class="text-charcoal/50 font-medium block mb-1">Kontaktperson</span>
+                <span class="text-charcoal font-semibold">{contactName}</span>
+                {contactTitle && (
+                  <span class="text-charcoal/60 ml-1">– {contactTitle}</span>
+                )}
+              </div>
+              {contactPhone && (
+                <div>
+                  <span class="text-charcoal/50 font-medium block mb-1">Telefon</span>
+                  <a href={`tel:${contactPhone.replace(/\s/g, '')}`} class="text-mint hover:underline font-semibold">
+                    {contactPhone}
+                  </a>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bottom CTA Section -->
+  <section class="bg-charcoal py-16 md:py-24">
+    <div class="container-custom">
+      <div class="text-center mb-10">
+        <h2 class="font-sans font-bold text-2xl md:text-3xl text-white mb-4">
+          Har du set vores ledige stillinger?
+        </h2>
+        <p class="text-white/70 text-lg max-w-2xl mx-auto">
+          Måske har vi allerede en stilling, der passer til dig. Se vores aktuelle jobopslag eller mød vores medarbejdere.
+        </p>
+      </div>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+        <a href={secondaryCtaUrl} class="btn-secondary">
+          {secondaryCtaText}
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+          </svg>
+        </a>
+        
+        <a href={primaryCtaUrl} class="btn-primary">
+          <span>{primaryCtaText}</span>
+          <span class="btn-icon-circle">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </span>
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
