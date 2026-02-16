@@ -30,11 +30,12 @@ export const navigationItems: NavItem[] = [
   },
   {
     label: 'Om AKD',
-    href: '/om',
+    href: '/om-akd',
     children: [
-      { label: 'Vores historie', href: '/om/historie' },
-      { label: 'Produktion', href: '/om/produktion' },
-      { label: 'Bæredygtighed', href: '/om/baeredygtighed' },
+      { label: 'Bestyrelse', href: '/om-akd/bestyrelse' },
+      { label: 'Ledelse og administration', href: '/om-akd/ledelse' },
+      { label: 'Regnskaber & vedtægter', href: '/om-akd/regnskaber-vedtaegter' },
+      { label: 'Rest- og biprodukter', href: '/om-akd/rest-og-biprodukter' },
     ]
   },
   {

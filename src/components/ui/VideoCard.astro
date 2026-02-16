@@ -1,0 +1,125 @@
+---
+/**
+ * VideoCard Component
+ * A visual card for featuring videos on any page.
+ * Clicking the card opens the global VideoModal (via window.openVideoModal).
+ *
+ * Props:
+ *  - videoUrl   (required) URL to the video file
+ *  - title      (required) Title shown below the thumbnail
+ *  - description (optional) Short teaser text
+ *  - thumbnail  (optional) Poster image URL
+ *  - thumbnailAlt (optional) Alt text for the poster image
+ *  - duration   (optional) Duration badge e.g. "3:24"
+ *  - variant    (optional) 'default' | 'compact'
+ */
+
+interface Props {
+  videoUrl: string
+  title: string
+  description?: string
+  thumbnail?: string
+  thumbnailAlt?: string
+  duration?: string
+  variant?: 'default' | 'compact'
+}
+
+const {
+  videoUrl,
+  title,
+  description,
+  thumbnail,
+  thumbnailAlt = '',
+  duration,
+  variant = 'default',
+} = Astro.props
+
+const isCompact = variant === 'compact'
+---
+
+<button
+  type="button"
+  class:list={[
+    'video-card group text-left w-full rounded-xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-burnt-orange',
+    { 'flex gap-4': isCompact },
+  ]}
+  data-video-url={videoUrl}
+  data-video-title={title}
+  aria-label={`Afspil video: ${title}`}
+>
+  <!-- Thumbnail area -->
+  <div
+    class:list={[
+      'relative overflow-hidden bg-charcoal/10',
+      isCompact ? 'w-32 h-20 flex-shrink-0 rounded-l-xl' : 'aspect-video w-full',
+    ]}
+  >
+    {thumbnail ? (
+      <img
+        src={thumbnail}
+        alt={thumbnailAlt}
+        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+        loading="lazy"
+      />
+    ) : (
+      <div class="w-full h-full flex items-center justify-center bg-forest-green/10">
+        <svg class="w-12 h-12 text-forest-green/30" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="currentColor" d="M8 5v14l11-7z"/>
+        </svg>
+      </div>
+    )}
+
+    <!-- Play icon overlay -->
+    <div class="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors">
+      <div class="w-12 h-12 rounded-full bg-white/90 group-hover:bg-white flex items-center justify-center shadow-lg transition-colors">
+        <svg class="w-5 h-5 text-burnt-orange ml-0.5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8 5v14l11-7z"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Duration badge -->
+    {duration && (
+      <span class="absolute bottom-2 right-2 bg-black/70 text-white text-xs font-medium px-2 py-0.5 rounded">
+        {duration}
+      </span>
+    )}
+  </div>
+
+  <!-- Text area -->
+  <div class:list={[isCompact ? 'py-2 pr-3 flex flex-col justify-center' : 'p-4']}>
+    <h3 class:list={[
+      'font-semibold text-charcoal leading-snug',
+      isCompact ? 'text-sm line-clamp-2' : 'text-base mb-1',
+    ]}>
+      {title}
+    </h3>
+    {description && !isCompact && (
+      <p class="text-sm text-charcoal/70 line-clamp-2 mt-1">
+        {description}
+      </p>
+    )}
+  </div>
+</button>
+
+<script>
+  // Attach click handlers to all video cards on the page
+  document.querySelectorAll<HTMLElement>('.video-card').forEach((card) => {
+    card.addEventListener('click', () => {
+      const url = card.dataset.videoUrl;
+      const title = card.dataset.videoTitle;
+      if (url && typeof (window as any).openVideoModal === 'function') {
+        (window as any).openVideoModal(url, title);
+      }
+    });
+  });
+</script>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

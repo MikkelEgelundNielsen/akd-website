@@ -1,0 +1,154 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import { sanityClient } from '@/lib/sanity'
+import { boardPageQuery } from '@/lib/sanityQueries'
+import { portableTextToHtml } from '@/lib/portableTextSerializer'
+import type { BoardPage } from '@/types/sanity'
+
+export const prerender = true;
+
+// Fetch page data from Sanity
+let page: BoardPage | null = null
+try {
+  page = await sanityClient.fetch<BoardPage>(boardPageQuery)
+} catch (error) {
+  console.error('Error fetching Board page from Sanity:', error)
+}
+
+// Convert hero portable text to HTML
+const headlineHtml = page?.hero?.headline
+  ? portableTextToHtml(page.hero.headline, { addHeadingIds: false })
+  : 'AKD\'S <span class="font-serif italic text-mint">bestyrelse</span>'
+
+const introHtml = page?.hero?.introText
+  ? portableTextToHtml(page.hero.introText, { addHeadingIds: false })
+  : '<p>AKD\'s bestyrelse består af syv andelshavere, der er valgt af generalforsamlingen. Bestyrelsen varetager den overordnede ledelse af selskabet.</p>'
+
+// SEO
+const metaTitle = page?.seo?.metaTitle || 'Bestyrelse – AKD Danmark'
+const metaDescription = page?.seo?.metaDescription || 'Mød AKD\'s bestyrelse. Syv andelshavere valgt af generalforsamlingen.'
+
+// Fallbacks
+const preHeadline = page?.hero?.preHeadline || 'Om AKD'
+
+// Members (fallback data)
+const members = page?.members || [
+  { name: 'Viggo Conradsen', role: 'Formand', address: 'Debelvej 58 B\n6753 Agerbæk', mobile: '21 77 82 18', email: 'vnc@noedbjerggaard.dk' },
+  { name: 'Henning Thybo', role: 'Næstformand', address: 'Greenvej 38\n7400 Herning', mobile: '20 25 28 92', email: 'henning.thybo@outlook.dk' },
+  { name: 'Søren Clausen', address: 'Vollum Østermark 4\n6261 Bredebro', mobile: '21 70 15 18', email: 'soeren@vollum.dk' },
+  { name: 'Carl Heiselberg', address: 'Gelsåvej 78, Neder-Jerstal\n6500 Vojens', phone: '74 51 45 13', mobile: '20 96 55 13', email: 'carl@famheiselberg.dk' },
+  { name: 'Jens Ebbensgaard Kjær', address: 'Madumvej 18\n6990 Ulfborg', mobile: '24 48 01 04', email: 'jensebbensgaard@hotmail.com' },
+  { name: 'Mads Rasmussen', address: 'Paarupvej 18\n6933 Kibæk', mobile: '23 23 23 76', email: 'brdrrasmussen@gmail.com' },
+  { name: 'Jacob Sig Hansen', address: 'Ejstrupvej 15\n7330 Brande', mobile: '22 72 63 84', email: 'jacob@snagro.dk' },
+]
+---
+
+<BaseLayout 
+  title={metaTitle}
+  description={metaDescription}
+  navTheme="light"
+>
+  <!-- Hero Section -->
+  <section class="relative bg-warm-light pt-12 md:pt-16 lg:pt-20 pb-16 section-after-nav">
+    <div class="container-custom">
+      <p class="text-mint font-bold text-base mb-6 uppercase tracking-wide text-center">
+        {preHeadline}
+      </p>
+      
+      <h1 class="text-center mb-8 md:mb-12 max-w-4xl mx-auto">
+        <span class="block font-sans font-extrabold text-[43px] md:text-[58px] lg:text-[62px] text-charcoal uppercase leading-tight [&_.font-serif]:lowercase [&_.font-serif]:font-medium" set:html={headlineHtml} />
+      </h1>
+      
+      <div class="max-w-3xl mx-auto text-center [&_p]:text-charcoal [&_p]:text-lg [&_p]:md:text-xl [&_p]:leading-relaxed" set:html={introHtml} />
+    </div>
+  </section>
+
+  <!-- Board Members Grid -->
+  <section class="bg-warm-light pb-16 md:pb-24">
+    <div class="container-custom">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        {members.map((member) => (
+          <div class="bg-white rounded-2xl p-6 md:p-8 shadow-md">
+            {/* Role badge */}
+            {member.role && (
+              <span class="inline-block bg-mint/10 text-mint text-sm font-semibold px-3 py-1 rounded-full mb-4">
+                {member.role}
+              </span>
+            )}
+
+            {/* Name */}
+            <h2 class="font-sans font-bold text-xl md:text-2xl text-charcoal mb-3">
+              {member.name}
+            </h2>
+
+            {/* Address */}
+            {member.address && (
+              <p class="text-charcoal/70 text-base leading-relaxed mb-4 whitespace-pre-line">
+                {member.address}
+              </p>
+            )}
+
+            {/* Contact details */}
+            <div class="space-y-2 text-sm">
+              {member.phone && (
+                <div class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-charcoal/40 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                  </svg>
+                  <span class="text-charcoal/50">Tlf:</span>
+                  <a href={`tel:+45${member.phone.replace(/\s/g, '')}`} class="text-charcoal font-semibold hover:text-mint transition-colors">
+                    {member.phone}
+                  </a>
+                </div>
+              )}
+              {member.mobile && (
+                <div class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-charcoal/40 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                  </svg>
+                  <span class="text-charcoal/50">Mobil:</span>
+                  <a href={`tel:+45${member.mobile.replace(/\s/g, '')}`} class="text-charcoal font-semibold hover:text-mint transition-colors">
+                    {member.mobile}
+                  </a>
+                </div>
+              )}
+              {member.email && (
+                <div class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-charcoal/40 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                  </svg>
+                  <a href={`mailto:${member.email}`} class="text-mint hover:underline font-medium">
+                    {member.email}
+                  </a>
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Bottom CTA Section -->
+  <section class="bg-charcoal py-16 md:py-24">
+    <div class="container-custom">
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+        <a href="/om-akd/ledelse" class="btn-secondary">
+          Ledelse og administration
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+          </svg>
+        </a>
+        
+        <a href="/om-akd/regnskaber-vedtaegter" class="btn-primary">
+          <span>Regnskaber & vedtægter</span>
+          <span class="btn-icon-circle">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </span>
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

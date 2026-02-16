@@ -7,29 +7,37 @@
  * 3. Genveje - Internal navigation links
  */
 
-import type { DashboardQuickLinks } from '@/types/sanity'
+import type { DashboardQuickLinks, Video } from '@/types/sanity'
 
 interface Props {
   quickLinks: DashboardQuickLinks | null
+  video: Video | null
 }
 
-const { quickLinks } = Astro.props
+const { quickLinks, video } = Astro.props
 
-// Placeholder content items for "Aktuelt fra AKD AGRO"
-const agroContent = [
+// Build "Aktuelt fra AKD AGRO" content from static article + Sanity video
+const agroContent: Array<{
+  type: 'article' | 'video'
+  title: string
+  teaser: string
+  link?: string
+  videoUrl?: string
+  thumbnail?: string
+}> = [
   {
-    type: 'article' as const,
+    type: 'article',
     title: 'Skimmelstrategi 2026 – overblik',
     teaser: 'Få overblik over årets anbefalinger til skimmelbekæmpelse',
     link: '/andelshavere/artikler/skimmelstrategi-2026',
   },
-  {
+  ...(video ? [{
     type: 'video' as const,
-    title: 'Opbevaring af kartofler – 3 vigtige pointer',
-    teaser: 'Se videoen om korrekt opbevaring',
-    link: '/andelshavere/videoer/opbevaring',
-    thumbnail: '/images/placeholder-video.jpg',
-  },
+    title: video.title,
+    teaser: video.description || 'Se video',
+    videoUrl: video.videoUrl,
+    thumbnail: video.thumbnail,
+  }] : []),
 ]
 
 // AGRO Værktøjer links
@@ -56,21 +64,25 @@ const genvejeLinks = [
     
     <div class="space-y-3">
       {agroContent.map((item) => (
-        <a 
-          href={item.link}
-          class="content-card block bg-white/10 rounded-lg overflow-hidden hover:bg-white/15 transition-colors group"
-        >
-          {item.type === 'video' && item.thumbnail ? (
-            <!-- Video card with thumbnail -->
+        item.type === 'video' && item.videoUrl ? (
+          <!-- Video card: opens modal -->
+          <button
+            type="button"
+            class="video-trigger content-card block w-full text-left bg-white/10 rounded-lg overflow-hidden hover:bg-white/15 transition-colors group cursor-pointer"
+            data-video-url={item.videoUrl}
+            data-video-title={item.title}
+          >
             <div class="relative">
               <div class="aspect-video bg-charcoal/30 relative">
-                <img 
-                  src={item.thumbnail} 
-                  alt=""
-                  class="w-full h-full object-cover opacity-80"
-                  loading="lazy"
-                  onerror="this.style.display='none'"
-                />
+                {item.thumbnail && (
+                  <img 
+                    src={item.thumbnail} 
+                    alt=""
+                    class="w-full h-full object-cover opacity-80"
+                    loading="lazy"
+                    onerror="this.style.display='none'"
+                  />
+                )}
                 <div class="absolute inset-0 flex items-center justify-center">
                   <div class="w-12 h-12 rounded-full bg-burnt-orange flex items-center justify-center group-hover:bg-amber transition-colors">
                     <svg class="w-5 h-5 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
@@ -84,8 +96,13 @@ const genvejeLinks = [
                 <p class="text-sm text-white/70">{item.teaser}</p>
               </div>
             </div>
-          ) : (
-            <!-- Article card with document icon -->
+          </button>
+        ) : (
+          <!-- Article card with document icon -->
+          <a 
+            href={item.link}
+            class="content-card block bg-white/10 rounded-lg overflow-hidden hover:bg-white/15 transition-colors group"
+          >
             <div class="p-3 flex gap-3">
               <div class="w-10 h-10 rounded bg-white/10 flex items-center justify-center flex-shrink-0">
                 <svg class="w-5 h-5 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -97,8 +114,8 @@ const genvejeLinks = [
                 <p class="text-sm text-white/70">{item.teaser}</p>
               </div>
             </div>
-          )}
-        </a>
+          </a>
+        )
       ))}
     </div>
   </div>
@@ -156,6 +173,19 @@ const genvejeLinks = [
     </nav>
   </div>-->
 </div>
+
+<script>
+  // Wire video triggers in QuickAccessColumn to open the global VideoModal
+  document.querySelectorAll<HTMLElement>('.quickaccess-column .video-trigger').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const url = btn.dataset.videoUrl;
+      const title = btn.dataset.videoTitle;
+      if (url && typeof (window as any).openVideoModal === 'function') {
+        (window as any).openVideoModal(url, title);
+      }
+    });
+  });
+</script>
 
 <style>
   .content-card {

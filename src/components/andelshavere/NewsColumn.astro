@@ -55,13 +55,25 @@ const getNewsLink = (item: DashboardNews) => {
                 {item.excerpt}
               </p>
             )}
-            <a 
-              href={getNewsLink(item)}
-              class="inline-flex items-center gap-1 text-burnt-orange hover:text-amber transition-colors text-sm font-medium"
-            >
-              {getCtaText(item.contentType)}
-              <span aria-hidden="true">→</span>
-            </a>
+            {item.contentType === 'video' && item.videoUrl ? (
+              <button
+                type="button"
+                class="video-trigger inline-flex items-center gap-1 text-burnt-orange hover:text-amber transition-colors text-sm font-medium"
+                data-video-url={item.videoUrl}
+                data-video-title={item.videoTitle || item.title}
+              >
+                Se video
+                <span aria-hidden="true">▶</span>
+              </button>
+            ) : (
+              <a 
+                href={getNewsLink(item)}
+                class="inline-flex items-center gap-1 text-burnt-orange hover:text-amber transition-colors text-sm font-medium"
+              >
+                {getCtaText(item.contentType)}
+                <span aria-hidden="true">→</span>
+              </a>
+            )}
           </div>
         </li>
       ))}
@@ -80,6 +92,19 @@ const getNewsLink = (item: DashboardNews) => {
     </a>
   </div>
 </div>
+
+<script>
+  // Wire video triggers in NewsColumn to open the global VideoModal
+  document.querySelectorAll<HTMLElement>('.news-column .video-trigger').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const url = btn.dataset.videoUrl;
+      const title = btn.dataset.videoTitle;
+      if (url && typeof (window as any).openVideoModal === 'function') {
+        (window as any).openVideoModal(url, title);
+      }
+    });
+  });
+</script>
 
 <style>
   .news-item {

@@ -1,0 +1,142 @@
+---
+/**
+ * VideoModal Component
+ * A global overlay for playing videos using the Plyr player.
+ * Include this once in BaseLayout – it listens for `openVideoModal()` calls.
+ */
+---
+
+<!-- Video Modal Overlay -->
+<div
+  id="video-modal"
+  class="fixed inset-0 z-[9999] hidden items-center justify-center"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Video afspiller"
+>
+  <!-- Backdrop -->
+  <div id="video-modal-backdrop" class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
+
+  <!-- Modal content -->
+  <div class="relative z-10 w-full max-w-4xl mx-4">
+    <!-- Close button -->
+    <button
+      id="video-modal-close"
+      type="button"
+      class="absolute -top-12 right-0 text-white/80 hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white rounded-full p-1"
+      aria-label="Luk video"
+    >
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+
+    <!-- Video title -->
+    <p id="video-modal-title" class="text-white/90 text-sm font-medium mb-3 truncate hidden"></p>
+
+    <!-- Player wrapper -->
+    <div class="rounded-xl overflow-hidden bg-black shadow-2xl">
+      <video
+        id="video-modal-player"
+        playsinline
+        controls
+        class="w-full"
+      ></video>
+    </div>
+  </div>
+</div>
+
+<script>
+  import Plyr from 'plyr';
+
+  // ---------- state ----------
+  let player: Plyr | null = null;
+  const modal = document.getElementById('video-modal')!;
+  const backdrop = document.getElementById('video-modal-backdrop')!;
+  const closeBtn = document.getElementById('video-modal-close')!;
+  const videoEl = document.getElementById('video-modal-player') as HTMLVideoElement;
+  const titleEl = document.getElementById('video-modal-title')!;
+
+  // ---------- open ----------
+  function openVideoModal(videoUrl: string, title?: string) {
+    // Set the source
+    videoEl.src = videoUrl;
+
+    // Set title if provided
+    if (title) {
+      titleEl.textContent = title;
+      titleEl.classList.remove('hidden');
+    } else {
+      titleEl.textContent = '';
+      titleEl.classList.add('hidden');
+    }
+
+    // Show the modal
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+
+    // Initialize Plyr (destroy previous if needed)
+    if (player) {
+      player.destroy();
+    }
+    player = new Plyr(videoEl, {
+      controls: [
+        'play-large',
+        'play',
+        'progress',
+        'current-time',
+        'duration',
+        'mute',
+        'volume',
+        'fullscreen',
+      ],
+      autoplay: true,
+    });
+  }
+
+  // ---------- close ----------
+  function closeVideoModal() {
+    if (player) {
+      player.pause();
+      player.destroy();
+      player = null;
+    }
+    videoEl.removeAttribute('src');
+    videoEl.load(); // reset the element
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    document.body.style.overflow = '';
+  }
+
+  // ---------- event listeners ----------
+  closeBtn.addEventListener('click', closeVideoModal);
+  backdrop.addEventListener('click', closeVideoModal);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+      closeVideoModal();
+    }
+  });
+
+  // ---------- expose globally ----------
+  (window as any).openVideoModal = openVideoModal;
+</script>
+
+<style is:global>
+  @import 'plyr/dist/plyr.css';
+
+  /* Override Plyr theme colour to match AKD burnt-orange */
+  :root {
+    --plyr-color-main: #E87722;
+  }
+
+  /* Ensure the modal video fills its container properly */
+  #video-modal .plyr {
+    border-radius: 0.75rem;
+  }
+
+  #video-modal .plyr__video-wrapper {
+    border-radius: 0.75rem;
+  }
+</style>

@@ -206,7 +206,9 @@ export const dashboardNewsQuery = `*[_type == "dashboardNews"] | order(published
   category,
   contentType,
   excerpt,
-  link
+  link,
+  "videoUrl": videoRef->videoFile.asset->url,
+  "videoTitle": videoRef->title
 }`
 
 // Dashboard Streamer (singleton)
@@ -242,6 +244,8 @@ export const dashboardKnowledgeQuery = `*[_type == "dashboardKnowledge"][0] {
     manualTitle,
     manualLink,
     "thumbnail": thumbnail.asset->url,
+    "videoUrl": videoRef->videoFile.asset->url,
+    "videoTitle": videoRef->title,
     category
   }
 }`
@@ -421,6 +425,107 @@ export const openApplicationPageQuery = `*[_type == "openApplicationPage"][0] {
     noIndex
   }
 }`
+
+// Board Page (singleton)
+export const boardPageQuery = `*[_type == "boardPage"][0] {
+  _id,
+  title,
+  hero {
+    preHeadline,
+    headline,
+    introText
+  },
+  members[] {
+    name,
+    role,
+    address,
+    phone,
+    mobile,
+    email
+  },
+  seo {
+    metaTitle,
+    metaDescription,
+    "openGraphImage": openGraphImage.asset->url,
+    noIndex
+  }
+}`
+
+// Management Page (singleton)
+export const managementPageQuery = `*[_type == "managementPage"][0] {
+  _id,
+  title,
+  hero {
+    preHeadline,
+    headline,
+    introText
+  },
+  members[] {
+    name,
+    role,
+    address,
+    phone,
+    mobile,
+    email
+  },
+  seo {
+    metaTitle,
+    metaDescription,
+    "openGraphImage": openGraphImage.asset->url,
+    noIndex
+  }
+}`
+
+// Reports Page (singleton)
+export const reportsPageQuery = `*[_type == "reportsPage"][0] {
+  _id,
+  title,
+  hero {
+    preHeadline,
+    headline,
+    introText
+  },
+  documentGroups[] {
+    title,
+    description,
+    documents[] {
+      title,
+      "fileUrl": file.asset->url,
+      url
+    }
+  },
+  seo {
+    metaTitle,
+    metaDescription,
+    "openGraphImage": openGraphImage.asset->url,
+    noIndex
+  }
+}`
+
+// ── Video queries ──
+
+// All videos
+export const allVideosQuery = `*[_type == "video"] | order(_createdAt desc) {
+  _id,
+  title,
+  description,
+  "videoUrl": videoFile.asset->url,
+  "thumbnail": thumbnail.asset->url,
+  "thumbnailAlt": thumbnail.alt,
+  duration
+}`
+
+// Single video by ID
+export const videoByIdQuery = (id: string) =>
+  `*[_type == "video" && _id == "${id}"][0] {
+    _id,
+    title,
+    description,
+    "videoUrl": videoFile.asset->url,
+    "thumbnail": thumbnail.asset->url,
+    "thumbnailAlt": thumbnail.alt,
+    duration
+  }`
 
 // Active job listings (ordered by publishedAt)
 export const activeJobListingsQuery = `*[_type == "jobListing" && isActive == true] | order(publishedAt desc) {

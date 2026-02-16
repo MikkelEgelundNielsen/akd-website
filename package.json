@@ -15,6 +15,7 @@
     "@astrojs/vue": "^5.1.4",
     "@sanity/client": "^6.24.1",
     "astro": "^5.17.2",
+    "plyr": "^3.8.4",
     "tailwindcss": "^3.4.17",
     "vue": "^3.5.13"
   },

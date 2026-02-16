@@ -207,6 +207,8 @@ export interface DashboardNews {
   contentType: 'article' | 'video'
   excerpt?: string
   link?: string
+  videoUrl?: string     // resolved from videoRef->videoFile.asset->url
+  videoTitle?: string   // resolved from videoRef->title
 }
 
 export interface DashboardStreamer {
@@ -238,6 +240,8 @@ export interface DashboardKnowledgeItem {
   manualLink?: string
   thumbnail?: string
   category?: DashboardCategory
+  videoUrl?: string     // resolved from videoRef->videoFile.asset->url
+  videoTitle?: string   // resolved from videoRef->title
 }
 
 export interface DashboardKnowledge {
@@ -389,6 +393,72 @@ export interface OpenApplicationPage {
   secondaryCtaText?: string
   secondaryCtaUrl?: string
   seo?: SEO
+}
+
+// Person Contact (reusable object)
+export interface PersonContact {
+  name: string
+  role?: string
+  address?: string
+  phone?: string
+  mobile?: string
+  email: string
+}
+
+// Document Download (reusable object)
+export interface DocumentDownload {
+  title: string
+  fileUrl?: string   // resolved from file.asset->url in GROQ
+  url?: string       // external URL alternative
+}
+
+// Document Group (inline object in reportsPage)
+export interface DocumentGroup {
+  title: string
+  description?: string
+  documents: DocumentDownload[]
+}
+
+// Board Page (singleton)
+export interface BoardPage {
+  _id: string
+  _type: 'boardPage'
+  title: string
+  hero?: PageHero
+  members: PersonContact[]
+  seo?: SEO
+}
+
+// Management Page (singleton)
+export interface ManagementPage {
+  _id: string
+  _type: 'managementPage'
+  title: string
+  hero?: PageHero
+  members: PersonContact[]
+  seo?: SEO
+}
+
+// Reports Page (singleton)
+export interface ReportsPage {
+  _id: string
+  _type: 'reportsPage'
+  title: string
+  hero?: PageHero
+  documentGroups: DocumentGroup[]
+  seo?: SEO
+}
+
+// Video (reusable document)
+export interface Video {
+  _id: string
+  _type: 'video'
+  title: string
+  description?: string
+  videoUrl: string      // resolved from videoFile.asset->url
+  thumbnail?: string    // resolved from thumbnail.asset->url
+  thumbnailAlt?: string
+  duration?: string
 }
 
 // Job Listings Page (singleton)

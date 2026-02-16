@@ -95,7 +95,13 @@ const items = knowledge?.items || []
         {items.map((item) => (
           <li class="knowledge-item flex gap-3">
             {item.contentType === 'video' && (
-              <div class="video-thumb relative w-16 h-12 flex-shrink-0 bg-charcoal/10 rounded overflow-hidden">
+              <button
+                type="button"
+                class="video-trigger video-thumb relative w-16 h-12 flex-shrink-0 bg-charcoal/10 rounded overflow-hidden cursor-pointer"
+                data-video-url={item.videoUrl || ''}
+                data-video-title={item.videoTitle || getItemTitle(item)}
+                aria-label={`Afspil video: ${item.videoTitle || getItemTitle(item)}`}
+              >
                 {item.thumbnail ? (
                   <img 
                     src={item.thumbnail} 
@@ -110,7 +116,7 @@ const items = knowledge?.items || []
                 <span class="absolute inset-0 flex items-center justify-center bg-black/30">
                   <span class="text-white text-sm">▶︎</span>
                 </span>
-              </div>
+              </button>
             )}
             {item.contentType === 'article' && (
               <div class="article-icon w-8 h-8 flex-shrink-0 bg-forest-green/10 rounded flex items-center justify-center">
@@ -125,13 +131,25 @@ const items = knowledge?.items || []
                 {item.contentType === 'video' ? 'Video' : 'Artikel'}
                 {item.category && ` · ${categoryLabels[item.category]}`}
               </p>
-              <a 
-                href={getItemLink(item)}
-                class="inline-flex items-center gap-1 text-burnt-orange hover:text-amber transition-colors text-sm font-medium"
-              >
-                {getCtaText(item.contentType)}
-                <span aria-hidden="true">→</span>
-              </a>
+              {item.contentType === 'video' && item.videoUrl ? (
+                <button
+                  type="button"
+                  class="video-trigger inline-flex items-center gap-1 text-burnt-orange hover:text-amber transition-colors text-sm font-medium"
+                  data-video-url={item.videoUrl}
+                  data-video-title={item.videoTitle || getItemTitle(item)}
+                >
+                  Se video
+                  <span aria-hidden="true">▶</span>
+                </button>
+              ) : (
+                <a 
+                  href={getItemLink(item)}
+                  class="inline-flex items-center gap-1 text-burnt-orange hover:text-amber transition-colors text-sm font-medium"
+                >
+                  {getCtaText(item.contentType)}
+                  <span aria-hidden="true">→</span>
+                </a>
+              )}
             </div>
           </li>
         ))}
@@ -139,6 +157,19 @@ const items = knowledge?.items || []
     </div>
   )}
 </div>
+
+<script>
+  // Wire video triggers in KnowledgeColumn to open the global VideoModal
+  document.querySelectorAll<HTMLElement>('.knowledge-column .video-trigger').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const url = btn.dataset.videoUrl;
+      const title = btn.dataset.videoTitle;
+      if (url && typeof (window as any).openVideoModal === 'function') {
+        (window as any).openVideoModal(url, title);
+      }
+    });
+  });
+</script>
 
 <style>
   .line-clamp-2 {
