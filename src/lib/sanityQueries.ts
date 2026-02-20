@@ -95,6 +95,17 @@ export const generalPageBySlugQuery = (slug: string) => `*[_type == "generalPage
       "url": asset->url,
       alt,
       caption
+    },
+    _type == "videoBlock" => {
+      ...,
+      "video": videoRef-> {
+        title,
+        description,
+        "videoUrl": videoFile.asset->url,
+        "thumbnail": thumbnail.asset->url,
+        "thumbnailAlt": thumbnail.alt,
+        duration
+      }
     }
   },
   seo {
@@ -125,6 +136,17 @@ export const allGeneralPagesQuery = `*[_type == "generalPage"] | order(published
       "url": asset->url,
       alt,
       caption
+    },
+    _type == "videoBlock" => {
+      ...,
+      "video": videoRef-> {
+        title,
+        description,
+        "videoUrl": videoFile.asset->url,
+        "thumbnail": thumbnail.asset->url,
+        "thumbnailAlt": thumbnail.alt,
+        duration
+      }
     }
   },
   seo {
@@ -152,6 +174,17 @@ export const articleBySlugQuery = (slug: string) => `*[_type == "article" && slu
       "url": asset->url,
       alt,
       caption
+    },
+    _type == "videoBlock" => {
+      ...,
+      "video": videoRef-> {
+        title,
+        description,
+        "videoUrl": videoFile.asset->url,
+        "thumbnail": thumbnail.asset->url,
+        "thumbnailAlt": thumbnail.alt,
+        duration
+      }
     }
   },
   category
@@ -177,6 +210,91 @@ export const articlesByCategoryQuery = (category: string) => `*[_type == "articl
   excerpt,
   "mainImage": mainImage.asset->url,
   category
+}`
+
+// ── News Articles ──
+
+// All news articles (for authenticated avlere listing)
+export const allNewsArticlesQuery = `*[_type == "newsArticle"] | order(publishedAt desc) {
+  _id,
+  title,
+  "slug": slug.current,
+  publishedAt,
+  excerpt,
+  "mainImage": mainImage.asset->url,
+  "mainImageAlt": mainImage.alt,
+  isPublic,
+  showOnPortal
+}`
+
+// Single news article by slug
+export const newsArticleBySlugQuery = (slug: string) => `*[_type == "newsArticle" && slug.current == "${slug}"][0] {
+  _id,
+  title,
+  "slug": slug.current,
+  publishedAt,
+  excerpt,
+  "mainImage": mainImage.asset->url,
+  "mainImageAlt": mainImage.alt,
+  body[] {
+    ...,
+    _type == "image" => {
+      "url": asset->url,
+      alt,
+      caption
+    },
+    _type == "videoBlock" => {
+      ...,
+      "video": videoRef-> {
+        title,
+        description,
+        "videoUrl": videoFile.asset->url,
+        "thumbnail": thumbnail.asset->url,
+        "thumbnailAlt": thumbnail.alt,
+        duration
+      }
+    }
+  },
+  sourceUrl,
+  isPublic,
+  showOnPortal,
+  seo {
+    metaTitle,
+    metaDescription,
+    "openGraphImage": openGraphImage.asset->url,
+    noIndex
+  }
+}`
+
+// Public news articles only (for unauthenticated visitors)
+export const publicNewsArticlesQuery = `*[_type == "newsArticle" && isPublic == true] | order(publishedAt desc) {
+  _id,
+  title,
+  "slug": slug.current,
+  publishedAt,
+  excerpt,
+  "mainImage": mainImage.asset->url,
+  "mainImageAlt": mainImage.alt
+}`
+
+// Portal news articles (for avlerinfo.dk)
+export const portalNewsArticlesQuery = `*[_type == "newsArticle" && isPublic == true && showOnPortal == true] | order(publishedAt desc) {
+  _id,
+  title,
+  "slug": slug.current,
+  publishedAt,
+  excerpt,
+  "mainImage": mainImage.asset->url,
+  "mainImageAlt": mainImage.alt
+}`
+
+// Dashboard news (latest 5 for avlere dashboard)
+export const dashboardNewsArticlesQuery = `*[_type == "newsArticle"] | order(publishedAt desc)[0...5] {
+  _id,
+  title,
+  "slug": slug.current,
+  publishedAt,
+  excerpt
 }`
 
 // Andelshavere Navigation
@@ -441,7 +559,8 @@ export const boardPageQuery = `*[_type == "boardPage"][0] {
     address,
     phone,
     mobile,
-    email
+    email,
+    "imageUrl": image.asset->url
   },
   seo {
     metaTitle,
@@ -466,7 +585,8 @@ export const managementPageQuery = `*[_type == "managementPage"][0] {
     address,
     phone,
     mobile,
-    email
+    email,
+    "imageUrl": image.asset->url
   },
   seo {
     metaTitle,
@@ -527,6 +647,152 @@ export const videoByIdQuery = (id: string) =>
     duration
   }`
 
+// ── Vidensbase queries ──
+
+// Vidensbase page singleton (hero, search, icon bar categories)
+export const vidensbasePageQuery = `*[_type == "vidensbasePage"][0] {
+  _id,
+  title,
+  hero {
+    preHeadline,
+    headline,
+    introText
+  },
+  searchPlaceholder,
+  popularTopics[] {
+    label,
+    link
+  },
+  categories[]-> {
+    _id,
+    title,
+    "slug": slug.current,
+    icon,
+    shortLabel
+  },
+  usefulLinks[] {
+    label,
+    href,
+    openInNewTab
+  },
+  seo {
+    metaTitle,
+    metaDescription,
+    "openGraphImage": openGraphImage.asset->url,
+    noIndex
+  }
+}`
+
+// Single vidensbase topic by slug (full content + related topics)
+export const vidensbaseTopicBySlugQuery = (slug: string) =>
+  `*[_type == "vidensbaseTopic" && slug.current == "${slug}"][0] {
+    _id,
+    title,
+    "slug": slug.current,
+    icon,
+    shortLabel,
+    tableOfContents[] {
+      "id": id.current,
+      title
+    },
+    content[] {
+      ...,
+      _type == "image" => {
+        "url": asset->url,
+        alt,
+        caption
+      },
+      _type == "videoBlock" => {
+        ...,
+        "video": videoRef-> {
+          title,
+          description,
+          "videoUrl": videoFile.asset->url,
+          "thumbnail": thumbnail.asset->url,
+          "thumbnailAlt": thumbnail.alt,
+          duration
+        }
+      }
+    },
+    relatedTopics[]-> {
+      _id,
+      title,
+      "slug": slug.current,
+      icon,
+      shortLabel
+    },
+    seo {
+      metaTitle,
+      metaDescription,
+      "openGraphImage": openGraphImage.asset->url,
+      noIndex
+    }
+  }`
+
+// All vidensbase topic slugs (for fallback/navigation)
+export const allVidensbaseTopicsQuery = `*[_type == "vidensbaseTopic"] | order(title asc) {
+  _id,
+  title,
+  "slug": slug.current,
+  icon,
+  shortLabel
+}`
+
+// Internship page singleton
+export const internshipPageQuery = `*[_type == "internshipPage"][0] {
+  _id,
+  title,
+  hero {
+    preHeadline,
+    headline,
+    introText
+  },
+  pathCards[] {
+    title,
+    description,
+    icon,
+    linkUrl,
+    linkLabel
+  },
+  contentBox {
+    variant,
+    layout,
+    preHeader,
+    headline,
+    "imageUrl": image.asset->url,
+    "imageAlt": image.alt,
+    pullUp,
+    items[] {
+      title,
+      description,
+      icon,
+      href
+    }
+  },
+  workAreas[] {
+    title,
+    description
+  },
+  steps[] {
+    title,
+    description
+  },
+  contactHeadline,
+  contactText,
+  contactPhone,
+  contactEmail,
+  faqItems[] {
+    question,
+    answer
+  },
+  seo {
+    metaTitle,
+    metaDescription,
+    "openGraphImage": openGraphImage.asset->url,
+    noIndex
+  }
+}`
+
 // Active job listings (ordered by publishedAt)
 export const activeJobListingsQuery = `*[_type == "jobListing" && isActive == true] | order(publishedAt desc) {
   _id,
@@ -577,4 +843,133 @@ export const jobListingBySlugQuery = (slug: string) =>
       noIndex
     }
   }`
+
+// ── About Page (singleton) ──
+
+export const aboutPageQuery = `*[_type == "aboutPage"][0] {
+  _id,
+  title,
+  hero {
+    preHeadline,
+    headline,
+    introText
+  },
+  heroTheme,
+  "contentBox": contentBox {
+    variant,
+    layout,
+    preHeader,
+    headline,
+    "image": image.asset->url,
+    "imageAlt": image.alt,
+    pullUp,
+    items[] {
+      title,
+      description,
+      icon,
+      href
+    }
+  },
+  statsPreHeader,
+  statsHeading,
+  stats[] {
+    value,
+    label
+  },
+  fellowship {
+    preHeader,
+    heading,
+    "imageUrl": image.asset->url,
+    "imageAlt": image.alt,
+    bodyText
+  },
+  video {
+    preHeader,
+    heading,
+    description,
+    "videoRef": videoRef-> {
+      _id,
+      title,
+      description,
+      "videoUrl": videoFile.asset->url,
+      "thumbnail": thumbnail.asset->url,
+      "thumbnailAlt": thumbnail.alt,
+      duration
+    }
+  },
+  quickNavHeading,
+  quickNavDescription,
+  quickNavCards[] {
+    title,
+    description,
+    href,
+    icon,
+    row
+  },
+  seo {
+    metaTitle,
+    metaDescription,
+    "openGraphImage": openGraphImage.asset->url,
+    noIndex
+  }
+}`
+
+// ── Responsibility Page (singleton) ──
+
+export const responsibilityPageQuery = `*[_type == "responsibilityPage"][0] {
+  _id,
+  title,
+  hero {
+    preHeadline,
+    headline,
+    introText
+  },
+  csrSection {
+    preHeader,
+    heading,
+    introText,
+    documentsHeading,
+    documents[] {
+      title,
+      "fileUrl": file.asset->url,
+      url
+    }
+  },
+  codeOfConductSection {
+    preHeader,
+    heading,
+    introText,
+    documentsHeading,
+    documents[] {
+      title,
+      "fileUrl": file.asset->url,
+      url
+    }
+  },
+  klimaaftrykSection {
+    preHeader,
+    heading,
+    subheading,
+    content[] {
+      ...,
+      _type == "image" => {
+        "url": asset->url,
+        alt,
+        caption
+      }
+    }
+  },
+  ctaSection {
+    heading,
+    description,
+    linkText,
+    linkHref
+  },
+  seo {
+    metaTitle,
+    metaDescription,
+    "openGraphImage": openGraphImage.asset->url,
+    noIndex
+  }
+}`
 

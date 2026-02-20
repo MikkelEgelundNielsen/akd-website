@@ -2,8 +2,18 @@
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import ContentBox from '@/components/sections/ContentBox.astro'
 import JobCard from '@/components/job/JobCard.astro'
+import { sanityClient } from '@/lib/sanity'
+import { activeJobListingsQuery } from '@/lib/sanityQueries'
+import type { JobListing } from '@/types/sanity'
 
-export const prerender = true; // Pre-render this page at build time
+export const prerender = true;
+
+let listings: JobListing[] = []
+try {
+  listings = await sanityClient.fetch<JobListing[]>(activeJobListingsQuery)
+} catch (error) {
+  console.error('Error fetching job listings:', error)
+}
 ---
 
 <BaseLayout 
@@ -152,63 +162,44 @@ export const prerender = true; // Pre-render this page at build time
       </div>
       
       <!-- Job Listings Section -->
-      <div class="max-w-5xl mx-auto">
-        <h3 class="font-serif italic text-4xl md:text-[43px] text-charcoal text-center mb-8 md:mb-12">
-          Ledige stillinger - vi søger lige nu
-        </h3>
-        
-        <!-- Job Cards -->
-        <div class="space-y-4 mb-8">
-          <JobCard
-            title="Smed eller klejnsmed"
-            description="Bliv en del af et stærkt teknisk team"
-            location="AKD/Sønderjylland"
-            href="/job/stillinger"
-          />
+      {listings.length > 0 && (
+        <div class="max-w-5xl mx-auto">
+          <h3 class="font-serif italic text-4xl md:text-[43px] text-charcoal text-center mb-8 md:mb-12">
+            Ledige stillinger - vi søger lige nu
+          </h3>
           
-          <JobCard
-            title="Procesoperatør"
-            description="Indgå i et team, der samarbejder tæt"
-            location="AKD/Midtjylland"
-            href="/job/stillinger"
-          />
+          <!-- Job Cards -->
+          <div class="space-y-4 mb-8">
+            {listings.map((job) => (
+              <JobCard
+                title={job.title}
+                description={job.description}
+                location={job.location}
+                href={`/job/stillinger/${job.slug}`}
+              />
+            ))}
+          </div>
           
-          <JobCard
-            title="Procesoperatør"
-            description="Bliv en del af et fast team med din holdmakker"
-            location="AKD/Sønderjylland"
-            href="/job/stillinger"
-          />
-          
-          <JobCard
-            title="Vejehusoperatør"
-            description="Bliv en vigtig brik i vores sæsonbaserede produktion"
-            location="AKD/Sønderjylland"
-            href="/job/stillinger"
-          />
-        </div>
-        
-        <!-- Bottom CTAs -->
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-6 mt-12 mb-48 sm:mb-52 md:mb-56 lg:mb-[200px]">
-          <!-- Secondary CTA -->
-          <a href="/job/ansoegning" class="btn-secondary">
-            Send en uopfordret ansøgning
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-            </svg>
-          </a>
-          
-          <!-- Primary CTA -->
-          <a href="/job/stillinger" class="btn-primary">
-            <span>Se alle ledige stillinger</span>
-            <span class="btn-icon-circle">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <!-- Bottom CTAs -->
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-6 mt-12 mb-48 sm:mb-52 md:mb-56 lg:mb-[200px]">
+            <a href="/job/ansoegning" class="btn-secondary">
+              Send en uopfordret ansøgning
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
               </svg>
-            </span>
-          </a>
+            </a>
+            
+            <a href="/job/stillinger" class="btn-primary">
+              <span>Se alle ledige stillinger</span>
+              <span class="btn-icon-circle">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                </svg>
+              </span>
+            </a>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   </section>
 

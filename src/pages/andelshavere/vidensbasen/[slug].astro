@@ -1,0 +1,533 @@
+---
+/**
+ * Vidensbase Topic Page
+ * Individual knowledge base topic with:
+ * - Shared hero + search + icon bar (from vidensbasePage singleton)
+ * - Rich text content with TOC sidebar (same pattern as general text pages)
+ * - Related topics ("Læs også om:") section at the bottom
+ */
+
+import AndelshavereLayout from '@/layouts/AndelshavereLayout.astro'
+import VidensbaseHero from '@/components/andelshavere/VidensbaseHero.astro'
+import VidensbaseIconBar from '@/components/andelshavere/VidensbaseIconBar.astro'
+import PortableText from '@/components/sanity/PortableText.astro'
+import VidensbaseContactSection from '@/components/andelshavere/VidensbaseContactSection.astro'
+import { sanityClient } from '@/lib/sanity'
+import {
+  vidensbasePageQuery,
+  vidensbaseTopicBySlugQuery,
+} from '@/lib/sanityQueries'
+import type { VidensbasePage, VidensbaseTopic } from '@/types/sanity'
+
+export const prerender = false;
+
+const { slug } = Astro.params
+
+// Fetch page chrome and topic content in parallel
+const [page, topic] = await Promise.all([
+  sanityClient.fetch<VidensbasePage>(vidensbasePageQuery),
+  sanityClient.fetch<VidensbaseTopic>(vidensbaseTopicBySlugQuery(slug!)),
+])
+
+if (!topic) {
+  return Astro.redirect('/404')
+}
+
+const categories = page?.categories || []
+const sections = topic.tableOfContents || []
+const relatedTopics = topic.relatedTopics || []
+const usefulLinks = page?.usefulLinks || []
+
+const metaTitle = topic.seo?.metaTitle || `${topic.title} | Vidensbase`
+const metaDescription = topic.seo?.metaDescription || ''
+
+// Icon SVG map for related topics section
+const iconSvgs: Record<string, string> = {
+  bug: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 12c2.21 0 4-1.79 4-4V6l2-2m-2 2h-2m-4 6c-2.21 0-4-1.79-4-4V6L4 4m2 2h2m4 14c-3.31 0-6-2.69-6-6v-2h12v2c0 3.31-2.69 6-6 6zm0 0v2m-3-1h6M9 8h6"/>`,
+  mushroom: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 20v-6m0 0c-4.418 0-8-2.686-8-6s3.582-6 8-6 8 2.686 8 6-3.582 6-8 6zm-2 6h4"/>`,
+  weed: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 21V12m0 0c0-3-2-5-5-7m5 7c0-3 2-5 5-7M7 21c1.5-2 3.5-3.5 5-3.5S14.5 19 16 21M5 10c1.5 0 3 .5 4 1.5M19 10c-1.5 0-3 .5-4 1.5"/>`,
+  flask: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 3h6m-5 0v5.172a2 2 0 01-.586 1.414l-3.828 3.828A3 3 0 007.708 19h8.584a3 3 0 002.122-5.121l-3.828-3.828A2 2 0 0114 8.636V3m-4 0h4"/>`,
+  seedling: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 21V12m0 0c0-3.5 3-6.5 7-7-1 4-3.5 7-7 7zm0 0c0-3.5-3-6.5-7-7 1 4 3.5 7 7 7z"/>`,
+  warehouse: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 21h18M3 7l9-4 9 4M4 7v14m16-14v14M8 11h2m4 0h2M8 15h2m4 0h2"/>`,
+  grain: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 21c0-4 2-7 5-9-3-1-5-4-5-8 0 4-2 7-5 8 3 2 5 5 5 9zm0-18v18M7 8c1 1 2.5 2 5 2m0 5c2.5 0 4-1 5-2"/>`,
+  water: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 21c-3.866 0-7-2.91-7-6.5S12 3 12 3s7 8.09 7 11.5-3.134 6.5-7 6.5z"/>`,
+  research: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-4.35-4.35M10 6v4m-2-2h4m5 2a7 7 0 11-14 0 7 7 0 0114 0z"/>`,
+  clipboard: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>`,
+  shovel: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.5 3.5l6 6m-6-6l-1 1 6 6 1-1m-7 0l-7.5 7.5a2.12 2.12 0 01-3-3L10.5 6.5"/>`,
+  shield: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>`,
+  recycle: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 12l1.5-3 3 1.5M20 12l-1.5 3-3-1.5M12 4l3 1.5-1.5 3M7.86 16.14A4 4 0 0112 18a4 4 0 014.14-1.86M16.14 7.86A4 4 0 0112 6a4 4 0 00-4.14 1.86"/>`,
+  layers: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>`,
+  link: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>`,
+  newspaper: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>`,
+}
+---
+
+<AndelshavereLayout 
+  title={metaTitle}
+  description={metaDescription}
+>
+  <!-- Hero Section -->
+  <VidensbaseHero page={page} />
+
+  <!-- Icon Bar (pulled up over hero) -->
+  {categories.length > 0 && (
+    <VidensbaseIconBar categories={categories} activeSlug={slug} />
+  )}
+
+  <!-- Content Section with TOC -->
+  <section class="relative bg-warm-light py-12 md:py-16">
+    <div class="container-custom">
+      <div class="bg-white rounded-lg shadow-lg p-8 md:p-12 lg:p-16">
+        
+        <div class="content-with-toc">
+          
+          <!-- Main Content Area -->
+          <div class="main-content">
+            <!-- Table of Contents - Mobile (Accordion) -->
+            {sections.length > 0 && (
+              <div class="lg:hidden mb-4" id="mobile-toc">
+                <button 
+                  type="button"
+                  class="w-full bg-warm-light rounded-lg p-4 flex items-center justify-between text-left hover:bg-light transition-colors"
+                  aria-expanded="false"
+                  aria-controls="mobile-toc-content"
+                  id="mobile-toc-toggle"
+                >
+                  <span class="text-xs font-bold text-charcoal uppercase tracking-wide flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                    Indhold på denne side
+                  </span>
+                  <svg 
+                    class="w-5 h-5 text-charcoal transition-transform duration-200" 
+                    id="mobile-toc-icon"
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                  </svg>
+                </button>
+                <div 
+                  class="overflow-hidden transition-all duration-200 max-h-0" 
+                  id="mobile-toc-content"
+                  aria-hidden="true"
+                >
+                  <nav class="bg-warm-light rounded-b-lg px-4 pb-4" aria-label="Indholdsfortegnelse">
+                    <ul class="space-y-1 pt-2">
+                      {sections.map((section) => (
+                        <li>
+                          <a 
+                            href={`#${section.id}`}
+                            class="block text-sm text-charcoal hover:text-burnt-orange transition-colors py-2 px-3 rounded"
+                          >
+                            {section.title}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </nav>
+                </div>
+              </div>
+            )}
+
+            <!-- Nyttige links - Mobile (Accordion) -->
+            {usefulLinks.length > 0 && (
+              <div class="lg:hidden mb-8" id="mobile-useful-links">
+                <button 
+                  type="button"
+                  class="w-full bg-warm-light rounded-lg p-4 flex items-center justify-between text-left hover:bg-light transition-colors"
+                  aria-expanded="false"
+                  aria-controls="mobile-useful-links-content"
+                  id="mobile-useful-links-toggle"
+                >
+                  <span class="text-xs font-bold text-charcoal uppercase tracking-wide flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                    </svg>
+                    Nyttige links
+                  </span>
+                  <svg 
+                    class="w-5 h-5 text-charcoal transition-transform duration-200" 
+                    id="mobile-useful-links-icon"
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                  </svg>
+                </button>
+                <div 
+                  class="overflow-hidden transition-all duration-200 max-h-0" 
+                  id="mobile-useful-links-content"
+                  aria-hidden="true"
+                >
+                  <nav class="bg-warm-light rounded-b-lg px-4 pb-4" aria-label="Nyttige links">
+                    <ul class="space-y-1 pt-2">
+                      {usefulLinks.map((link) => (
+                        <li>
+                          <a 
+                            href={link.href}
+                            target={link.openInNewTab ? '_blank' : undefined}
+                            rel={link.openInNewTab ? 'noopener noreferrer' : undefined}
+                            class="flex items-center gap-2 text-sm text-charcoal hover:text-burnt-orange transition-colors py-2 px-3 rounded"
+                          >
+                            <svg class="w-3.5 h-3.5 flex-shrink-0 text-forest-green" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                            {link.label}
+                            {link.openInNewTab && (
+                              <svg class="w-3 h-3 flex-shrink-0 text-charcoal/40 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                              </svg>
+                            )}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </nav>
+                </div>
+              </div>
+            )}
+            
+            <article class="prose-akd">
+              <PortableText 
+                content={topic.content} 
+                addHeadingIds={true}
+              />
+            </article>
+
+            <!-- Related Topics -->
+            {relatedTopics.length > 0 && (
+              <div class="mt-12 pt-8 border-t border-charcoal/10">
+                <h3 class="font-serif font-bold italic text-charcoal text-2xl mb-6">
+                  Læs også om:
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {relatedTopics.map((related) => (
+                    <a 
+                      href={`/andelshavere/vidensbasen/${related.slug}`}
+                      class="flex items-center gap-3 p-4 bg-warm-light rounded-lg hover:bg-light transition-colors group"
+                    >
+                      <div class="w-10 h-10 rounded-full bg-forest-green/10 flex items-center justify-center flex-shrink-0 group-hover:bg-forest-green/15 transition-colors">
+                        <svg class="w-5 h-5 text-forest-green" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                          <Fragment set:html={iconSvgs[related.icon] || iconSvgs.clipboard} />
+                        </svg>
+                      </div>
+                      <div>
+                        <span class="font-medium text-charcoal group-hover:text-burnt-orange transition-colors">
+                          {related.title}
+                        </span>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+          
+          <!-- Table of Contents - Desktop (Sticky) -->
+          {(sections.length > 0 || usefulLinks.length > 0) && (
+            <aside class="toc-sidebar">
+              <div class="sticky top-32 flex flex-col gap-6" id="toc-wrapper">
+                {sections.length > 0 && (
+                  <nav class="bg-warm-light rounded-lg" aria-label="Indholdsfortegnelse">
+                    <h2 class="text-[14px] font-sans font-bold text-charcoal uppercase tracking-wide mb-4 flex items-center gap-2 px-6 pt-6">
+                      <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 18" aria-hidden="true">
+                        <path fill="currentColor" d="M3.12 0H.937A.94.94 0 0 0 0 .938v2.181a.94.94 0 0 0 .938.938h2.181a.94.94 0 0 0 .938-.938V.938A.94.94 0 0 0 3.119 0m.312 3.12a.313.313 0 0 1-.313.312H.938a.313.313 0 0 1-.313-.313V.938A.313.313 0 0 1 .938.625h2.181a.313.313 0 0 1 .313.313zM5.967 1.36h10.35a.313.313 0 0 0 0-.625H5.967a.313.313 0 0 0 0 .625M5.966 3.322h5.713a.312.312 0 0 0 0-.625H5.966a.313.313 0 0 0 0 .625M3.12 6.722H.937A.94.94 0 0 0 0 7.659v2.182a.94.94 0 0 0 .938.938h2.181a.94.94 0 0 0 .938-.938V7.659a.94.94 0 0 0-.938-.937m.312 3.119a.313.313 0 0 1-.313.313H.938a.313.313 0 0 1-.313-.313V7.659a.313.313 0 0 1 .313-.312h2.181a.313.313 0 0 1 .313.312zM16.317 7.456H5.967a.313.313 0 0 0 0 .625h10.35a.312.312 0 0 0 0-.625M5.966 10.044h5.713a.313.313 0 0 0 0-.625H5.966a.313.313 0 0 0 0 .625M3.12 13.443H.937a.94.94 0 0 0-.938.938v2.182a.94.94 0 0 0 .938.937h2.181a.94.94 0 0 0 .938-.937V14.38a.94.94 0 0 0-.938-.938m.312 3.12a.313.313 0 0 1-.313.312H.938a.313.313 0 0 1-.313-.312V14.38a.313.313 0 0 1 .313-.313h2.181a.313.313 0 0 1 .313.313zM16.317 14.178H5.967a.312.312 0 0 0 0 .625h10.35a.313.313 0 0 0 0-.625M11.68 16.14H5.966a.313.313 0 0 0 0 .625h5.712a.312.312 0 0 0 0-.625"/>
+                      </svg>
+                      Indhold på denne side
+                    </h2>
+                    <ul class="space-y-3 pb-6" id="toc-list">
+                      {sections.map((section) => (
+                        <li>
+                          <a 
+                            href={`#${section.id}`}
+                            class="toc-link block text-sm text-charcoal hover:text-burnt-orange transition-colors py-2.5 border-l-4 border-r-4 border-l-transparent border-r-transparent px-6"
+                            data-target={section.id}
+                          >
+                            {section.title}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </nav>
+                )}
+
+                {usefulLinks.length > 0 && (
+                  <nav class="bg-warm-light rounded-lg" aria-label="Nyttige links">
+                    <h2 class="text-[14px] font-sans font-bold text-charcoal uppercase tracking-wide mb-4 flex items-center gap-2 px-6 pt-6">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                      </svg>
+                      Nyttige links
+                    </h2>
+                    <ul class="space-y-1 pb-6">
+                      {usefulLinks.map((link) => (
+                        <li>
+                          <a
+                            href={link.href}
+                            target={link.openInNewTab ? '_blank' : undefined}
+                            rel={link.openInNewTab ? 'noopener noreferrer' : undefined}
+                            class="flex items-center gap-2 text-sm text-charcoal hover:text-burnt-orange transition-colors py-2.5 border-l-4 border-r-4 border-l-transparent border-r-transparent px-6 group"
+                          >
+                            <svg class="w-3.5 h-3.5 flex-shrink-0 text-forest-green group-hover:text-burnt-orange transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                            <span class="flex-1">{link.label}</span>
+                            {link.openInNewTab && (
+                              <svg class="w-3 h-3 flex-shrink-0 text-charcoal/40" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                              </svg>
+                            )}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </nav>
+                )}
+              </div>
+            </aside>
+          )}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Agro-rådgivning Contact Section -->
+  <VidensbaseContactSection />
+</AndelshavereLayout>
+
+<script>
+  // Mobile TOC Toggle
+  const mobileToggle = document.getElementById('mobile-toc-toggle');
+  const mobileContent = document.getElementById('mobile-toc-content');
+  const mobileIcon = document.getElementById('mobile-toc-icon');
+  
+  if (mobileToggle && mobileContent && mobileIcon) {
+    mobileToggle.addEventListener('click', () => {
+      const isExpanded = mobileToggle.getAttribute('aria-expanded') === 'true';
+      
+      mobileToggle.setAttribute('aria-expanded', (!isExpanded).toString());
+      mobileContent.setAttribute('aria-hidden', isExpanded.toString());
+      
+      if (isExpanded) {
+        mobileContent.style.maxHeight = '0';
+        mobileIcon.style.transform = 'rotate(0deg)';
+      } else {
+        mobileContent.style.maxHeight = mobileContent.scrollHeight + 'px';
+        mobileIcon.style.transform = 'rotate(180deg)';
+      }
+    });
+    
+    // Collapse TOC when clicking a link
+    const mobileLinks = mobileContent.querySelectorAll('a');
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        mobileToggle.setAttribute('aria-expanded', 'false');
+        mobileContent.setAttribute('aria-hidden', 'true');
+        mobileContent.style.maxHeight = '0';
+        mobileIcon.style.transform = 'rotate(0deg)';
+      });
+    });
+  }
+  
+  // Mobile Useful Links Toggle
+  const usefulLinksToggle = document.getElementById('mobile-useful-links-toggle');
+  const usefulLinksContent = document.getElementById('mobile-useful-links-content');
+  const usefulLinksIcon = document.getElementById('mobile-useful-links-icon');
+
+  if (usefulLinksToggle && usefulLinksContent && usefulLinksIcon) {
+    usefulLinksToggle.addEventListener('click', () => {
+      const isExpanded = usefulLinksToggle.getAttribute('aria-expanded') === 'true';
+
+      usefulLinksToggle.setAttribute('aria-expanded', (!isExpanded).toString());
+      usefulLinksContent.setAttribute('aria-hidden', isExpanded.toString());
+
+      if (isExpanded) {
+        usefulLinksContent.style.maxHeight = '0';
+        usefulLinksIcon.style.transform = 'rotate(0deg)';
+      } else {
+        usefulLinksContent.style.maxHeight = usefulLinksContent.scrollHeight + 'px';
+        usefulLinksIcon.style.transform = 'rotate(180deg)';
+      }
+    });
+  }
+
+  // Desktop Scroll Spy (only on desktop)
+  if (window.innerWidth >= 1024) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const id = entry.target.getAttribute('id');
+          const tocLink = document.querySelector(`.toc-link[data-target="${id}"]`);
+          
+          if (entry.isIntersecting) {
+            // Remove active class from all links
+            document.querySelectorAll('.toc-link').forEach((link) => {
+              link.classList.remove('border-l-mint', 'border-r-mint', 'bg-light', 'text-burnt-orange', 'font-semibold');
+              link.classList.add('border-l-transparent', 'border-r-transparent');
+            });
+            
+            // Add active class to current link
+            if (tocLink) {
+              tocLink.classList.remove('border-l-transparent', 'border-r-transparent');
+              tocLink.classList.add('border-l-mint', 'border-r-mint', 'bg-light', 'text-burnt-orange', 'font-semibold');
+            }
+          }
+        });
+      },
+      {
+        rootMargin: '-100px 0px -66%',
+        threshold: 0
+      }
+    );
+    
+    // Observe all headings with IDs (H2, H3, and H4)
+    const headings = document.querySelectorAll('[id]');
+    headings.forEach((heading) => {
+      if (heading.tagName === 'H2' || heading.tagName === 'H3' || heading.tagName === 'H4') {
+        observer.observe(heading);
+      }
+    });
+  }
+  
+  // Smooth scroll for all anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const target = document.querySelector((this as HTMLAnchorElement).getAttribute('href')!);
+      if (target) {
+        const offset = 120;
+        const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
+        window.scrollTo({
+          top: targetPosition,
+          behavior: 'smooth'
+        });
+      }
+    });
+  });
+</script>
+
+<style>
+  /* Layout for content with TOC */
+  .content-with-toc {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  @media (min-width: 1024px) {
+    .content-with-toc {
+      flex-direction: row;
+      gap: 3rem;
+    }
+  }
+  
+  @media (min-width: 1280px) {
+    .content-with-toc {
+      gap: 4rem;
+    }
+  }
+  
+  .main-content {
+    flex: 1;
+    max-width: 48rem;
+  }
+  
+  .toc-sidebar {
+    display: none;
+  }
+  
+  @media (min-width: 1024px) {
+    .toc-sidebar {
+      display: block;
+      width: 16rem;
+      flex-shrink: 0;
+    }
+  }
+  
+  @media (min-width: 1280px) {
+    .toc-sidebar {
+      width: 18rem;
+    }
+  }
+
+  .prose-akd {
+    @apply text-charcoal;
+  }
+  
+  .prose-akd :global(h2) {
+    @apply font-serif font-bold italic text-charcoal text-[41px] leading-tight mb-6 mt-12 first:mt-0;
+    scroll-margin-top: 120px;
+  }
+  
+  .prose-akd :global(h3) {
+    @apply font-sans font-semibold text-charcoal text-[34px] leading-tight mb-4 mt-8;
+    scroll-margin-top: 120px;
+  }
+  
+  .prose-akd :global(h4) {
+    @apply font-sans font-semibold text-charcoal text-2xl leading-tight mb-3 mt-6;
+    scroll-margin-top: 120px;
+  }
+  
+  .prose-akd :global(p) {
+    @apply text-base text-charcoal leading-relaxed mb-4;
+  }
+  
+  .prose-akd :global(ul),
+  .prose-akd :global(ol) {
+    @apply text-base text-charcoal leading-relaxed mb-4 ml-6;
+  }
+  
+  .prose-akd :global(li) {
+    @apply mb-2;
+  }
+  
+  .prose-akd :global(ul li) {
+    @apply list-disc;
+  }
+  
+  .prose-akd :global(ol li) {
+    @apply list-decimal;
+  }
+  
+  .prose-akd :global(a) {
+    @apply text-burnt-orange hover:text-amber transition-colors underline;
+  }
+  
+  .prose-akd :global(strong) {
+    @apply font-semibold;
+  }
+  
+  .prose-akd :global(.callout) {
+    @apply bg-light border-l-4 border-mint p-6 rounded-r-lg my-6;
+  }
+  
+  .prose-akd :global(.callout p:last-child) {
+    @apply mb-0;
+  }
+
+  .prose-akd :global(table) {
+    @apply w-full border-collapse my-6;
+  }
+  
+  .prose-akd :global(thead) {
+    @apply bg-warm-light;
+  }
+  
+  .prose-akd :global(th) {
+    @apply font-semibold text-left p-3 border-b-2 border-light;
+  }
+  
+  .prose-akd :global(td) {
+    @apply p-3 border-b border-light;
+  }
+  
+  .prose-akd :global(tbody tr:hover) {
+    @apply bg-warm-light/50;
+  }
+</style>

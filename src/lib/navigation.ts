@@ -30,12 +30,15 @@ export const navigationItems: NavItem[] = [
   },
   {
     label: 'Om AKD',
-    href: '/om-akd',
+    href: '/om-akd/et-moderne-andelsselskab',
     children: [
+      { label: 'Et moderne andelsselskab', href: '/om-akd/et-moderne-andelsselskab' },
       { label: 'Bestyrelse', href: '/om-akd/bestyrelse' },
       { label: 'Ledelse og administration', href: '/om-akd/ledelse' },
       { label: 'Regnskaber & vedtægter', href: '/om-akd/regnskaber-vedtaegter' },
       { label: 'Rest- og biprodukter', href: '/om-akd/rest-og-biprodukter' },
+      { label: 'Ansvarlighed', href: '/om-akd/ansvarlighed' },
+      { label: 'Whistleblower-ordning', href: '/om-akd/whistleblower-ordning' },
     ]
   },
   {

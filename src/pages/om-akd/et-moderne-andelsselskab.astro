@@ -1,0 +1,252 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import ContentBox from '@/components/sections/ContentBox.astro'
+import VideoCard from '@/components/ui/VideoCard.astro'
+import { sanityClient } from '@/lib/sanity'
+import { aboutPageQuery } from '@/lib/sanityQueries'
+import { portableTextToHtml } from '@/lib/portableTextSerializer'
+import type { AboutPage } from '@/types/sanity'
+
+export const prerender = true;
+
+let page: AboutPage | null = null
+try {
+  page = await sanityClient.fetch<AboutPage>(aboutPageQuery)
+} catch (error) {
+  console.error('Error fetching About page from Sanity:', error)
+}
+
+if (!page) {
+  return Astro.redirect('/404')
+}
+
+const headlineHtml = page.hero?.headline
+  ? portableTextToHtml(page.hero.headline, { addHeadingIds: false })
+  : ''
+
+const introHtml = page.hero?.introText
+  ? portableTextToHtml(page.hero.introText, { addHeadingIds: false })
+  : ''
+
+const fellowshipHtml = page.fellowship?.bodyText
+  ? portableTextToHtml(page.fellowship.bodyText, { addHeadingIds: false })
+  : ''
+
+const preHeadline = page.hero?.preHeadline
+const isDarkHero = page.heroTheme === 'green'
+
+const metaTitle = page.seo?.metaTitle || page.title || 'Om AKD'
+const metaDescription = page.seo?.metaDescription || ''
+
+const contentBox = page.contentBox
+const stats = page.stats
+const fellowship = page.fellowship
+const videoSection = page.video
+const videoRef = videoSection?.videoRef
+
+const quickNavCards = page.quickNavCards || []
+const row1Cards = quickNavCards.filter(c => c.row === 1)
+const row2Cards = quickNavCards.filter(c => c.row !== 1)
+
+const iconPaths: Record<string, string> = {
+  users: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z',
+  briefcase: 'M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
+  document: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
+  recycle: 'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15',
+  shield: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z',
+}
+---
+
+<BaseLayout
+  title={metaTitle}
+  description={metaDescription}
+  navTheme={isDarkHero ? 'dark' : 'light'}
+>
+
+  <!-- SECTION 1: HERO -->
+  <section class:list={[
+    'relative pt-12 md:pt-16 lg:pt-20 pb-28 md:pb-48 section-after-nav',
+    isDarkHero ? 'bg-forest-green' : 'bg-warm-light'
+  ]}>
+    <div class="container-custom">
+      <p class:list={[
+        'font-bold text-base mb-6 uppercase tracking-wide text-center',
+        isDarkHero ? 'text-mint' : 'text-mint'
+      ]}>
+        {preHeadline}
+      </p>
+
+      <h1 class="text-center mb-8 md:mb-12 max-w-5xl mx-auto">
+        <span class:list={[
+          'block font-sans font-extrabold text-[43px] md:text-[58px] lg:text-[62px] uppercase leading-tight',
+          isDarkHero ? 'text-white' : 'text-charcoal'
+        ]} set:html={headlineHtml} />
+      </h1>
+
+      <div class:list={[
+        'max-w-3xl mx-auto text-center pb-8 md:pb-12 prose-akd',
+        isDarkHero ? 'text-white/80' : 'text-charcoal/80',
+        'text-lg md:text-xl leading-relaxed'
+      ]} set:html={introHtml} />
+    </div>
+  </section>
+
+
+  <!-- SECTION 2: CONTENTBOX -->
+  {contentBox && (
+    <section class="relative bg-warm-light pt-1 pb-16 md:pb-24">
+      <ContentBox
+        variant={contentBox.variant}
+        preHeader={contentBox.preHeader}
+        headline={contentBox.headline}
+        imageUrl={contentBox.image || '/images/siloer.png'}
+        imageAlt={contentBox.imageAlt}
+        pullUp={contentBox.pullUp}
+        items={contentBox.items}
+      />
+    </section>
+  )}
+
+
+  <!-- SECTION 3: AKD I TAL -->
+  {stats && stats.length > 0 && (
+    <section class="bg-warm-light pb-16 md:pb-24">
+      <div class="container-custom">
+        <div class="max-w-4xl mx-auto text-center mb-12">
+          {page.statsPreHeader && <p class="text-mint font-bold text-base mb-4 uppercase tracking-wide">{page.statsPreHeader}</p>}
+          {page.statsHeading && (
+            <h2 class="font-sans font-bold text-2xl md:text-3xl text-charcoal">
+              {page.statsHeading}
+            </h2>
+          )}
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 max-w-4xl mx-auto text-center">
+          {stats.map((stat) => (
+            <div>
+              <p class="font-sans font-extrabold text-4xl md:text-5xl text-mint mb-2">{stat.value}</p>
+              <p class="text-charcoal/70 text-sm md:text-base leading-snug">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+
+  <!-- SECTION 4: FÆLLESSKAB OG INDFLYDELSE -->
+  {fellowship && (
+    <section class="bg-white py-16 md:py-24">
+      <div class="container-custom">
+        <div class="max-w-6xl mx-auto bg-warm-light rounded-2xl shadow-xl overflow-hidden">
+          <div class="grid grid-cols-1 lg:grid-cols-2">
+            <div class="relative aspect-[4/3] lg:aspect-auto lg:min-h-[380px]">
+              <img
+                src={fellowship.imageUrl || '/images/pakkeriet.png'}
+                alt={fellowship.imageAlt || ''}
+                class="absolute inset-0 w-full h-full object-cover"
+              />
+            </div>
+
+            <div class="p-8 md:p-10 lg:p-12 flex flex-col justify-center">
+              {fellowship.preHeader && <p class="text-mint font-bold text-sm mb-3 uppercase tracking-wide">{fellowship.preHeader}</p>}
+              {fellowship.heading && (
+                <h2 class="font-sans font-bold text-charcoal text-2xl md:text-3xl mb-6 leading-tight">
+                  {fellowship.heading}
+                </h2>
+              )}
+              {fellowshipHtml && <div class="space-y-4 text-charcoal/80 text-base md:text-lg leading-relaxed prose-akd" set:html={fellowshipHtml} />}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )}
+
+
+  <!-- SECTION 5: VIDEO -->
+  {videoSection && videoRef && (
+    <section class="bg-warm-light py-16 md:py-24">
+      <div class="container-custom">
+        <div class="max-w-3xl mx-auto text-center mb-10">
+          {videoSection.preHeader && <p class="text-mint font-bold text-base mb-4 uppercase tracking-wide">{videoSection.preHeader}</p>}
+          {videoSection.heading && (
+            <h2 class="font-sans font-bold text-2xl md:text-3xl text-charcoal mb-4">
+              {videoSection.heading}
+            </h2>
+          )}
+          {videoSection.description && (
+            <p class="text-charcoal/70 text-base md:text-lg leading-relaxed">
+              {videoSection.description}
+            </p>
+          )}
+        </div>
+
+        <div class="max-w-2xl mx-auto">
+          <VideoCard
+            videoUrl={videoRef.videoUrl}
+            title={videoRef.title}
+            description={videoRef.description}
+            thumbnail={videoRef.thumbnail}
+            thumbnailAlt={videoRef.thumbnailAlt}
+            duration={videoRef.duration}
+          />
+        </div>
+      </div>
+    </section>
+  )}
+
+
+  <!-- SECTION 6: QUICK NAV -->
+  <section class="bg-charcoal py-16 md:py-24">
+    <div class="container-custom">
+      <div class="max-w-4xl mx-auto text-center mb-12">
+        {page.quickNavHeading && (
+          <h2 class="font-sans font-bold text-2xl md:text-3xl text-white">
+            {page.quickNavHeading}
+          </h2>
+        )}
+        {page.quickNavDescription && (
+          <p class="text-white/60 text-base md:text-lg mt-3">
+            {page.quickNavDescription}
+          </p>
+        )}
+      </div>
+
+      <div class="max-w-5xl mx-auto space-y-6">
+        {row1Cards.length > 0 && (
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {row1Cards.map((card) => (
+              <a href={card.href} class="bg-white/10 rounded-2xl p-6 hover:bg-white/15 transition-colors group border border-white/5">
+                <div class="w-12 h-12 bg-mint/20 rounded-full flex items-center justify-center mb-4">
+                  <svg class="w-6 h-6 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={iconPaths[card.icon || 'document'] || iconPaths.document} />
+                  </svg>
+                </div>
+                <h3 class="font-sans font-bold text-white text-lg mb-1 group-hover:text-mint transition-colors">{card.title}</h3>
+                <p class="text-white/50 text-sm">{card.description}</p>
+              </a>
+            ))}
+          </div>
+        )}
+
+        {row2Cards.length > 0 && (
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {row2Cards.map((card) => (
+              <a href={card.href} class="bg-white/10 rounded-2xl p-6 hover:bg-white/15 transition-colors group border border-white/5">
+                <div class="w-12 h-12 bg-mint/20 rounded-full flex items-center justify-center mb-4">
+                  <svg class="w-6 h-6 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={iconPaths[card.icon || 'document'] || iconPaths.document} />
+                  </svg>
+                </div>
+                <h3 class="font-sans font-bold text-white text-lg mb-1 group-hover:text-mint transition-colors">{card.title}</h3>
+                <p class="text-white/50 text-sm">{card.description}</p>
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>

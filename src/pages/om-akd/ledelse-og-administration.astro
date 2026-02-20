@@ -44,6 +44,10 @@ const members = page?.members || [
   { name: 'Lisbeth Sand', role: 'Administrativ medarbejder', email: 'lsa@akddanmark.dk' },
   { name: 'Frederik Gubi Elbæk Jensen', role: 'Agrorådgiver', mobile: '51 51 64 33', email: 'fje@akddanmark.dk' },
 ]
+
+function getInitials(name: string): string {
+  return name.split(' ').filter(Boolean).map(p => p[0]).slice(0, 2).join('').toUpperCase()
+}
 ---
 
 <BaseLayout 
@@ -72,6 +76,22 @@ const members = page?.members || [
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
         {members.map((member) => (
           <div class="bg-white rounded-2xl p-6 shadow-md">
+            {/* Avatar */}
+            <div class="mb-4">
+              {member.imageUrl ? (
+                <img
+                  src={`${member.imageUrl}?w=128&h=128&fit=crop&auto=format`}
+                  alt={member.name}
+                  class="w-16 h-16 rounded-full object-cover"
+                  loading="lazy"
+                />
+              ) : (
+                <div class="w-16 h-16 rounded-full bg-forest-green/10 flex items-center justify-center">
+                  <span class="text-forest-green font-bold text-lg">{getInitials(member.name)}</span>
+                </div>
+              )}
+            </div>
+
             {/* Role */}
             {member.role && (
               <p class="text-mint font-semibold text-sm uppercase tracking-wide mb-2">

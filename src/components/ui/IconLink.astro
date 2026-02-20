@@ -15,12 +15,13 @@ interface Props {
   class?: string
 }
 
-const { href, icon, class: className = '' } = Astro.props
+const { href, icon, class: className = '', ...rest } = Astro.props
 ---
 
 <a 
   href={href}
   class:list={['icon-link group', className]}
+  {...rest}
 >
   <!-- Icon -->
   <span class="icon-link-icon">

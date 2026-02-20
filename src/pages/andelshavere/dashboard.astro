@@ -16,13 +16,13 @@ import AvlerinfoSection from '@/components/andelshavere/AvlerinfoSection.astro'
 import NextStepSection from '@/components/andelshavere/NextStepSection.astro'
 import { sanityClient } from '@/lib/sanity'
 import {
-  dashboardNewsQuery,
+  dashboardNewsArticlesQuery,
   dashboardStreamerQuery,
   dashboardQuickLinksQuery,
   allVideosQuery,
 } from '@/lib/sanityQueries'
 import type {
-  DashboardNews,
+  NewsArticle,
   DashboardStreamer as DashboardStreamerType,
   DashboardQuickLinks,
   Video,
@@ -35,68 +35,11 @@ const user = Astro.locals.user;
 
 // Fetch all dashboard content from Sanity
 const [newsItems, streamer, quickLinks, videos] = await Promise.all([
-  sanityClient.fetch<DashboardNews[]>(dashboardNewsQuery),
+  sanityClient.fetch<NewsArticle[]>(dashboardNewsArticlesQuery),
   sanityClient.fetch<DashboardStreamerType>(dashboardStreamerQuery),
   sanityClient.fetch<DashboardQuickLinks>(dashboardQuickLinksQuery),
   sanityClient.fetch<Video[]>(allVideosQuery),
 ])
-
-// Placeholder news data for preview (used when no Sanity content exists)
-const placeholderNews: DashboardNews[] = [
-  {
-    _id: 'placeholder-1',
-    _type: 'dashboardNews',
-    title: 'Miniavlermøder med mange deltagere',
-    slug: { current: 'miniavlermoeder-2025', _type: 'slug' },
-    publishedAt: '2025-11-29T10:00:00Z',
-    category: 'generelt',
-    contentType: 'article',
-    excerpt: 'Der var ikke meget "mini" over fremmødet på de 4 miniavlermøder',
-  },
-  {
-    _id: 'placeholder-2',
-    _type: 'dashboardNews',
-    title: 'AKD søger en projektchef til barmarksprojekt',
-    slug: { current: 'projektchef-barmark', _type: 'slug' },
-    publishedAt: '2025-11-24T10:00:00Z',
-    category: 'generelt',
-    contentType: 'article',
-    excerpt: 'Vi søger en fagligt og erfaringsmæssigt velfunderet projektchef til større projekt',
-  },
-  {
-    _id: 'placeholder-3',
-    _type: 'dashboardNews',
-    title: 'Protamylassebestilling til 2026',
-    slug: { current: 'protamylasse-2026', _type: 'slug' },
-    publishedAt: '2025-11-17T10:00:00Z',
-    category: 'drift-kampagne',
-    contentType: 'article',
-    excerpt: 'Bestil protamylasse fra AKD til foråret 2026',
-  },
-  {
-    _id: 'placeholder-4',
-    _type: 'dashboardNews',
-    title: 'Maskinmester med el-teknisk baggrund',
-    slug: { current: 'maskinmester-job', _type: 'slug' },
-    publishedAt: '2025-11-11T10:00:00Z',
-    category: 'generelt',
-    contentType: 'article',
-    excerpt: 'Projektledelse, driftsoptimeringer, digitalisering og deltagelse i reparationer og vedligehold',
-  },
-  {
-    _id: 'placeholder-5',
-    _type: 'dashboardNews',
-    title: 'Vejeoperatør til AKD Midtjylland i Brande',
-    slug: { current: 'vejeoperator-brande', _type: 'slug' },
-    publishedAt: '2025-11-04T10:00:00Z',
-    category: 'generelt',
-    contentType: 'article',
-    excerpt: 'Indvejning og kvalitetskontrol',
-  },
-]
-
-// Use Sanity content if available, otherwise use placeholder
-const displayNews = newsItems && newsItems.length > 0 ? newsItems : placeholderNews
 ---
 
 <AndelshavereLayout 
@@ -130,7 +73,7 @@ const displayNews = newsItems && newsItems.length > 0 ? newsItems : placeholderN
       <!-- 2-Column Dashboard Grid (News takes more space) -->
       <div class="dashboard-grid grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-6 lg:gap-8">
         <!-- Column 1: News -->
-        <NewsColumn news={displayNews} />
+        <NewsColumn news={newsItems || []} />
         
         <!-- Column 2: Knowledge & Quick Access -->
         <QuickAccessColumn quickLinks={quickLinks} video={videos?.[0] ?? null} />

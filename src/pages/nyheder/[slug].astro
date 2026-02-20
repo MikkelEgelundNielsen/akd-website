@@ -1,0 +1,105 @@
+---
+/**
+ * Public News Article Detail
+ * Displays a single public news article with full rich text body.
+ * Pre-rendered at build time using getStaticPaths for all public articles.
+ */
+
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import PortableText from '@/components/sanity/PortableText.astro'
+import { sanityClient } from '@/lib/sanity'
+import { publicNewsArticlesQuery, newsArticleBySlugQuery } from '@/lib/sanityQueries'
+import type { NewsArticle } from '@/types/sanity'
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const articles = await sanityClient.fetch<NewsArticle[]>(publicNewsArticlesQuery)
+
+  return articles.map((article) => ({
+    params: { slug: article.slug },
+    props: { article },
+  }))
+}
+
+// Get article from props (pre-rendered) or fetch as fallback
+let { article } = Astro.props as { article: NewsArticle }
+
+if (!article) {
+  const { slug } = Astro.params
+  article = await sanityClient.fetch<NewsArticle>(newsArticleBySlugQuery(slug!))
+
+  if (!article || !article.isPublic) {
+    return Astro.redirect('/404')
+  }
+}
+
+// Fetch full body content if only listing fields were passed from getStaticPaths
+if (!article.body) {
+  const fullArticle = await sanityClient.fetch<NewsArticle>(newsArticleBySlugQuery(article.slug))
+  if (fullArticle) {
+    article = fullArticle
+  }
+}
+
+// Guard: only render public articles on the public route
+if (!article.isPublic) {
+  return Astro.redirect('/404')
+}
+
+const dateObj = new Date(article.publishedAt)
+const dateFormatted = dateObj.toLocaleDateString('da-DK', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+})
+
+const metaTitle = article.seo?.metaTitle || `${article.title} | Nyheder | AKD Danmark`
+const metaDescription = article.seo?.metaDescription || article.excerpt || ''
+---
+
+<BaseLayout 
+  title={metaTitle}
+  description={metaDescription}
+  navTheme="light"
+>
+  <!-- Hero Section -->
+  <section class="relative bg-warm-light pt-12 md:pt-16 lg:pt-20 pb-16 section-after-nav">
+    <div class="container-custom">
+      <a 
+        href="/nyheder"
+        class="inline-flex items-center gap-1.5 text-charcoal/60 hover:text-charcoal text-sm font-medium mb-6 transition-colors"
+      >
+        <span aria-hidden="true">←</span>
+        Tilbage til nyheder
+      </a>
+      <p class="text-mint font-bold text-base mb-4 uppercase tracking-wide">
+        {dateFormatted}
+      </p>
+      <h1 class="font-sans font-extrabold text-[34px] md:text-[43px] lg:text-[52px] text-charcoal uppercase leading-tight max-w-4xl">
+        {article.title}
+      </h1>
+    </div>
+  </section>
+
+  <!-- Article Content -->
+  <section class="bg-warm-light pb-16 md:pb-24">
+    <div class="container-custom">
+      <article class="max-w-3xl">
+        {article.mainImage && (
+          <figure class="mb-10">
+            <img
+              src={article.mainImage}
+              alt={article.mainImageAlt || article.title}
+              class="w-full h-auto rounded-lg"
+            />
+          </figure>
+        )}
+
+        {article.body && article.body.length > 0 && (
+          <PortableText content={article.body} addHeadingIds={true} />
+        )}
+      </article>
+    </div>
+  </section>
+</BaseLayout>

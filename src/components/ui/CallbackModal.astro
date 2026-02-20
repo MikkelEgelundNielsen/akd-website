@@ -1,0 +1,236 @@
+---
+/**
+ * CallbackModal Component
+ * A global overlay form for requesting a callback.
+ * Include once in BaseLayout — it listens for `openCallbackModal()` calls
+ * and for clicks on any element with class `callback-trigger`.
+ */
+---
+
+<div
+  id="callback-modal"
+  class="fixed inset-0 z-[9999] hidden items-center justify-center"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Bliv ringet op"
+>
+  <!-- Backdrop -->
+  <div id="callback-modal-backdrop" class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
+
+  <!-- Modal card -->
+  <div class="relative z-10 w-full max-w-lg mx-4">
+    <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
+
+      <!-- Header -->
+      <div class="px-8 pt-8 md:px-10 md:pt-10 flex items-start justify-between">
+        <div>
+          <h2 class="font-sans font-bold text-2xl md:text-3xl text-charcoal">Bliv ringet op</h2>
+          <p class="text-charcoal/60 text-sm mt-1">Udfyld formularen, så ringer vi dig op inden for én hverdag.</p>
+        </div>
+        <button
+          id="callback-modal-close"
+          type="button"
+          class="text-charcoal/40 hover:text-charcoal transition-colors -mt-1 -mr-2 p-2 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-mint"
+          aria-label="Luk"
+        >
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Form -->
+      <form id="callback-form" class="px-8 pb-8 pt-6 md:px-10 md:pb-10 space-y-5" novalidate>
+
+        <!-- Reason -->
+        <div>
+          <label for="callback-reason" class="block text-sm font-semibold text-charcoal mb-1.5">Hvad drejer det sig om?</label>
+          <select
+            id="callback-reason"
+            name="reason"
+            class="w-full border border-charcoal/20 rounded-lg px-4 py-3 text-charcoal bg-white focus:ring-2 focus:ring-mint focus:border-mint outline-none transition-shadow appearance-none"
+          >
+            <option value="Generel henvendelse">Generel henvendelse</option>
+            <option value="Bliv andelshaver">Bliv andelshaver</option>
+            <option value="Agro-rådgivning">Agro-rådgivning</option>
+            <option value="Job og karriere">Job og karriere</option>
+            <option value="Andet">Andet</option>
+          </select>
+        </div>
+
+        <!-- Name -->
+        <div>
+          <label for="callback-name" class="block text-sm font-semibold text-charcoal mb-1.5">Dit navn</label>
+          <input
+            id="callback-name"
+            name="name"
+            type="text"
+            required
+            autocomplete="name"
+            placeholder="Fornavn og efternavn"
+            class="w-full border border-charcoal/20 rounded-lg px-4 py-3 text-charcoal placeholder:text-charcoal/30 focus:ring-2 focus:ring-mint focus:border-mint outline-none transition-shadow"
+          />
+        </div>
+
+        <!-- Phone -->
+        <div>
+          <label for="callback-phone" class="block text-sm font-semibold text-charcoal mb-1.5">Telefonnummer</label>
+          <input
+            id="callback-phone"
+            name="phone"
+            type="tel"
+            required
+            autocomplete="tel"
+            placeholder="Fx 12 34 56 78"
+            class="w-full border border-charcoal/20 rounded-lg px-4 py-3 text-charcoal placeholder:text-charcoal/30 focus:ring-2 focus:ring-mint focus:border-mint outline-none transition-shadow"
+          />
+        </div>
+
+        <!-- Error message -->
+        <p id="callback-error" class="text-red-600 text-sm font-medium hidden"></p>
+
+        <!-- Submit -->
+        <button
+          type="submit"
+          id="callback-submit"
+          class="w-full bg-burnt-orange text-white font-bold py-3.5 rounded-full hover:bg-amber transition-colors flex items-center justify-center gap-2"
+        >
+          <span id="callback-submit-text">Send</span>
+          <svg id="callback-spinner" class="w-5 h-5 animate-spin hidden" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+        </button>
+      </form>
+
+      <!-- Success state (hidden by default) -->
+      <div id="callback-success" class="px-8 py-12 md:px-10 md:py-16 text-center hidden">
+        <div class="w-16 h-16 bg-mint/20 rounded-full flex items-center justify-center mx-auto mb-5">
+          <svg class="w-8 h-8 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+          </svg>
+        </div>
+        <h3 class="font-sans font-bold text-xl text-charcoal mb-2">Tak for din henvendelse!</h3>
+        <p class="text-charcoal/60 text-base">Vi ringer dig op hurtigst muligt — som regel inden for én hverdag.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const modal = document.getElementById('callback-modal')!;
+  const backdrop = document.getElementById('callback-modal-backdrop')!;
+  const closeBtn = document.getElementById('callback-modal-close')!;
+  const form = document.getElementById('callback-form') as HTMLFormElement;
+  const reasonSelect = document.getElementById('callback-reason') as HTMLSelectElement;
+  const nameInput = document.getElementById('callback-name') as HTMLInputElement;
+  const phoneInput = document.getElementById('callback-phone') as HTMLInputElement;
+  const errorEl = document.getElementById('callback-error')!;
+  const submitBtn = document.getElementById('callback-submit') as HTMLButtonElement;
+  const submitText = document.getElementById('callback-submit-text')!;
+  const spinner = document.getElementById('callback-spinner')!;
+  const successEl = document.getElementById('callback-success')!;
+
+  function openCallbackModal(reason?: string) {
+    // Reset to form state
+    form.classList.remove('hidden');
+    successEl.classList.add('hidden');
+    errorEl.classList.add('hidden');
+    errorEl.textContent = '';
+    nameInput.value = '';
+    phoneInput.value = '';
+    submitBtn.disabled = false;
+    submitText.textContent = 'Send';
+    spinner.classList.add('hidden');
+
+    if (reason) {
+      const option = Array.from(reasonSelect.options).find(o => o.value === reason);
+      if (option) reasonSelect.value = reason;
+    } else {
+      reasonSelect.selectedIndex = 0;
+    }
+
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+    nameInput.focus();
+  }
+
+  function closeCallbackModal() {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    document.body.style.overflow = '';
+  }
+
+  // Submit handler
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorEl.classList.add('hidden');
+
+    const name = nameInput.value.trim();
+    const phone = phoneInput.value.trim();
+
+    if (!name || !phone) {
+      errorEl.textContent = 'Udfyld venligst både navn og telefonnummer.';
+      errorEl.classList.remove('hidden');
+      return;
+    }
+
+    // Submitting state
+    submitBtn.disabled = true;
+    submitText.textContent = 'Sender...';
+    spinner.classList.remove('hidden');
+
+    try {
+      const res = await fetch('/api/callback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          reason: reasonSelect.value,
+          name,
+          phone,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || 'Der opstod en fejl.');
+      }
+
+      // Success — show confirmation
+      form.classList.add('hidden');
+      successEl.classList.remove('hidden');
+
+      setTimeout(closeCallbackModal, 3000);
+    } catch (err: any) {
+      errorEl.textContent = err.message || 'Der opstod en fejl. Prøv venligst igen.';
+      errorEl.classList.remove('hidden');
+      submitBtn.disabled = false;
+      submitText.textContent = 'Send';
+      spinner.classList.add('hidden');
+    }
+  });
+
+  // Close handlers
+  closeBtn.addEventListener('click', closeCallbackModal);
+  backdrop.addEventListener('click', closeCallbackModal);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+      closeCallbackModal();
+    }
+  });
+
+  // Global trigger delegation — any element with class "callback-trigger" opens the modal
+  document.addEventListener('click', (e) => {
+    const trigger = (e.target as HTMLElement).closest('.callback-trigger');
+    if (trigger) {
+      e.preventDefault();
+      const reason = (trigger as HTMLElement).dataset.reason || '';
+      openCallbackModal(reason);
+    }
+  });
+
+  // Expose globally
+  (window as any).openCallbackModal = openCallbackModal;
+</script>

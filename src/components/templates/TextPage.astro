@@ -2,7 +2,7 @@
 interface Section {
   id: string
   title: string
-  level?: 2 | 3
+  level?: 2 | 3 | 4
 }
 
 interface Props {
@@ -76,7 +76,8 @@ const { preHeader, headline, sections } = Astro.props
                         href={`#${section.id}`}
                         class:list={[
                           "block text-sm text-charcoal hover:text-burnt-orange transition-colors py-2 px-3 rounded",
-                          section.level === 3 && "pl-6 text-charcoal/80"
+                          section.level === 3 && "pl-6 text-charcoal/80",
+                          section.level === 4 && "pl-9 text-charcoal/70 text-xs"
                         ]}
                       >
                         {section.title}
@@ -110,7 +111,7 @@ const { preHeader, headline, sections } = Astro.props
                     href={`#${section.id}`}
                     class:list={[
                       "toc-link block text-sm text-charcoal hover:text-burnt-orange transition-colors py-2.5 border-l-4 border-r-4 border-l-transparent border-r-transparent",
-                      section.level === 3 ? "pl-9 pr-6 text-charcoal/80" : "px-6"
+                      section.level === 4 ? "pl-12 pr-6 text-charcoal/70 text-xs" : section.level === 3 ? "pl-9 pr-6 text-charcoal/80" : "px-6"
                     ]}
                     data-target={section.id}
                   >
@@ -190,10 +191,10 @@ const { preHeader, headline, sections } = Astro.props
       }
     );
     
-    // Observe all sections (H2 and H3)
+    // Observe all sections (H2, H3, and H4)
     const sections = document.querySelectorAll('[id]');
     sections.forEach((section) => {
-      if (section.tagName === 'H2' || section.tagName === 'H3') {
+      if (section.tagName === 'H2' || section.tagName === 'H3' || section.tagName === 'H4') {
         observer.observe(section);
       }
     });

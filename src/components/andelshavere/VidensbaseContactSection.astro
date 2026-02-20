@@ -1,0 +1,77 @@
+---
+/**
+ * VidensbaseContactSection Component
+ * Agro-rådgivning contact section shown below content on every vidensbase topic page.
+ * Displays intro text about AKD's advisory services and two contact cards
+ * for Bjarne Thisgaard (Agrochef) and Frederik Jensen (Agrorådgiver).
+ */
+
+import IconLink from '@/components/ui/IconLink.astro'
+---
+
+<section class="relative bg-charcoal pt-12 md:pt-16 pb-12 md:pb-16">
+  <div class="container-custom">
+    <!-- Section Header -->
+    <h2 class="mb-2 max-w-3xl mx-auto text-center">
+      <span class="block font-sans font-extrabold text-[29px] md:text-4xl lg:text-[43px] text-white uppercase leading-tight">
+        HAR DU <span class="italic font-medium text-mint lowercase" style="font-family: 'Lora', serif;">brug for</span> RÅDGIVNING?
+      </span>
+    </h2>
+
+    <p class="text-white/90 text-base max-w-2xl mx-auto mb-10 text-center">
+      Avler-rådgivning tager udgangspunkt i AKD Agros strategi om dyrkning og håndtering af kartofler med et langsigtet mål om mere end 10 ton stivelse/ha i gennemsnit, samt at øge afkastet pr. ton med 10&nbsp;%.
+      <br/><br/>Agro-rådgivning til selskabets avlere foregår i et tæt samarbejde med de rådgivningshuse, der har specialister i kartoffelrådgivning.
+    </p>
+
+    <!-- Contact Cards Grid -->
+    <div class="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+
+      <!-- Bjarne Thisgaard -->
+      <div class="bg-white rounded-lg shadow-xl overflow-hidden">
+        <div class="p-6 md:p-8 flex flex-col items-center text-center">
+          <div class="w-20 h-20 rounded-full bg-forest-green/10 flex items-center justify-center mb-4">
+            <svg class="w-10 h-10 text-forest-green" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+            </svg>
+          </div>
+          <h3 class="font-sans font-bold text-lg md:text-xl text-charcoal mb-1">
+            Bjarne Thisgaard
+          </h3>
+          <p class="text-charcoal/60 text-sm mb-5">Agrochef</p>
+          <div class="flex flex-col gap-3 w-full items-center">
+            <IconLink href="tel:+4540279695" icon="phone">
+              4027 9695
+            </IconLink>
+            <IconLink href="mailto:bt@akddanmark.dk" icon="email">
+              bt@akddanmark.dk
+            </IconLink>
+          </div>
+        </div>
+      </div>
+
+      <!-- Frederik Jensen -->
+      <div class="bg-white rounded-lg shadow-xl overflow-hidden">
+        <div class="p-6 md:p-8 flex flex-col items-center text-center">
+          <div class="w-20 h-20 rounded-full bg-forest-green/10 flex items-center justify-center mb-4">
+            <svg class="w-10 h-10 text-forest-green" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+            </svg>
+          </div>
+          <h3 class="font-sans font-bold text-lg md:text-xl text-charcoal mb-1">
+            Frederik Jensen
+          </h3>
+          <p class="text-charcoal/60 text-sm mb-5">Agrorådgiver</p>
+          <div class="flex flex-col gap-3 w-full items-center">
+            <IconLink href="tel:+4551516433" icon="phone">
+              5151 6433
+            </IconLink>
+            <IconLink href="mailto:fje@akddanmark.dk" icon="email">
+              fje@akddanmark.dk
+            </IconLink>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

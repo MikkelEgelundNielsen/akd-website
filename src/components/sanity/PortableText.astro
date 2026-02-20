@@ -15,6 +15,19 @@ const html = portableTextToHtml(content, { addHeadingIds })
 
 <div class={`prose-akd ${className}`} set:html={html} />
 
+<script>
+  // Wire inline video cards to the global VideoModal
+  document.querySelectorAll<HTMLElement>('.prose-akd .video-card').forEach((card) => {
+    card.addEventListener('click', () => {
+      const url = card.dataset.videoUrl;
+      const title = card.dataset.videoTitle;
+      if (url && typeof (window as any).openVideoModal === 'function') {
+        (window as any).openVideoModal(url, title);
+      }
+    });
+  });
+</script>
+
 <style>
   /* Portable Text styles - matches TextPage.astro */
   .prose-akd {
@@ -90,6 +103,35 @@ const html = portableTextToHtml(content, { addHeadingIds })
     @apply text-sm text-charcoal/70 mt-2 text-center;
   }
   
+  /* Tables — matches /om-akd/rest-og-biprodukter style */
+  .prose-akd :global(.table-wrapper) {
+    @apply my-6 overflow-x-auto rounded-xl border border-charcoal/10;
+  }
+
+  .prose-akd :global(table) {
+    @apply w-full text-left text-sm;
+  }
+
+  .prose-akd :global(thead th) {
+    @apply bg-charcoal text-white font-semibold px-4 py-3;
+  }
+
+  .prose-akd :global(tbody td) {
+    @apply px-4 py-2.5 text-charcoal/80;
+  }
+
+  .prose-akd :global(tbody td:first-child) {
+    @apply font-medium text-charcoal;
+  }
+
+  .prose-akd :global(tbody tr:nth-child(odd)) {
+    @apply bg-white;
+  }
+
+  .prose-akd :global(tbody tr:nth-child(even)) {
+    background-color: #F2F1EC4D; /* warm-light at ~30% opacity */
+  }
+
   /* Mint accent (custom mark) */
   .prose-akd :global(.text-mint) {
     color: #10E397;

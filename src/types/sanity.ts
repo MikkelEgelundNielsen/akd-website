@@ -395,9 +395,43 @@ export interface OpenApplicationPage {
   seo?: SEO
 }
 
+// Internship Page (singleton)
+export interface InternshipPage {
+  _id: string
+  _type: 'internshipPage'
+  title: string
+  hero?: PageHero
+  pathCards?: {
+    title: string
+    description: string
+    icon?: string
+    linkUrl?: string
+    linkLabel?: string
+  }[]
+  contentBox?: ContentBoxSection
+  workAreas?: {
+    title: string
+    description?: string
+  }[]
+  steps?: {
+    title: string
+    description: string
+  }[]
+  contactHeadline?: string
+  contactText?: string
+  contactPhone?: string
+  contactEmail?: string
+  faqItems?: {
+    question: string
+    answer: string
+  }[]
+  seo?: SEO
+}
+
 // Person Contact (reusable object)
 export interface PersonContact {
   name: string
+  imageUrl?: string
   role?: string
   address?: string
   phone?: string
@@ -461,6 +495,69 @@ export interface Video {
   duration?: string
 }
 
+// Vidensbase Topic (individual document)
+export interface VidensbaseTopic {
+  _id: string
+  _type: 'vidensbaseTopic'
+  title: string
+  slug: string            // resolved from slug.current in GROQ
+  icon: string
+  shortLabel: string
+  content: PortableTextContent
+  tableOfContents?: { id: string; title: string }[]
+  relatedTopics?: {
+    _id: string
+    title: string
+    slug: string
+    icon: string
+    shortLabel: string
+  }[]
+  seo?: SEO
+}
+
+// Vidensbase Page (singleton)
+export interface VidensbasePage {
+  _id: string
+  _type: 'vidensbasePage'
+  title: string
+  hero?: PageHero
+  searchPlaceholder?: string
+  popularTopics?: { label: string; link?: string }[]
+  categories?: VidensbaseTopic[]  // expanded from references
+  usefulLinks?: { label: string; href: string; openInNewTab?: boolean }[]
+  seo?: SEO
+}
+
+// Table Block (embedded in Portable Text)
+export interface TableRow {
+  _key: string
+  cells: string[]
+}
+
+export interface TableBlock {
+  _type: 'tableBlock'
+  _key: string
+  rows: TableRow[]
+  hasHeaderRow?: boolean
+}
+
+// News Article (individual document)
+export interface NewsArticle {
+  _id: string
+  _type: 'newsArticle'
+  title: string
+  slug: string              // resolved from slug.current in GROQ
+  publishedAt: string
+  excerpt?: string
+  mainImage?: string        // resolved URL from GROQ
+  mainImageAlt?: string
+  body?: PortableTextContent
+  sourceUrl?: string
+  isPublic?: boolean
+  showOnPortal?: boolean
+  seo?: SEO
+}
+
 // Job Listings Page (singleton)
 export interface JobListingsPage {
   _id: string
@@ -477,6 +574,95 @@ export interface JobListingsPage {
   bottomCtaPrimaryUrl?: string
   bottomCtaSecondaryText?: string
   bottomCtaSecondaryUrl?: string
+  seo?: SEO
+}
+
+// About Page - stat item
+export interface StatItem {
+  value: string
+  label: string
+}
+
+// About Page - fellowship section
+export interface FellowshipSection {
+  preHeader?: string
+  heading: string
+  imageUrl?: string
+  imageAlt?: string
+  bodyText?: PortableTextBlock[]
+}
+
+// About Page - video section
+export interface AboutVideoSection {
+  preHeader?: string
+  heading?: string
+  description?: string
+  videoRef?: Video
+}
+
+// About Page - quick nav card
+export interface QuickNavCard {
+  title: string
+  description?: string
+  href: string
+  icon?: string
+  row?: number
+}
+
+// About Page (singleton)
+export interface AboutPage {
+  _id: string
+  _type: 'aboutPage'
+  title: string
+  hero?: PageHero
+  heroTheme?: 'green' | 'light'
+  contentBox?: ContentBoxSection
+  statsPreHeader?: string
+  statsHeading?: string
+  stats?: StatItem[]
+  fellowship?: FellowshipSection
+  video?: AboutVideoSection
+  quickNavHeading?: string
+  quickNavDescription?: string
+  quickNavCards?: QuickNavCard[]
+  seo?: SEO
+}
+
+// Responsibility Page - document section (CSR / Code of Conduct)
+export interface ResponsibilityDocumentSection {
+  preHeader?: string
+  heading: string
+  introText?: string
+  documentsHeading?: string
+  documents?: DocumentDownload[]
+}
+
+// Responsibility Page - klimaaftryk section
+export interface KlimaaftrykSection {
+  preHeader?: string
+  heading: string
+  subheading?: string
+  content?: PortableTextContent
+}
+
+// Responsibility Page - CTA section
+export interface ResponsibilityCtaSection {
+  heading?: string
+  description?: string
+  linkText?: string
+  linkHref?: string
+}
+
+// Responsibility Page (singleton)
+export interface ResponsibilityPage {
+  _id: string
+  _type: 'responsibilityPage'
+  title: string
+  hero?: PageHero
+  csrSection?: ResponsibilityDocumentSection
+  codeOfConductSection?: ResponsibilityDocumentSection
+  klimaaftrykSection?: KlimaaftrykSection
+  ctaSection?: ResponsibilityCtaSection
   seo?: SEO
 }
 

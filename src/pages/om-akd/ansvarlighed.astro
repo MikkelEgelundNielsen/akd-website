@@ -1,0 +1,243 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import PortableText from '@/components/sanity/PortableText.astro'
+import { sanityClient } from '@/lib/sanity'
+import { responsibilityPageQuery } from '@/lib/sanityQueries'
+import { portableTextToHtml } from '@/lib/portableTextSerializer'
+import type { ResponsibilityPage } from '@/types/sanity'
+
+export const prerender = true;
+
+let page: ResponsibilityPage | null = null
+try {
+  page = await sanityClient.fetch<ResponsibilityPage>(responsibilityPageQuery)
+} catch (error) {
+  console.error('Error fetching Responsibility page from Sanity:', error)
+}
+
+if (!page) {
+  return Astro.redirect('/404')
+}
+
+const headlineHtml = page.hero?.headline
+  ? portableTextToHtml(page.hero.headline, { addHeadingIds: false })
+  : ''
+
+const introHtml = page.hero?.introText
+  ? portableTextToHtml(page.hero.introText, { addHeadingIds: false })
+  : ''
+
+const preHeadline = page.hero?.preHeadline
+
+const metaTitle = page.seo?.metaTitle || page.title || 'Ansvarlighed'
+const metaDescription = page.seo?.metaDescription || ''
+
+const csr = page.csrSection
+const conduct = page.codeOfConductSection
+const klima = page.klimaaftrykSection
+const cta = page.ctaSection
+
+const csrDocs = csr?.documents || []
+const conductDocs = conduct?.documents || []
+
+function getDocHref(doc: { fileUrl?: string; url?: string }): string {
+  return doc.fileUrl || doc.url || '#'
+}
+---
+
+<BaseLayout
+  title={metaTitle}
+  description={metaDescription}
+  navTheme="light"
+>
+
+  <!-- HERO -->
+  <section class="relative bg-warm-light pt-12 md:pt-16 lg:pt-20 pb-16 section-after-nav">
+    <div class="container-custom">
+      <p class="text-mint font-bold text-base mb-6 uppercase tracking-wide text-center">
+        {preHeadline}
+      </p>
+
+      <h1 class="text-center mb-8 md:mb-12 max-w-4xl mx-auto">
+        <span class="block font-sans font-extrabold text-[43px] md:text-[58px] lg:text-[62px] text-charcoal uppercase leading-tight" set:html={headlineHtml} />
+      </h1>
+
+      <div class="max-w-3xl mx-auto text-center text-charcoal text-lg md:text-xl leading-relaxed prose-akd" set:html={introHtml} />
+    </div>
+  </section>
+
+
+  <!-- QUICK NAV -->
+  <section class="bg-warm-light pb-16 md:pb-24">
+    <div class="container-custom">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+        <a href="#csr" class="bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow group text-center">
+          <div class="w-12 h-12 bg-mint/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-6 h-6 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+            </svg>
+          </div>
+          <h3 class="font-sans font-bold text-charcoal text-lg mb-2 group-hover:text-mint transition-colors">CSR</h3>
+          <p class="text-charcoal/60 text-sm">Rapporter om samfundsansvar</p>
+        </a>
+
+        <a href="#code-of-conduct" class="bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow group text-center">
+          <div class="w-12 h-12 bg-mint/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-6 h-6 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+          </div>
+          <h3 class="font-sans font-bold text-charcoal text-lg mb-2 group-hover:text-mint transition-colors">Code of Conduct</h3>
+          <p class="text-charcoal/60 text-sm">Adfærdskodeks for KMC-gruppen</p>
+        </a>
+
+        <a href="#klimaaftryk" class="bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow group text-center">
+          <div class="w-12 h-12 bg-mint/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-6 h-6 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
+          <h3 class="font-sans font-bold text-charcoal text-lg mb-2 group-hover:text-mint transition-colors">Klimaaftryk</h3>
+          <p class="text-charcoal/60 text-sm">Projekt om kartoffelmelsindustriens klimaprofil</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- CSR -->
+  {csr && (
+    <section id="csr" class="bg-white py-16 md:py-24 scroll-mt-24">
+      <div class="container-custom">
+        <div class="max-w-4xl mx-auto">
+          {csr.preHeader && <p class="text-mint font-bold text-sm mb-4 uppercase tracking-wide">{csr.preHeader}</p>}
+          {csr.heading && (
+            <h2 class="font-sans font-extrabold text-3xl md:text-4xl lg:text-[43px] text-charcoal leading-tight mb-6">
+              {csr.heading}
+            </h2>
+          )}
+          {csr.introText && (
+            <p class="text-charcoal/80 text-xl md:text-2xl leading-relaxed mb-8">
+              {csr.introText}
+            </p>
+          )}
+
+          {csrDocs.length > 0 && (
+            <div class="bg-warm-light rounded-2xl p-6 md:p-8">
+              {csr.documentsHeading && <h4 class="font-sans font-bold text-lg text-charcoal mb-4">{csr.documentsHeading}</h4>}
+              <div class="space-y-3">
+                {csrDocs.map((doc) => (
+                  <a href={getDocHref(doc)} class="flex items-center gap-3 text-charcoal hover:text-mint transition-colors group">
+                    <svg class="w-5 h-5 text-mint flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <span class="text-lg group-hover:underline">{doc.title}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )}
+
+
+  <!-- CODE OF CONDUCT -->
+  {conduct && (
+    <section id="code-of-conduct" class="bg-warm-light py-16 md:py-24 scroll-mt-24">
+      <div class="container-custom">
+        <div class="max-w-4xl mx-auto">
+          {conduct.preHeader && <p class="text-mint font-bold text-sm mb-4 uppercase tracking-wide">{conduct.preHeader}</p>}
+          {conduct.heading && (
+            <h2 class="font-sans font-extrabold text-3xl md:text-4xl lg:text-[43px] text-charcoal leading-tight mb-6">
+              {conduct.heading}
+            </h2>
+          )}
+          {conduct.introText && (
+            <p class="text-charcoal/80 text-xl md:text-2xl leading-relaxed mb-8">
+              {conduct.introText}
+            </p>
+          )}
+
+          {conductDocs.length > 0 && (
+            <div class="bg-white rounded-2xl p-6 md:p-8 shadow-md">
+              {conduct.documentsHeading && <h4 class="font-sans font-bold text-lg text-charcoal mb-4">{conduct.documentsHeading}</h4>}
+              <div class="space-y-3">
+                {conductDocs.map((doc) => (
+                  <a href={getDocHref(doc)} class="flex items-center gap-3 text-charcoal hover:text-mint transition-colors group">
+                    <svg class="w-5 h-5 text-mint flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <span class="text-lg group-hover:underline">{doc.title}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )}
+
+
+  <!-- KLIMAAFTRYK -->
+  {klima && (
+    <section id="klimaaftryk" class="bg-white py-16 md:py-24 scroll-mt-24">
+      <div class="container-custom">
+        <div class="max-w-4xl mx-auto">
+          {klima.preHeader && <p class="text-mint font-bold text-sm mb-4 uppercase tracking-wide">{klima.preHeader}</p>}
+          {klima.heading && (
+            <h2 class="font-sans font-extrabold text-3xl md:text-4xl lg:text-[43px] text-charcoal leading-tight mb-6">
+              {klima.heading}
+            </h2>
+          )}
+          {klima.subheading && (
+            <p class="text-charcoal/80 text-xl md:text-2xl leading-relaxed mb-8">
+              {klima.subheading}
+            </p>
+          )}
+
+          {klima.content && (
+            <div class="prose-akd text-charcoal/80 text-lg leading-relaxed">
+              <PortableText content={klima.content} addHeadingIds={false} />
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )}
+
+
+  <!-- BACK TO OM AKD -->
+  {cta && (
+    <section class="bg-charcoal py-16 md:py-24">
+      <div class="container-custom">
+        <div class="max-w-4xl mx-auto text-center">
+          {cta.heading && (
+            <h2 class="font-sans font-bold text-2xl md:text-3xl text-white mb-4">
+              {cta.heading}
+            </h2>
+          )}
+          {cta.description && (
+            <p class="text-white/70 text-lg mb-8">
+              {cta.description}
+            </p>
+          )}
+          {cta.linkHref && (
+            <a
+              href={cta.linkHref}
+              class="inline-flex items-center gap-2 bg-mint text-charcoal font-bold px-8 py-4 rounded-full hover:bg-mint/90 transition-colors"
+            >
+              {cta.linkText}
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+              </svg>
+            </a>
+          )}
+        </div>
+      </div>
+    </section>
+  )}
+
+</BaseLayout>

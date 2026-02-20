@@ -2,37 +2,22 @@
 /**
  * NewsColumn Component
  * Column 1: "Nyt fra AKD"
- * Displays latest news with date bricks, categories and CTAs
+ * Displays latest news articles with date bricks and CTAs.
+ * Powered by newsArticle documents from Sanity.
  */
 
 import DateBrick from './DateBrick.astro'
-import type { DashboardNews, DashboardCategory } from '@/types/sanity'
+import type { NewsArticle } from '@/types/sanity'
 
 interface Props {
-  news: DashboardNews[]
+  news: NewsArticle[]
   allNewsLink?: string
 }
 
 const { news, allNewsLink = '/andelshavere/nyheder' } = Astro.props
 
-// Category label mapping
-const categoryLabels: Record<DashboardCategory, string> = {
-  'drift-kampagne': 'Drift & kampagne',
-  'oekonomi': 'Økonomi',
-  'generelt': 'Generelt',
-}
-
-// CTA text based on content type
-const getCtaText = (contentType: 'article' | 'video') => {
-  return contentType === 'video' ? 'Se video' : 'Læs hele nyheden her'
-}
-
-// Get link for news item
-const getNewsLink = (item: DashboardNews) => {
-  if (item.link) return item.link
-  // Handle both string slug (from Sanity query) and object slug (from placeholder)
-  const slugValue = typeof item.slug === 'string' ? item.slug : item.slug?.current
-  return `/andelshavere/nyheder/${slugValue}`
+const getNewsLink = (item: NewsArticle) => {
+  return `/andelshavere/nyheder/${item.slug}`
 }
 ---
 
@@ -55,25 +40,13 @@ const getNewsLink = (item: DashboardNews) => {
                 {item.excerpt}
               </p>
             )}
-            {item.contentType === 'video' && item.videoUrl ? (
-              <button
-                type="button"
-                class="video-trigger inline-flex items-center gap-1 text-burnt-orange hover:text-amber transition-colors text-sm font-medium"
-                data-video-url={item.videoUrl}
-                data-video-title={item.videoTitle || item.title}
-              >
-                Se video
-                <span aria-hidden="true">▶</span>
-              </button>
-            ) : (
-              <a 
-                href={getNewsLink(item)}
-                class="inline-flex items-center gap-1 text-burnt-orange hover:text-amber transition-colors text-sm font-medium"
-              >
-                {getCtaText(item.contentType)}
-                <span aria-hidden="true">→</span>
-              </a>
-            )}
+            <a 
+              href={getNewsLink(item)}
+              class="inline-flex items-center gap-1 text-burnt-orange hover:text-amber transition-colors text-sm font-medium"
+            >
+              Læs hele nyheden her
+              <span aria-hidden="true">→</span>
+            </a>
           </div>
         </li>
       ))}
@@ -93,18 +66,6 @@ const getNewsLink = (item: DashboardNews) => {
   </div>
 </div>
 
-<script>
-  // Wire video triggers in NewsColumn to open the global VideoModal
-  document.querySelectorAll<HTMLElement>('.news-column .video-trigger').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const url = btn.dataset.videoUrl;
-      const title = btn.dataset.videoTitle;
-      if (url && typeof (window as any).openVideoModal === 'function') {
-        (window as any).openVideoModal(url, title);
-      }
-    });
-  });
-</script>
 
 <style>
   .news-item {

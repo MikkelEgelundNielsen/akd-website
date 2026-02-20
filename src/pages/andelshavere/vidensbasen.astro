@@ -1,0 +1,54 @@
+---
+/**
+ * Vidensbase Landing Page
+ * Knowledge base index with:
+ * - Hero section (forest green) with search + popular topics
+ * - Icon bar with topic categories (pulled up)
+ * - Overview / intro content below
+ */
+
+import AndelshavereLayout from '@/layouts/AndelshavereLayout.astro'
+import VidensbaseHero from '@/components/andelshavere/VidensbaseHero.astro'
+import VidensbaseIconBar from '@/components/andelshavere/VidensbaseIconBar.astro'
+import { sanityClient } from '@/lib/sanity'
+import { vidensbasePageQuery } from '@/lib/sanityQueries'
+import type { VidensbasePage } from '@/types/sanity'
+
+export const prerender = false;
+
+// Fetch page data from Sanity
+let page: VidensbasePage | null = null
+try {
+  page = await sanityClient.fetch<VidensbasePage>(vidensbasePageQuery)
+} catch (error) {
+  console.error('Error fetching Vidensbase page from Sanity:', error)
+}
+
+const categories = page?.categories || []
+const metaTitle = page?.seo?.metaTitle || 'Vidensbase | For Andelshavere'
+const metaDescription = page?.seo?.metaDescription || 'AKD Agros vidensbase med faglig viden om kartoffelavl'
+---
+
+<AndelshavereLayout 
+  title={metaTitle}
+  description={metaDescription}
+>
+  <!-- Hero Section -->
+  <VidensbaseHero page={page} />
+
+  <!-- Icon Bar (pulled up over hero) -->
+  {categories.length > 0 && (
+    <VidensbaseIconBar categories={categories} />
+  )}
+
+  <!-- Intro Section -->
+  <section class="bg-warm-light py-12 md:py-16">
+    <div class="container-custom">
+      <div class="max-w-3xl mx-auto text-center">
+        <p class="text-charcoal/70 text-lg leading-relaxed">
+          Vælg et emne ovenfor for at dykke ned i vores vidensbase, eller brug søgefeltet til at finde det du leder efter.
+        </p>
+      </div>
+    </div>
+  </section>
+</AndelshavereLayout>

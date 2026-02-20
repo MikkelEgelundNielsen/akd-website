@@ -1,0 +1,50 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import TextPage from '@/components/templates/TextPage.astro'
+import PortableText from '@/components/sanity/PortableText.astro'
+import { sanityClient } from '@/lib/sanity'
+import { generalPageBySlugQuery } from '@/lib/sanityQueries'
+import { portableTextToHtml } from '@/lib/portableTextSerializer'
+import type { GeneralPage } from '@/types/sanity'
+
+export const prerender = true;
+
+let page: GeneralPage | null = null
+try {
+  page = await sanityClient.fetch(generalPageBySlugQuery('whistleblower-ordning'))
+} catch (error) {
+  console.error('Error fetching Whistleblower page from Sanity:', error)
+}
+
+if (!page) {
+  return Astro.redirect('/404')
+}
+
+const headlineHtml = page.headline ? portableTextToHtml(page.headline, { addHeadingIds: false }) : page.title
+
+const sections = page.showTableOfContents && page.tableOfContents 
+  ? page.tableOfContents.map(section => ({
+      id: section.id,
+      title: section.title
+    }))
+  : []
+
+const metaTitle = page.seo?.metaTitle || 'Whistleblower-ordning | AKD'
+const metaDescription = page.seo?.metaDescription || 'Indberet alvorlige eller kritisable forhold vedrørende AKD. Ordningen er en fortrolig kanal og et supplement til den daglige dialog på arbejdspladsen.'
+---
+
+<BaseLayout 
+  title={metaTitle}
+  description={metaDescription}
+>
+  <TextPage
+    preHeader={page.preHeader}
+    headline={headlineHtml}
+    sections={sections}
+  >
+    <PortableText 
+      content={page.content} 
+      addHeadingIds={true}
+    />
+  </TextPage>
+</BaseLayout>

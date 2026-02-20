@@ -50,18 +50,28 @@
   import Plyr from 'plyr';
 
   // ---------- state ----------
-  let player: Plyr | null = null;
   const modal = document.getElementById('video-modal')!;
   const backdrop = document.getElementById('video-modal-backdrop')!;
   const closeBtn = document.getElementById('video-modal-close')!;
   const videoEl = document.getElementById('video-modal-player') as HTMLVideoElement;
   const titleEl = document.getElementById('video-modal-title')!;
 
+  // Create Plyr once and reuse it — avoids DOM issues from destroy/recreate
+  const player = new Plyr(videoEl, {
+    controls: [
+      'play-large',
+      'play',
+      'progress',
+      'current-time',
+      'duration',
+      'mute',
+      'volume',
+      'fullscreen',
+    ],
+  });
+
   // ---------- open ----------
   function openVideoModal(videoUrl: string, title?: string) {
-    // Set the source
-    videoEl.src = videoUrl;
-
     // Set title if provided
     if (title) {
       titleEl.textContent = title;
@@ -76,34 +86,21 @@
     modal.classList.add('flex');
     document.body.style.overflow = 'hidden';
 
-    // Initialize Plyr (destroy previous if needed)
-    if (player) {
-      player.destroy();
-    }
-    player = new Plyr(videoEl, {
-      controls: [
-        'play-large',
-        'play',
-        'progress',
-        'current-time',
-        'duration',
-        'mute',
-        'volume',
-        'fullscreen',
-      ],
-      autoplay: true,
-    });
+    // Switch source via Plyr API — properly swaps the video
+    player.source = {
+      type: 'video',
+      sources: [{ src: videoUrl }],
+    };
+
+    // Explicitly play — works because we're inside a click handler (user gesture)
+    player.play();
   }
 
   // ---------- close ----------
   function closeVideoModal() {
-    if (player) {
-      player.pause();
-      player.destroy();
-      player = null;
-    }
-    videoEl.removeAttribute('src');
-    videoEl.load(); // reset the element
+    player.pause();
+    // Clear source so it doesn't keep playing in the background
+    player.source = { type: 'video', sources: [] };
     modal.classList.add('hidden');
     modal.classList.remove('flex');
     document.body.style.overflow = '';
@@ -138,5 +135,11 @@
 
   #video-modal .plyr__video-wrapper {
     border-radius: 0.75rem;
+  }
+
+  /* Keep controls always visible */
+  #video-modal .plyr__controls {
+    opacity: 1 !important;
+    pointer-events: auto !important;
   }
 </style>
