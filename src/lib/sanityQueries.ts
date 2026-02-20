@@ -163,7 +163,7 @@ export const allGeneralPagesQuery = `*[_type == "generalPage"] | order(published
 export const articleBySlugQuery = (slug: string) => `*[_type == "article" && slug.current == "${slug}"][0] {
   _id,
   title,
-  slug,
+  "slug": slug.current,
   publishedAt,
   excerpt,
   "mainImage": mainImage.asset->url,
@@ -187,29 +187,44 @@ export const articleBySlugQuery = (slug: string) => `*[_type == "article" && slu
       }
     }
   },
-  category
+  category,
+  isPublic
 }`
 
 // All Articles (for listing)
 export const allArticlesQuery = `*[_type == "article"] | order(publishedAt desc) {
   _id,
   title,
-  slug,
+  "slug": slug.current,
   publishedAt,
   excerpt,
   "mainImage": mainImage.asset->url,
-  category
+  category,
+  isPublic
+}`
+
+// Public articles only
+export const publicArticlesQuery = `*[_type == "article" && isPublic == true] | order(publishedAt desc) {
+  _id,
+  title,
+  "slug": slug.current,
+  publishedAt,
+  excerpt,
+  "mainImage": mainImage.asset->url,
+  category,
+  isPublic
 }`
 
 // Articles by category
 export const articlesByCategoryQuery = (category: string) => `*[_type == "article" && category == "${category}"] | order(publishedAt desc) {
   _id,
   title,
-  slug,
+  "slug": slug.current,
   publishedAt,
   excerpt,
   "mainImage": mainImage.asset->url,
-  category
+  category,
+  isPublic
 }`
 
 // ── News Articles ──
@@ -1303,6 +1318,123 @@ export const blivAndelshaverPageQuery = `*[_type == "blivAndelshaverPage"][0] {
       opensCallbackModal,
       callbackReason
     }
+  },
+  seo {
+    metaTitle,
+    metaDescription,
+    "openGraphImage": openGraphImage.asset->url,
+    noIndex
+  }
+}`
+
+// ── ASB Page (Avlerinfo Selvbetjening) ──
+
+export const asbPageQuery = `*[_type == "asbPage"][0] {
+  _id,
+  title,
+  hero {
+    preHeadline,
+    headline,
+    introText
+  },
+  "heroImage": heroImage.asset->url,
+  "heroImageAlt": heroImage.alt,
+  heroCtaLinks[] {
+    text,
+    href,
+    variant,
+    opensCallbackModal,
+    callbackReason
+  },
+  overviewSection {
+    preHeader,
+    heading,
+    cards[] {
+      title,
+      description,
+      "image": image.asset->url,
+      "imageAlt": image.alt
+    }
+  },
+  featuresSection {
+    preHeader,
+    heading,
+    description,
+    blocks[] {
+      title,
+      items,
+      "image": image.asset->url,
+      "imageAlt": image.alt
+    }
+  },
+  driftLeveringSection {
+    preHeader,
+    heading,
+    description,
+    "image": image.asset->url,
+    "imageAlt": image.alt,
+    bulletHeading,
+    bullets,
+    footnote
+  },
+  dueslagSection {
+    preHeader,
+    heading,
+    description,
+    "image": image.asset->url,
+    "imageAlt": image.alt,
+    principlesHeading,
+    principles[] {
+      title,
+      description
+    },
+    examplesHeading,
+    examples[] {
+      text,
+      "image": image.asset->url,
+      "imageAlt": image.alt
+    }
+  },
+  kalenderSection {
+    preHeader,
+    heading,
+    description,
+    "image": image.asset->url,
+    "imageAlt": image.alt,
+    bulletHeading,
+    bullets
+  },
+  roadmapSection {
+    preHeader,
+    heading,
+    description,
+    currentItems,
+    plannedHeading,
+    plannedItems
+  },
+  downloadSection {
+    preHeader,
+    heading,
+    appStoreUrl,
+    googlePlayUrl,
+    tip
+  },
+  faqSection {
+    preHeader,
+    headline,
+    items[] {
+      question,
+      answer
+    }
+  },
+  contactSection {
+    preHeader,
+    heading,
+    description,
+    ctaText,
+    opensCallbackModal,
+    callbackReason,
+    ctaHref
   },
   seo {
     metaTitle,

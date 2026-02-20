@@ -1,0 +1,582 @@
+---
+/**
+ * Avlerinfo Selvbetjening (ASB) Page
+ * Product page describing the ASB app for andelshavere.
+ * Server-rendered (protected by auth middleware).
+ */
+
+import AndelshavereLayout from '@/layouts/AndelshavereLayout.astro'
+import FAQAccordion from '@/components/sections/FAQAccordion.astro'
+import { sanityClient } from '@/lib/sanity'
+import { asbPageQuery } from '@/lib/sanityQueries'
+import { portableTextToHtml } from '@/lib/portableTextSerializer'
+import type { AsbPage } from '@/types/sanity'
+
+export const prerender = false;
+
+let page: AsbPage | null = null
+try {
+  page = await sanityClient.fetch<AsbPage>(asbPageQuery)
+} catch (error) {
+  console.error('Error fetching ASB page from Sanity:', error)
+}
+
+if (!page) {
+  return Astro.redirect('/404')
+}
+
+const heroHeadlineHtml = page.hero?.headline
+  ? portableTextToHtml(page.hero.headline, { addHeadingIds: false })
+  : ''
+const heroIntroHtml = page.hero?.introText
+  ? portableTextToHtml(page.hero.introText, { addHeadingIds: false })
+  : ''
+
+const overview = page.overviewSection
+const features = page.featuresSection
+const drift = page.driftLeveringSection
+const dueslag = page.dueslagSection
+const kalender = page.kalenderSection
+const roadmap = page.roadmapSection
+const download = page.downloadSection
+const faq = page.faqSection
+const contact = page.contactSection
+
+const metaTitle = page.seo?.metaTitle || 'Avlerinfo Selvbetjening | App til andelshavere'
+const metaDescription = page.seo?.metaDescription || ''
+---
+
+<AndelshavereLayout
+  title={metaTitle}
+  description={metaDescription}
+>
+
+  <!-- HERO -->
+  <section class="relative bg-forest-green pt-12 md:pt-16 lg:pt-20 pb-16 md:pb-24 section-after-nav">
+    <div class="container-custom">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div>
+          {page.hero?.preHeadline && (
+            <p class="text-mint font-bold text-base mb-4 uppercase tracking-wide">
+              {page.hero.preHeadline}
+            </p>
+          )}
+
+          {heroHeadlineHtml && (
+            <h1 class="mb-6">
+              <span class="block font-sans font-extrabold text-[34px] md:text-[43px] lg:text-[52px] text-white uppercase leading-tight [&_.font-serif]:lowercase [&_.font-serif]:font-medium" set:html={heroHeadlineHtml} />
+            </h1>
+          )}
+
+          {heroIntroHtml && (
+            <div class="text-white/80 text-lg md:text-xl leading-relaxed mb-8 prose-akd" set:html={heroIntroHtml} />
+          )}
+
+          {page.heroCtaLinks && page.heroCtaLinks.length > 0 && (
+            <div class="flex flex-wrap gap-4">
+              {page.heroCtaLinks.map((link) => (
+                link.opensCallbackModal ? (
+                  <a
+                    href="#"
+                    class:list={[
+                      link.variant === 'secondary'
+                        ? 'inline-flex items-center gap-2 text-white font-semibold hover:text-mint transition-colors'
+                        : 'inline-flex items-center gap-2 bg-mint text-charcoal font-bold px-6 py-3.5 rounded-full hover:bg-mint/90 transition-colors',
+                      'callback-trigger'
+                    ]}
+                    data-reason={link.callbackReason || ''}
+                  >
+                    {link.text}
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                    </svg>
+                  </a>
+                ) : (
+                  <a
+                    href={link.href}
+                    class:list={[
+                      link.variant === 'secondary'
+                        ? 'inline-flex items-center gap-2 text-white font-semibold hover:text-mint transition-colors'
+                        : 'inline-flex items-center gap-2 bg-mint text-charcoal font-bold px-6 py-3.5 rounded-full hover:bg-mint/90 transition-colors'
+                    ]}
+                    target={link.href?.startsWith('http') ? '_blank' : undefined}
+                    rel={link.href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+                  >
+                    {link.text}
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                    </svg>
+                  </a>
+                )
+              ))}
+            </div>
+          )}
+        </div>
+
+        {page.heroImage && (
+          <div class="flex justify-center lg:justify-end">
+            <img
+              src={page.heroImage}
+              alt={page.heroImageAlt || 'Avlerinfo Selvbetjening'}
+              class="w-full max-w-sm lg:max-w-md rounded-2xl shadow-2xl"
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+
+
+  <!-- OVERVIEW: Det kan du bruge ASB til -->
+  {overview && (
+    <section id="overblik" class="bg-warm-light py-16 md:py-24 scroll-mt-24">
+      <div class="container-custom">
+        {overview.preHeader && (
+          <p class="text-mint font-bold text-sm mb-4 uppercase tracking-wide text-center">{overview.preHeader}</p>
+        )}
+        {overview.heading && (
+          <h2 class="font-sans font-extrabold text-3xl md:text-4xl lg:text-[43px] text-charcoal leading-tight mb-12 text-center">
+            {overview.heading}
+          </h2>
+        )}
+
+        {overview.cards && overview.cards.length > 0 && (
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            {overview.cards.map((card) => (
+              <div class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+                {card.image && (
+                  <div class="aspect-video bg-charcoal/5 overflow-hidden">
+                    <img src={card.image} alt={card.imageAlt || card.title} class="w-full h-full object-cover" />
+                  </div>
+                )}
+                <div class="p-6 md:p-8">
+                  <h3 class="font-sans font-bold text-xl text-charcoal mb-2">{card.title}</h3>
+                  {card.description && (
+                    <p class="text-charcoal/70 text-base leading-relaxed">{card.description}</p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  )}
+
+
+  <!-- FEATURES: Funktioner til andelshavere -->
+  {features && (
+    <section id="funktioner" class="bg-white py-16 md:py-24 scroll-mt-24">
+      <div class="container-custom">
+        {features.preHeader && (
+          <p class="text-mint font-bold text-sm mb-4 uppercase tracking-wide">{features.preHeader}</p>
+        )}
+        {features.heading && (
+          <h2 class="font-sans font-extrabold text-3xl md:text-4xl lg:text-[43px] text-charcoal leading-tight mb-4">
+            {features.heading}
+          </h2>
+        )}
+        {features.description && (
+          <p class="text-charcoal/70 text-lg mb-12 max-w-3xl">{features.description}</p>
+        )}
+
+        {features.blocks && features.blocks.length > 0 && (
+          <div class="space-y-12 md:space-y-16">
+            {features.blocks.map((block, idx) => (
+              <div class:list={[
+                'grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center',
+                idx % 2 === 1 ? 'md:[&>*:first-child]:order-2' : ''
+              ]}>
+                {block.image && (
+                  <div class="rounded-2xl overflow-hidden bg-charcoal/5 shadow-lg">
+                    <img src={block.image} alt={block.imageAlt || block.title} class="w-full h-auto" />
+                  </div>
+                )}
+                <div>
+                  <h3 class="font-sans font-bold text-2xl text-charcoal mb-4">{block.title}</h3>
+                  {block.items && block.items.length > 0 && (
+                    <ul class="space-y-3">
+                      {block.items.map((item) => (
+                        <li class="flex items-start gap-3 text-charcoal/80 text-base leading-relaxed">
+                          <svg class="w-5 h-5 text-mint flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                          </svg>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  )}
+
+
+  <!-- DRIFT & LEVERING -->
+  {drift && (
+    <section id="drift-levering" class="bg-warm-light py-16 md:py-24 scroll-mt-24">
+      <div class="container-custom">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+          <div>
+            {drift.preHeader && (
+              <p class="text-mint font-bold text-sm mb-4 uppercase tracking-wide">{drift.preHeader}</p>
+            )}
+            {drift.heading && (
+              <h2 class="font-sans font-extrabold text-3xl md:text-4xl lg:text-[43px] text-charcoal leading-tight mb-6">
+                {drift.heading}
+              </h2>
+            )}
+            {drift.description && (
+              <p class="text-charcoal/80 text-lg leading-relaxed mb-8">{drift.description}</p>
+            )}
+
+            {drift.bulletHeading && (
+              <h3 class="font-sans font-bold text-xl text-charcoal mb-4">{drift.bulletHeading}</h3>
+            )}
+            {drift.bullets && drift.bullets.length > 0 && (
+              <ul class="space-y-3 mb-6">
+                {drift.bullets.map((bullet) => (
+                  <li class="flex items-start gap-3 text-charcoal/80 text-base leading-relaxed">
+                    <svg class="w-5 h-5 text-mint flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    <span>{bullet}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {drift.footnote && (
+              <p class="text-charcoal/50 text-sm italic">{drift.footnote}</p>
+            )}
+          </div>
+
+          {drift.image && (
+            <div class="rounded-2xl overflow-hidden shadow-lg bg-charcoal/5">
+              <img src={drift.image} alt={drift.imageAlt || 'Drift & levering'} class="w-full h-auto" />
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )}
+
+
+  <!-- DUESLAG OG DOKUMENTER -->
+  {dueslag && (
+    <section id="dueslag" class="bg-white py-16 md:py-24 scroll-mt-24">
+      <div class="container-custom">
+        <div class="max-w-4xl">
+          {dueslag.preHeader && (
+            <p class="text-mint font-bold text-sm mb-4 uppercase tracking-wide">{dueslag.preHeader}</p>
+          )}
+          {dueslag.heading && (
+            <h2 class="font-sans font-extrabold text-3xl md:text-4xl lg:text-[43px] text-charcoal leading-tight mb-6">
+              {dueslag.heading}
+            </h2>
+          )}
+          {dueslag.description && (
+            <p class="text-charcoal/80 text-lg leading-relaxed mb-10">{dueslag.description}</p>
+          )}
+        </div>
+
+        {dueslag.image && (
+          <div class="rounded-2xl overflow-hidden shadow-lg bg-charcoal/5 mb-12 max-w-3xl">
+            <img src={dueslag.image} alt={dueslag.imageAlt || 'Dueslag'} class="w-full h-auto" />
+          </div>
+        )}
+
+        {/* Principles */}
+        {dueslag.principles && dueslag.principles.length > 0 && (
+          <div class="mb-12">
+            {dueslag.principlesHeading && (
+              <h3 class="font-sans font-bold text-xl text-charcoal mb-6">{dueslag.principlesHeading}</h3>
+            )}
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {dueslag.principles.map((p, idx) => (
+                <div class="bg-warm-light rounded-2xl p-6 md:p-8">
+                  <div class="w-10 h-10 bg-mint/20 rounded-full flex items-center justify-center mb-4">
+                    <span class="font-sans font-bold text-mint text-lg">{idx + 1}</span>
+                  </div>
+                  <h4 class="font-sans font-bold text-lg text-charcoal mb-2">{p.title}</h4>
+                  {p.description && (
+                    <p class="text-charcoal/70 text-base leading-relaxed">{p.description}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Practical examples */}
+        {dueslag.examples && dueslag.examples.length > 0 && (
+          <div>
+            {dueslag.examplesHeading && (
+              <h3 class="font-sans font-bold text-xl text-charcoal mb-6">{dueslag.examplesHeading}</h3>
+            )}
+            <div class="space-y-8">
+              {dueslag.examples.map((ex) => (
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center bg-warm-light rounded-2xl overflow-hidden">
+                  {ex.image && (
+                    <div class="bg-charcoal/5">
+                      <img src={ex.image} alt={ex.imageAlt || ''} class="w-full h-auto" />
+                    </div>
+                  )}
+                  <div class="p-6 md:p-8">
+                    <p class="text-charcoal/80 text-base leading-relaxed">{ex.text}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  )}
+
+
+  <!-- AKTIVITETSKALENDER -->
+  {kalender && (
+    <section id="kalender" class="bg-warm-light py-16 md:py-24 scroll-mt-24">
+      <div class="container-custom">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+          {kalender.image && (
+            <div class="rounded-2xl overflow-hidden shadow-lg bg-charcoal/5 order-2 lg:order-1">
+              <img src={kalender.image} alt={kalender.imageAlt || 'Aktivitetskalender'} class="w-full h-auto" />
+            </div>
+          )}
+
+          <div class="order-1 lg:order-2">
+            {kalender.preHeader && (
+              <p class="text-mint font-bold text-sm mb-4 uppercase tracking-wide">{kalender.preHeader}</p>
+            )}
+            {kalender.heading && (
+              <h2 class="font-sans font-extrabold text-3xl md:text-4xl lg:text-[43px] text-charcoal leading-tight mb-6">
+                {kalender.heading}
+              </h2>
+            )}
+            {kalender.description && (
+              <p class="text-charcoal/80 text-lg leading-relaxed mb-8">{kalender.description}</p>
+            )}
+
+            {kalender.bulletHeading && (
+              <h3 class="font-sans font-bold text-xl text-charcoal mb-4">{kalender.bulletHeading}</h3>
+            )}
+            {kalender.bullets && kalender.bullets.length > 0 && (
+              <ul class="space-y-3">
+                {kalender.bullets.map((bullet) => (
+                  <li class="flex items-start gap-3 text-charcoal/80 text-base leading-relaxed">
+                    <svg class="w-5 h-5 text-mint flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    <span>{bullet}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  )}
+
+
+  <!-- ROADMAP -->
+  {roadmap && (
+    <section id="roadmap" class="bg-white py-16 md:py-24 scroll-mt-24">
+      <div class="container-custom">
+        <div class="max-w-4xl">
+          {roadmap.preHeader && (
+            <p class="text-mint font-bold text-sm mb-4 uppercase tracking-wide">{roadmap.preHeader}</p>
+          )}
+          {roadmap.heading && (
+            <h2 class="font-sans font-extrabold text-3xl md:text-4xl lg:text-[43px] text-charcoal leading-tight mb-4">
+              {roadmap.heading}
+            </h2>
+          )}
+          {roadmap.description && (
+            <p class="text-charcoal/80 text-lg leading-relaxed mb-10">{roadmap.description}</p>
+          )}
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl">
+          {/* Current items */}
+          {roadmap.currentItems && roadmap.currentItems.length > 0 && (
+            <div class="bg-warm-light rounded-2xl p-6 md:p-8">
+              <div class="flex items-center gap-3 mb-5">
+                <div class="w-8 h-8 bg-mint/20 rounded-full flex items-center justify-center">
+                  <svg class="w-4 h-4 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                  </svg>
+                </div>
+                <h3 class="font-sans font-bold text-lg text-charcoal">Under udvikling</h3>
+              </div>
+              <ul class="space-y-3">
+                {roadmap.currentItems.map((item) => (
+                  <li class="flex items-start gap-3 text-charcoal/80 text-base leading-relaxed">
+                    <svg class="w-5 h-5 text-mint flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Planned items */}
+          {roadmap.plannedItems && roadmap.plannedItems.length > 0 && (
+            <div class="bg-warm-light rounded-2xl p-6 md:p-8">
+              <div class="flex items-center gap-3 mb-5">
+                <div class="w-8 h-8 bg-charcoal/10 rounded-full flex items-center justify-center">
+                  <svg class="w-4 h-4 text-charcoal/60" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                </div>
+                <h3 class="font-sans font-bold text-lg text-charcoal">{roadmap.plannedHeading || 'Planlagt'}</h3>
+              </div>
+              <ul class="space-y-3">
+                {roadmap.plannedItems.map((item) => (
+                  <li class="flex items-start gap-3 text-charcoal/80 text-base leading-relaxed">
+                    <svg class="w-5 h-5 text-charcoal/40 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )}
+
+
+  <!-- DOWNLOAD CTA -->
+  {download && (
+    <section id="download" class="bg-forest-green py-16 md:py-24 scroll-mt-24">
+      <div class="container-custom text-center">
+        {download.preHeader && (
+          <p class="text-mint font-bold text-sm mb-4 uppercase tracking-wide">{download.preHeader}</p>
+        )}
+        {download.heading && (
+          <h2 class="font-sans font-extrabold text-3xl md:text-4xl text-white leading-tight mb-8">
+            {download.heading}
+          </h2>
+        )}
+
+        <div class="flex flex-wrap justify-center gap-4 mb-8">
+          {download.appStoreUrl && (
+            <a
+              href={download.appStoreUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 bg-white text-charcoal font-bold px-6 py-3.5 rounded-full hover:bg-white/90 transition-colors"
+            >
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+              </svg>
+              Download i App Store
+            </a>
+          )}
+          {download.googlePlayUrl && (
+            <a
+              href={download.googlePlayUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 bg-white text-charcoal font-bold px-6 py-3.5 rounded-full hover:bg-white/90 transition-colors"
+            >
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.61 3,21.09 3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.16,10.81C20.5,11.08 20.75,11.5 20.75,12C20.75,12.5 20.53,12.9 20.18,13.18L17.89,14.5L15.39,12L17.89,9.5L20.16,10.81M6.05,2.66L16.81,8.88L14.54,11.15L6.05,2.66Z"/>
+              </svg>
+              Hent på Google Play
+            </a>
+          )}
+        </div>
+
+        {download.tip && (
+          <div class="max-w-xl mx-auto bg-white/10 rounded-xl p-5">
+            <p class="text-white/80 text-base flex items-start gap-3">
+              <svg class="w-5 h-5 text-mint flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <span>{download.tip}</span>
+            </p>
+          </div>
+        )}
+      </div>
+    </section>
+  )}
+
+
+  <!-- FAQ -->
+  {faq && faq.items && faq.items.length > 0 && (
+    <section id="faq" class="bg-warm-light py-16 md:py-24 scroll-mt-24">
+      <div class="container-custom">
+        <div class="max-w-3xl mx-auto">
+          {faq.preHeader && (
+            <p class="text-mint font-bold text-sm mb-4 uppercase tracking-wide text-center">{faq.preHeader}</p>
+          )}
+          {faq.headline && (
+            <h2 class="font-sans font-extrabold text-3xl md:text-4xl text-charcoal leading-tight mb-10 text-center">
+              {faq.headline}
+            </h2>
+          )}
+
+          <FAQAccordion items={faq.items} variant="light" />
+        </div>
+      </div>
+    </section>
+  )}
+
+
+  <!-- CONTACT CTA -->
+  {contact && (
+    <section id="kontakt" class="bg-charcoal py-16 md:py-24 scroll-mt-24">
+      <div class="container-custom text-center">
+        {contact.preHeader && (
+          <p class="text-mint font-bold text-sm mb-4 uppercase tracking-wide">{contact.preHeader}</p>
+        )}
+        {contact.heading && (
+          <h2 class="font-sans font-bold text-2xl md:text-3xl text-white mb-4">
+            {contact.heading}
+          </h2>
+        )}
+        {contact.description && (
+          <p class="text-white/70 text-lg mb-8 max-w-xl mx-auto">{contact.description}</p>
+        )}
+
+        {contact.ctaText && (
+          contact.opensCallbackModal ? (
+            <a
+              href="#"
+              class="callback-trigger inline-flex items-center gap-2 bg-mint text-charcoal font-bold px-8 py-4 rounded-full hover:bg-mint/90 transition-colors"
+              data-reason={contact.callbackReason || ''}
+            >
+              {contact.ctaText}
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+              </svg>
+            </a>
+          ) : (
+            <a
+              href={contact.ctaHref || '/kontakt-akd'}
+              class="inline-flex items-center gap-2 bg-mint text-charcoal font-bold px-8 py-4 rounded-full hover:bg-mint/90 transition-colors"
+            >
+              {contact.ctaText}
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+              </svg>
+            </a>
+          )
+        )}
+      </div>
+    </section>
+  )}
+
+</AndelshavereLayout>

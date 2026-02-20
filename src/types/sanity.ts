@@ -175,12 +175,14 @@ export interface Article {
   _id: string
   _type: 'article'
   title: string
-  slug: Slug
+  slug: string
   publishedAt: string
   excerpt?: string
-  mainImage?: SanityImage
+  mainImage?: string
+  mainImageAlt?: string
   body: PortableTextContent
   category?: 'news' | 'events' | 'jobs' | 'production'
+  isPublic?: boolean
 }
 
 // Page (Legacy)
@@ -1002,6 +1004,145 @@ export interface BlivAndelshaverPage {
   appSection?: BlivAndelshaverAppSection
   faqSection?: BlivAndelshaverFaqSection
   ctaSection?: BlivAndelshaverCtaSection
+  seo?: SEO
+}
+
+// ── ASB Page (Avlerinfo Selvbetjening) ──
+
+export interface AsbOverviewCard {
+  title: string
+  description?: string
+  image?: string
+  imageAlt?: string
+}
+
+export interface AsbOverviewSection {
+  preHeader?: string
+  heading?: string
+  cards?: AsbOverviewCard[]
+}
+
+export interface AsbFeatureBlock {
+  title: string
+  items?: string[]
+  image?: string
+  imageAlt?: string
+}
+
+export interface AsbFeaturesSection {
+  preHeader?: string
+  heading?: string
+  description?: string
+  blocks?: AsbFeatureBlock[]
+}
+
+export interface AsbDriftLeveringSection {
+  preHeader?: string
+  heading?: string
+  description?: string
+  image?: string
+  imageAlt?: string
+  bulletHeading?: string
+  bullets?: string[]
+  footnote?: string
+}
+
+export interface AsbPrinciple {
+  title: string
+  description?: string
+}
+
+export interface AsbDueslagExample {
+  text: string
+  image?: string
+  imageAlt?: string
+}
+
+export interface AsbDueslagSection {
+  preHeader?: string
+  heading?: string
+  description?: string
+  image?: string
+  imageAlt?: string
+  principlesHeading?: string
+  principles?: AsbPrinciple[]
+  examplesHeading?: string
+  examples?: AsbDueslagExample[]
+}
+
+export interface AsbKalenderSection {
+  preHeader?: string
+  heading?: string
+  description?: string
+  image?: string
+  imageAlt?: string
+  bulletHeading?: string
+  bullets?: string[]
+}
+
+export interface AsbRoadmapSection {
+  preHeader?: string
+  heading?: string
+  description?: string
+  currentItems?: string[]
+  plannedHeading?: string
+  plannedItems?: string[]
+}
+
+export interface AsbDownloadSection {
+  preHeader?: string
+  heading?: string
+  appStoreUrl?: string
+  googlePlayUrl?: string
+  tip?: string
+}
+
+export interface AsbFaqItem {
+  question: string
+  answer: string
+}
+
+export interface AsbFaqSection {
+  preHeader?: string
+  headline?: string
+  items?: AsbFaqItem[]
+}
+
+export interface AsbContactSection {
+  preHeader?: string
+  heading?: string
+  description?: string
+  ctaText?: string
+  opensCallbackModal?: boolean
+  callbackReason?: string
+  ctaHref?: string
+}
+
+export interface AsbHeroCtaLink {
+  text: string
+  href: string
+  variant?: 'primary' | 'secondary'
+  opensCallbackModal?: boolean
+  callbackReason?: string
+}
+
+export interface AsbPage {
+  _id: string
+  _type: 'asbPage'
+  title: string
+  hero?: PageHero
+  heroImage?: string
+  heroImageAlt?: string
+  heroCtaLinks?: AsbHeroCtaLink[]
+  overviewSection?: AsbOverviewSection
+  featuresSection?: AsbFeaturesSection
+  driftLeveringSection?: AsbDriftLeveringSection
+  dueslagSection?: AsbDueslagSection
+  kalenderSection?: AsbKalenderSection
+  roadmapSection?: AsbRoadmapSection
+  downloadSection?: AsbDownloadSection
+  faqSection?: AsbFaqSection
+  contactSection?: AsbContactSection
   seo?: SEO
 }
 

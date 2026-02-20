@@ -1,0 +1,102 @@
+---
+/**
+ * Public Article Detail
+ * Displays a single public article with full rich text body.
+ * Pre-rendered at build time using getStaticPaths for all public articles.
+ */
+
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import PortableText from '@/components/sanity/PortableText.astro'
+import { sanityClient } from '@/lib/sanity'
+import { publicArticlesQuery, articleBySlugQuery } from '@/lib/sanityQueries'
+import type { Article } from '@/types/sanity'
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const articles = await sanityClient.fetch<Article[]>(publicArticlesQuery)
+
+  return articles.map((article) => ({
+    params: { slug: article.slug },
+    props: { article },
+  }))
+}
+
+let { article } = Astro.props as { article: Article }
+
+if (!article) {
+  const { slug } = Astro.params
+  article = await sanityClient.fetch<Article>(articleBySlugQuery(slug!))
+
+  if (!article || !article.isPublic) {
+    return Astro.redirect('/404')
+  }
+}
+
+if (!article.body) {
+  const fullArticle = await sanityClient.fetch<Article>(articleBySlugQuery(article.slug))
+  if (fullArticle) {
+    article = fullArticle
+  }
+}
+
+if (!article.isPublic) {
+  return Astro.redirect('/404')
+}
+
+const dateObj = new Date(article.publishedAt)
+const dateFormatted = dateObj.toLocaleDateString('da-DK', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+})
+
+const metaTitle = `${article.title} | AKD Danmark`
+const metaDescription = article.excerpt || ''
+---
+
+<BaseLayout
+  title={metaTitle}
+  description={metaDescription}
+  navTheme="dark"
+>
+  <!-- Hero Section -->
+  <section class="bg-forest-green pt-12 md:pt-16 pb-16 section-after-nav">
+    <div class="container-custom">
+      <a
+        href="/artikler"
+        class="inline-flex items-center gap-1.5 text-white/70 hover:text-white text-sm font-medium mb-6 transition-colors"
+      >
+        <span aria-hidden="true">←</span>
+        Tilbage til artikler
+      </a>
+      <p class="text-mint font-bold text-base mb-4 uppercase tracking-wide">
+        {dateFormatted}
+      </p>
+      <h1 class="font-sans font-extrabold text-[34px] md:text-[43px] lg:text-[52px] text-white uppercase leading-tight max-w-4xl">
+        {article.title}
+      </h1>
+    </div>
+  </section>
+
+  <!-- Article Content -->
+  <section class="bg-warm-light py-12 md:py-16">
+    <div class="container-custom">
+      <article class="max-w-3xl">
+        {article.mainImage && (
+          <figure class="mb-10">
+            <img
+              src={article.mainImage}
+              alt={article.mainImageAlt || article.title}
+              class="w-full h-auto rounded-lg"
+            />
+          </figure>
+        )}
+
+        {article.body && article.body.length > 0 && (
+          <PortableText content={article.body} addHeadingIds={true} />
+        )}
+      </article>
+    </div>
+  </section>
+</BaseLayout>
