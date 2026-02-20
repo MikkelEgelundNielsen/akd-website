@@ -54,75 +54,71 @@ const metaDescription = page.seo?.metaDescription || ''
   <!-- HERO -->
   <section class="relative bg-forest-green pt-12 md:pt-16 lg:pt-20 pb-16 md:pb-24 section-after-nav">
     <div class="container-custom">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-        <div>
-          {page.hero?.preHeadline && (
-            <p class="text-mint font-bold text-base mb-4 uppercase tracking-wide">
-              {page.hero.preHeadline}
-            </p>
-          )}
+      {page.hero?.preHeadline && (
+        <p class="text-mint font-bold text-base mb-6 uppercase tracking-wide text-center">
+          {page.hero.preHeadline}
+        </p>
+      )}
 
-          {heroHeadlineHtml && (
-            <h1 class="mb-6">
-              <span class="block font-sans font-extrabold text-[34px] md:text-[43px] lg:text-[52px] text-white uppercase leading-tight [&_.font-serif]:lowercase [&_.font-serif]:font-medium" set:html={heroHeadlineHtml} />
-            </h1>
-          )}
+      {heroHeadlineHtml && (
+        <h1 class="text-center mb-8 md:mb-12 max-w-5xl mx-auto">
+          <span class="block font-sans font-extrabold text-[43px] md:text-[58px] lg:text-[58px] text-white uppercase leading-tight [&_.font-serif]:lowercase [&_.font-serif]:font-medium" set:html={heroHeadlineHtml} />
+        </h1>
+      )}
 
-          {heroIntroHtml && (
-            <div class="text-white/80 text-lg md:text-xl leading-relaxed mb-8 prose-akd" set:html={heroIntroHtml} />
-          )}
+      {heroIntroHtml && (
+        <div class="max-w-3xl mx-auto text-center text-white/80 text-lg md:text-xl leading-relaxed mb-10 prose-akd" set:html={heroIntroHtml} />
+      )}
 
-          {page.heroCtaLinks && page.heroCtaLinks.length > 0 && (
-            <div class="flex flex-wrap gap-4">
-              {page.heroCtaLinks.map((link) => (
-                link.opensCallbackModal ? (
-                  <a
-                    href="#"
-                    class:list={[
-                      link.variant === 'secondary'
-                        ? 'inline-flex items-center gap-2 text-white font-semibold hover:text-mint transition-colors'
-                        : 'inline-flex items-center gap-2 bg-mint text-charcoal font-bold px-6 py-3.5 rounded-full hover:bg-mint/90 transition-colors',
-                      'callback-trigger'
-                    ]}
-                    data-reason={link.callbackReason || ''}
-                  >
-                    {link.text}
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                    </svg>
-                  </a>
-                ) : (
-                  <a
-                    href={link.href}
-                    class:list={[
-                      link.variant === 'secondary'
-                        ? 'inline-flex items-center gap-2 text-white font-semibold hover:text-mint transition-colors'
-                        : 'inline-flex items-center gap-2 bg-mint text-charcoal font-bold px-6 py-3.5 rounded-full hover:bg-mint/90 transition-colors'
-                    ]}
-                    target={link.href?.startsWith('http') ? '_blank' : undefined}
-                    rel={link.href?.startsWith('http') ? 'noopener noreferrer' : undefined}
-                  >
-                    {link.text}
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                    </svg>
-                  </a>
-                )
-              ))}
-            </div>
-          )}
+      {page.heroCtaLinks && page.heroCtaLinks.length > 0 && (
+        <div class="flex flex-wrap justify-center gap-4 mb-12">
+          {page.heroCtaLinks.map((link) => (
+            link.opensCallbackModal ? (
+              <a
+                href="#"
+                class:list={[
+                  link.variant === 'secondary'
+                    ? 'inline-flex items-center gap-2 text-white font-semibold hover:text-mint transition-colors'
+                    : 'inline-flex items-center gap-2 bg-mint text-charcoal font-bold px-6 py-3.5 rounded-full hover:bg-mint/90 transition-colors',
+                  'callback-trigger'
+                ]}
+                data-reason={link.callbackReason || ''}
+              >
+                {link.text}
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                </svg>
+              </a>
+            ) : (
+              <a
+                href={link.href}
+                class:list={[
+                  link.variant === 'secondary'
+                    ? 'inline-flex items-center gap-2 text-white font-semibold hover:text-mint transition-colors'
+                    : 'inline-flex items-center gap-2 bg-mint text-charcoal font-bold px-6 py-3.5 rounded-full hover:bg-mint/90 transition-colors'
+                ]}
+                target={link.href?.startsWith('http') ? '_blank' : undefined}
+                rel={link.href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+              >
+                {link.text}
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                </svg>
+              </a>
+            )
+          ))}
         </div>
+      )}
 
-        {page.heroImage && (
-          <div class="flex justify-center lg:justify-end">
-            <img
-              src={page.heroImage}
-              alt={page.heroImageAlt || 'Avlerinfo Selvbetjening'}
-              class="w-full max-w-sm lg:max-w-md rounded-2xl shadow-2xl"
-            />
-          </div>
-        )}
-      </div>
+      {page.heroImage && (
+        <div class="flex justify-center">
+          <img
+            src={page.heroImage}
+            alt={page.heroImageAlt || 'Avlerinfo Selvbetjening'}
+            class="w-full max-w-md rounded-2xl shadow-2xl"
+          />
+        </div>
+      )}
     </div>
   </section>
 
@@ -256,7 +252,7 @@ const metaDescription = page.seo?.metaDescription || ''
           </div>
 
           {drift.image && (
-            <div class="rounded-2xl overflow-hidden shadow-lg bg-charcoal/5">
+            <div class="rounded-2xl overflow-hidden">
               <img src={drift.image} alt={drift.imageAlt || 'Drift & levering'} class="w-full h-auto" />
             </div>
           )}
@@ -266,7 +262,7 @@ const metaDescription = page.seo?.metaDescription || ''
   )}
 
 
-  <!-- DUESLAG OG DOKUMENTER -->
+  <!-- DUESLAG OG DOKUMENTER 
   {dueslag && (
     <section id="dueslag" class="bg-white py-16 md:py-24 scroll-mt-24">
       <div class="container-custom">
@@ -285,7 +281,7 @@ const metaDescription = page.seo?.metaDescription || ''
         </div>
 
         {dueslag.image && (
-          <div class="rounded-2xl overflow-hidden shadow-lg bg-charcoal/5 mb-12 max-w-3xl">
+          <div class="rounded-2xl overflow-hidden  mb-12 max-w-3xl">
             <img src={dueslag.image} alt={dueslag.imageAlt || 'Dueslag'} class="w-full h-auto" />
           </div>
         )}
@@ -336,7 +332,7 @@ const metaDescription = page.seo?.metaDescription || ''
         )}
       </div>
     </section>
-  )}
+  )}-->
 
 
   <!-- AKTIVITETSKALENDER -->
@@ -345,7 +341,7 @@ const metaDescription = page.seo?.metaDescription || ''
       <div class="container-custom">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
           {kalender.image && (
-            <div class="rounded-2xl overflow-hidden shadow-lg bg-charcoal/5 order-2 lg:order-1">
+            <div class="rounded-2xl overflow-hidden  order-2 lg:order-1">
               <img src={kalender.image} alt={kalender.imageAlt || 'Aktivitetskalender'} class="w-full h-auto" />
             </div>
           )}
@@ -385,7 +381,7 @@ const metaDescription = page.seo?.metaDescription || ''
   )}
 
 
-  <!-- ROADMAP -->
+  <!-- ROADMAP 
   {roadmap && (
     <section id="roadmap" class="bg-white py-16 md:py-24 scroll-mt-24">
       <div class="container-custom">
@@ -454,7 +450,7 @@ const metaDescription = page.seo?.metaDescription || ''
         </div>
       </div>
     </section>
-  )}
+  )}-->
 
 
   <!-- DOWNLOAD CTA -->
