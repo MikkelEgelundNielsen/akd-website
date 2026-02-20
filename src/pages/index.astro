@@ -2,17 +2,22 @@
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import ContentBox from '@/components/sections/ContentBox.astro'
 import JobCard from '@/components/job/JobCard.astro'
+import DateBrick from '@/components/andelshavere/DateBrick.astro'
 import { sanityClient } from '@/lib/sanity'
-import { activeJobListingsQuery } from '@/lib/sanityQueries'
-import type { JobListing } from '@/types/sanity'
+import { activeJobListingsQuery, latestPublicNewsQuery } from '@/lib/sanityQueries'
+import type { JobListing, NewsArticle } from '@/types/sanity'
 
 export const prerender = true;
 
 let listings: JobListing[] = []
+let latestNews: NewsArticle[] = []
 try {
-  listings = await sanityClient.fetch<JobListing[]>(activeJobListingsQuery)
+  ;[listings, latestNews] = await Promise.all([
+    sanityClient.fetch<JobListing[]>(activeJobListingsQuery),
+    sanityClient.fetch<NewsArticle[]>(latestPublicNewsQuery),
+  ])
 } catch (error) {
-  console.error('Error fetching job listings:', error)
+  console.error('Error fetching front page data:', error)
 }
 ---
 
@@ -47,7 +52,7 @@ try {
           <p class="text-white font-semibold text-lg leading-relaxed mb-6">
             Stærkt fællesskab, moderne produktion og ordentlige forhold
           </p>
-          <a href="/job" class="link-arrow">
+          <a href="/job/stillinger" class="link-arrow">
             Se ledige stillinger
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
@@ -96,7 +101,7 @@ try {
       variant="light"
       preHeader="AKD i tal"
       headline="Et stærkt fællesskab med kapacitet til mere"
-      imageUrl="/images/siloer.png"
+      imageUrl="/images/factory-drone.png"
       imageAlt="AKD's fabriksanlæg i Brande med karakteristiske silo og produktionsbygninger"
       pullUp={true}
       items={[
@@ -124,8 +129,50 @@ try {
     />
   </section>
 
+  <!-- Seneste nyt fra AKD -->
+  {latestNews.length > 0 && (
+    <section class="relative bg-warm-light pt-8 md:pt-12 pb-4 md:pb-6">
+      <div class="container-custom">
+        <p class="text-mint font-bold text-base mb-6 uppercase tracking-wide text-center">
+          Seneste nyt
+        </p>
+
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-10">
+          {latestNews.map((article) => {
+            const dateObj = new Date(article.publishedAt)
+            return (
+              <a
+                href={`/nyheder/${article.slug}`}
+                class="group bg-light rounded-lg p-6 flex flex-col hover:shadow-md transition-shadow"
+              >
+                <div class="flex items-start gap-4 mb-3">
+                  <DateBrick date={dateObj} />
+                  <h3 class="text-lg font-semibold text-charcoal leading-snug group-hover:text-forest-green transition-colors">
+                    {article.title}
+                  </h3>
+                </div>
+                {article.excerpt && (
+                  <p class="text-sm text-charcoal/70 mb-4 line-clamp-2 flex-grow">
+                    {article.excerpt}
+                  </p>
+                )}
+                <span class="inline-flex items-center gap-1 text-burnt-orange text-sm font-medium mt-auto">
+                  Læs nyheden
+                  <span aria-hidden="true">→</span>
+                </span>
+              </a>
+            )
+          })}
+        </div>
+
+
+      </div>
+    </section>
+  )}
+
   <!-- Career Section -->
-  <section class="relative bg-warm-light pt-24 md:pt-32 lg:pt-40 pb-16 md:pb-24">
+  <section class="relative bg-light pt-24 md:pt-32 lg:pt-40 pb-16 md:pb-24">
     <div class="container-custom">
       <!-- Pre-headline -->
       <p class="text-charcoal font-bold text-base mb-6 uppercase tracking-wide text-center">
@@ -381,7 +428,7 @@ try {
       variant="light"
       preHeader="Ansvar i praksis"
       headline="Vi bruger hele kartoflen og laver biprodukter til ny værdi."
-      imageUrl="/images/pakkeriet.png"
+      imageUrl="/images/kartofler-haand.png"
       imageAlt="Produktion af kartoffelmel og biprodukter på moderne udstyr"
       pullUp={true}
       items={[
@@ -407,8 +454,8 @@ try {
     <div class="container-custom">
       <div class="flex flex-col sm:flex-row items-center justify-center gap-6 mt-12 mb-24">
         <!-- Secondary CTA -->
-        <a href="/om/ansvar-politikker" class="btn-secondary">
-          Se vores ansvar & politikker
+        <a href="/om-akd/ansvarlighed" class="btn-secondary">
+          Ansvarlighed og transparens
           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
           </svg>

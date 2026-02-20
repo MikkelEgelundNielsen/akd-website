@@ -1,181 +1,174 @@
 ---
 /**
  * QuickAccessColumn Component
- * Contains three sections:
+ * Contains three sections driven by Sanity:
  * 1. Aktuelt fra AKD AGRO - Curated content cards (articles/videos)
  * 2. AGRO Værktøjer - Knowledge tools and external links
  * 3. Genveje - Internal navigation links
  */
 
-import type { DashboardQuickLinks, Video } from '@/types/sanity'
+import type { DashboardKnowledge, DashboardKnowledgeItem, DashboardQuickLinks } from '@/types/sanity'
 
 interface Props {
+  knowledge: DashboardKnowledge | null
   quickLinks: DashboardQuickLinks | null
-  video: Video | null
 }
 
-const { quickLinks, video } = Astro.props
+const { knowledge, quickLinks } = Astro.props
 
-// Build "Aktuelt fra AKD AGRO" content from static article + Sanity video
-const agroContent: Array<{
-  type: 'article' | 'video'
-  title: string
-  teaser: string
-  link?: string
-  videoUrl?: string
-  thumbnail?: string
-}> = [
-  {
-    type: 'article',
-    title: 'Skimmelstrategi 2026 – overblik',
-    teaser: 'Få overblik over årets anbefalinger til skimmelbekæmpelse',
-    link: '/andelshavere/artikler/skimmelstrategi-2026',
-  },
-  ...(video ? [{
-    type: 'video' as const,
-    title: video.title,
-    teaser: video.description || 'Se video',
-    videoUrl: video.videoUrl,
-    thumbnail: video.thumbnail,
-  }] : []),
-]
+const sectionTitle = knowledge?.title || 'Aktuelt fra AKD Agro'
+const items = knowledge?.items || []
+const tools = knowledge?.tools || []
+const links = quickLinks?.links || []
 
-// AGRO Værktøjer links
-const vaerktoejLinks = [
-  { label: 'Agro vidensbasen', href: '/andelshavere/vidensbasen', external: false },
-  { label: 'Skimmelvarsling', href: 'https://avlerinfo.dk/skimmelvarslinger/', external: true },
-  { label: 'Sortsinfo', href: 'https://avlerinfo.dk/sortsinfo/', external: true },
-]
+function getItemTitle(item: DashboardKnowledgeItem): string {
+  return item.articleRef?.title || item.manualTitle || ''
+}
 
-// Genveje links
-const genvejeLinks = [
-  { label: 'Levering & kampagne', href: '/andelshavere/levering-og-kampagne' },
-  { label: 'Andelsforhold', href: '/andelshavere/andelsforhold' },
-]
+function getItemTeaser(item: DashboardKnowledgeItem): string {
+  return item.articleRef?.excerpt || item.manualTeaser || ''
+}
+
+function getItemLink(item: DashboardKnowledgeItem): string {
+  if (item.articleRef?.slug) {
+    return `/andelshavere/artikler/${item.articleRef.slug}`
+  }
+  return item.manualLink || '#'
+}
 ---
 
 <div class="quickaccess-column bg-forest-green rounded-lg p-6 text-white">
-  
+
   <!-- Section 1: Aktuelt fra AKD AGRO -->
-  <div class="mb-8">
-    <h2 class="text-2xl font-serif font-bold mb-4 uppercase tracking-wide text-mint">
-      Aktuelt fra AKD Agro
-    </h2>
-    
-    <div class="space-y-3">
-      {agroContent.map((item) => (
-        item.type === 'video' && item.videoUrl ? (
-          <!-- Video card: opens modal -->
-          <button
-            type="button"
-            class="video-trigger content-card block w-full text-left bg-white/10 rounded-lg overflow-hidden hover:bg-white/15 transition-colors group cursor-pointer"
-            data-video-url={item.videoUrl}
-            data-video-title={item.title}
-          >
-            <div class="relative">
-              <div class="aspect-video bg-charcoal/30 relative">
-                {item.thumbnail && (
-                  <img 
-                    src={item.thumbnail} 
-                    alt=""
-                    class="w-full h-full object-cover opacity-80"
-                    loading="lazy"
-                    onerror="this.style.display='none'"
-                  />
-                )}
-                <div class="absolute inset-0 flex items-center justify-center">
-                  <div class="w-12 h-12 rounded-full bg-burnt-orange flex items-center justify-center group-hover:bg-amber transition-colors">
-                    <svg class="w-5 h-5 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M8 5v14l11-7z"/>
-                    </svg>
+  {items.length > 0 && (
+    <div class="mb-8">
+      <h2 class="text-2xl font-serif font-bold mb-4 uppercase tracking-wide text-mint">
+        {sectionTitle}
+      </h2>
+
+      <div class="space-y-3">
+        {items.map((item) => (
+          item.contentType === 'video' && item.videoUrl ? (
+            <button
+              type="button"
+              class="video-trigger content-card block w-full text-left bg-white/10 rounded-lg overflow-hidden hover:bg-white/15 transition-colors group cursor-pointer"
+              data-video-url={item.videoUrl}
+              data-video-title={item.videoTitle || getItemTitle(item)}
+            >
+              <div class="relative">
+                <div class="aspect-video bg-charcoal/30 relative">
+                  {item.thumbnail && (
+                    <img
+                      src={item.thumbnail}
+                      alt=""
+                      class="w-full h-full object-cover opacity-80"
+                      loading="lazy"
+                      onerror="this.style.display='none'"
+                    />
+                  )}
+                  <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="w-12 h-12 rounded-full bg-burnt-orange flex items-center justify-center group-hover:bg-amber transition-colors">
+                      <svg class="w-5 h-5 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z"/>
+                      </svg>
+                    </div>
                   </div>
                 </div>
+                <div class="p-3">
+                  <h3 class="text-[22px] font-semibold text-white leading-snug mb-1">{item.videoTitle || getItemTitle(item)}</h3>
+                  <p class="text-sm text-white/70">{getItemTeaser(item)}</p>
+                </div>
               </div>
-              <div class="p-3">
-                <h3 class="text-[22px] font-semibold text-white leading-snug mb-1">{item.title}</h3>
-                <p class="text-sm text-white/70">{item.teaser}</p>
+            </button>
+          ) : (
+            <a
+              href={getItemLink(item)}
+              class="content-card block bg-white/10 rounded-lg overflow-hidden hover:bg-white/15 transition-colors group"
+            >
+              <div class="p-3 flex gap-3">
+                <div class="w-10 h-10 rounded bg-white/10 flex items-center justify-center flex-shrink-0">
+                  <svg class="w-5 h-5 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                  </svg>
+                </div>
+                <div class="flex-grow min-w-0">
+                  <h3 class="text-[22px] font-semibold text-white leading-snug mb-1">{getItemTitle(item)}</h3>
+                  {getItemTeaser(item) && (
+                    <p class="text-sm text-white/70">{getItemTeaser(item)}</p>
+                  )}
+                </div>
               </div>
-            </div>
-          </button>
-        ) : (
-          <!-- Article card with document icon -->
-          <a 
-            href={item.link}
-            class="content-card block bg-white/10 rounded-lg overflow-hidden hover:bg-white/15 transition-colors group"
-          >
-            <div class="p-3 flex gap-3">
-              <div class="w-10 h-10 rounded bg-white/10 flex items-center justify-center flex-shrink-0">
-                <svg class="w-5 h-5 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                </svg>
-              </div>
-              <div class="flex-grow min-w-0">
-                <h3 class="text-[22px] font-semibold text-white leading-snug mb-1">{item.title}</h3>
-                <p class="text-sm text-white/70">{item.teaser}</p>
-              </div>
-            </div>
-          </a>
-        )
-      ))}
+            </a>
+          )
+        ))}
+      </div>
     </div>
-  </div>
-  
+  )}
+
   <!-- Section 2: AGRO Værktøjer -->
-  <div class="mb-8">
-    <h3 class="text-base font-semibold mb-3 uppercase tracking-wide text-mint/80">
-      Agro Værktøjer
-    </h3>
-    
-    <nav aria-label="AGRO Værktøjer">
-      <ul class="space-y-2" role="list">
-        {vaerktoejLinks.map((link) => (
-          <li>
-            <a 
-              href={link.href}
-              target={link.external ? '_blank' : undefined}
-              rel={link.external ? 'noopener noreferrer' : undefined}
-              class="flex items-center justify-between gap-2 py-2 px-3 bg-white/10 rounded-lg hover:bg-white/20 transition-colors group"
-            >
-              <span class="font-medium text-sm">{link.label}</span>
-              {link.external ? (
-                <span class="text-mint/80 group-hover:text-mint transition-colors text-sm" aria-label="Åbner i ny fane">↗</span>
-              ) : (
-                <span class="text-mint/80 group-hover:text-mint transition-colors text-sm" aria-hidden="true">→</span>
-              )}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </nav>
-  </div>
-  
+  {tools.length > 0 && (
+    <div class="mb-8">
+      <h3 class="text-base font-semibold mb-3 uppercase tracking-wide text-mint/80">
+        Agro Værktøjer
+      </h3>
+
+      <nav aria-label="AGRO Værktøjer">
+        <ul class="space-y-2" role="list">
+          {tools.map((tool) => (
+            <li>
+              <a
+                href={tool.href}
+                target={tool.openInNewTab ? '_blank' : undefined}
+                rel={tool.openInNewTab ? 'noopener noreferrer' : undefined}
+                class="flex items-center justify-between gap-2 py-2 px-3 bg-white/10 rounded-lg hover:bg-white/20 transition-colors group"
+              >
+                <span class="font-medium text-sm">{tool.label}</span>
+                {tool.openInNewTab ? (
+                  <span class="text-mint/80 group-hover:text-mint transition-colors text-sm" aria-label="Åbner i ny fane">↗</span>
+                ) : (
+                  <span class="text-mint/80 group-hover:text-mint transition-colors text-sm" aria-hidden="true">→</span>
+                )}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+  )}
+
   <!-- Section 3: Genveje -->
-  <!--
-  <div>
-    <h3 class="text-base font-semibold mb-3 uppercase tracking-wide text-mint/80">
-      Genveje
-    </h3>
-    
-    <nav aria-label="Genveje">
-      <ul class="space-y-2" role="list">
-        {genvejeLinks.map((link) => (
-          <li>
-            <a 
-              href={link.href}
-              class="flex items-center justify-between gap-2 py-2 px-3 bg-white/10 rounded-lg hover:bg-white/20 transition-colors group"
-            >
-              <span class="font-medium text-sm">{link.label}</span>
-              <span class="text-mint/80 group-hover:text-mint transition-colors text-sm" aria-hidden="true">→</span>
-            </a>
-          </li>
-        ))}
-      </ul>
-    </nav>
-  </div>-->
+  {links.length > 0 && (
+    <div>
+      <h3 class="text-base font-semibold mb-3 uppercase tracking-wide text-mint/80">
+        Genveje
+      </h3>
+
+      <nav aria-label="Genveje">
+        <ul class="space-y-2" role="list">
+          {links.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                target={link.openInNewTab ? '_blank' : undefined}
+                rel={link.openInNewTab ? 'noopener noreferrer' : undefined}
+                class="flex items-center justify-between gap-2 py-2 px-3 bg-white/10 rounded-lg hover:bg-white/20 transition-colors group"
+              >
+                <span class="font-medium text-sm">{link.label}</span>
+                {link.openInNewTab ? (
+                  <span class="text-mint/80 group-hover:text-mint transition-colors text-sm" aria-label="Åbner i ny fane">↗</span>
+                ) : (
+                  <span class="text-mint/80 group-hover:text-mint transition-colors text-sm" aria-hidden="true">→</span>
+                )}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+  )}
 </div>
 
 <script>
-  // Wire video triggers in QuickAccessColumn to open the global VideoModal
   document.querySelectorAll<HTMLElement>('.quickaccess-column .video-trigger').forEach((btn) => {
     btn.addEventListener('click', () => {
       const url = btn.dataset.videoUrl;
@@ -191,7 +184,7 @@ const genvejeLinks = [
   .content-card {
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
-  
+
   .content-card:hover {
     border-color: rgba(255, 255, 255, 0.2);
   }

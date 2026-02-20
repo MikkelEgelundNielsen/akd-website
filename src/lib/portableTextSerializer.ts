@@ -211,7 +211,7 @@ function serializeChildren(children: any[], markDefs: any[]): string {
       } else if (mark === 'em') {
         text = `<em>${text}</em>`
       } else if (mark === 'mint' || mark === 'mintAccent') {
-        text = `<span class="font-serif italic text-mint">${text}</span>`
+        text = `<span class="font-serif italic text-mint lowercase">${text}</span>`
       } else {
         // Check if it's a link
         const markDef = markDefs.find(def => def._key === mark)

@@ -277,6 +277,17 @@ export const publicNewsArticlesQuery = `*[_type == "newsArticle" && isPublic == 
   "mainImageAlt": mainImage.alt
 }`
 
+// Latest 3 public news articles (for front page)
+export const latestPublicNewsQuery = `*[_type == "newsArticle" && isPublic == true] | order(publishedAt desc) [0...3] {
+  _id,
+  title,
+  "slug": slug.current,
+  publishedAt,
+  excerpt,
+  "mainImage": mainImage.asset->url,
+  "mainImageAlt": mainImage.alt
+}`
+
 // Portal news articles (for avlerinfo.dk)
 export const portalNewsArticlesQuery = `*[_type == "newsArticle" && isPublic == true && showOnPortal == true] | order(publishedAt desc) {
   _id,
@@ -344,12 +355,6 @@ export const dashboardStreamerQuery = `*[_type == "dashboardStreamer"][0] {
 export const dashboardKnowledgeQuery = `*[_type == "dashboardKnowledge"][0] {
   _id,
   title,
-  searchPlaceholder,
-  searchLink,
-  popularTopics[] {
-    label,
-    link
-  },
   items[] {
     contentType,
     articleRef-> {
@@ -360,11 +365,17 @@ export const dashboardKnowledgeQuery = `*[_type == "dashboardKnowledge"][0] {
       "mainImage": mainImage.asset->url
     },
     manualTitle,
+    manualTeaser,
     manualLink,
-    "thumbnail": thumbnail.asset->url,
+    "thumbnail": coalesce(thumbnail.asset->url, videoRef->thumbnail.asset->url),
     "videoUrl": videoRef->videoFile.asset->url,
     "videoTitle": videoRef->title,
     category
+  },
+  tools[] {
+    label,
+    href,
+    openInNewTab
   }
 }`
 
@@ -964,6 +975,334 @@ export const responsibilityPageQuery = `*[_type == "responsibilityPage"][0] {
     description,
     linkText,
     linkHref
+  },
+  seo {
+    metaTitle,
+    metaDescription,
+    "openGraphImage": openGraphImage.asset->url,
+    noIndex
+  }
+}`
+
+// ── Kontakt Page (singleton) ──
+
+export const kontaktPageQuery = `*[_type == "kontaktPage"][0] {
+  _id,
+  title,
+  hero {
+    preHeadline,
+    headline,
+    introText
+  },
+  headquarters {
+    label,
+    name,
+    addressLines,
+    phone,
+    email,
+    openingHours,
+    mapsLink,
+    "imageUrl": image.asset->url,
+    "imageAlt": image.alt,
+    cvr
+  },
+  factories[] {
+    label,
+    name,
+    addressLines,
+    openingHours,
+    mapsEmbed,
+    mapsLink
+  },
+  contactChannels {
+    preHeader,
+    headline,
+    description,
+    channels[] {
+      title,
+      description,
+      email,
+      icon
+    }
+  },
+  whistleblower {
+    headline,
+    description,
+    linkText,
+    linkHref
+  },
+  seo {
+    metaTitle,
+    metaDescription,
+    "openGraphImage": openGraphImage.asset->url,
+    noIndex
+  }
+}`
+
+// ── Rest- og biprodukter Page (singleton) ──
+
+export const restOgBiprodukterPageQuery = `*[_type == "restOgBiprodukterPage"][0] {
+  _id,
+  title,
+  hero {
+    preHeadline,
+    headline,
+    introText
+  },
+  quickNavCards[] {
+    title,
+    description,
+    anchor,
+    icon
+  },
+  protamylasseSection {
+    preHeader,
+    headline,
+    introText,
+    contentBlocks[] {
+      headline,
+      body
+    },
+    maskinstationer,
+    afhentningHeadline,
+    afhentningText,
+    tildeltMaengde {
+      headline,
+      body
+    },
+    pris {
+      headline,
+      body
+    },
+    nutrientTable {
+      headline,
+      rows[] {
+        name,
+        content,
+        price,
+        total100,
+        totalAdj
+      },
+      totalRaw,
+      totalAdj,
+      avlerPrice,
+      footnote
+    },
+    freightTable {
+      headline,
+      rows[] {
+        label,
+        v10,
+        v40,
+        v80,
+        v120
+      }
+    },
+    deklarationer {
+      headline,
+      documents[] {
+        label,
+        "fileUrl": file.asset->url,
+        url
+      }
+    }
+  },
+  pulpSection {
+    preHeader,
+    headline,
+    introText,
+    bodyText,
+    documents {
+      headline,
+      items[] {
+        label,
+        "fileUrl": file.asset->url,
+        url
+      }
+    }
+  },
+  restprodukterSection {
+    preHeader,
+    headline,
+    body,
+    document {
+      label,
+      "fileUrl": file.asset->url,
+      url
+    },
+    externalLinkText,
+    externalLinkHref
+  },
+  contactSection {
+    headline,
+    description,
+    contacts[] {
+      name,
+      role,
+      phone,
+      email
+    }
+  },
+  seo {
+    metaTitle,
+    metaDescription,
+    "openGraphImage": openGraphImage.asset->url,
+    noIndex
+  }
+}`
+
+// ── Andele Page (singleton) ──
+
+export const andelePageQuery = `*[_type == "andelePage"][0] {
+  _id,
+  title,
+  hero {
+    preHeadline,
+    headline,
+    introText
+  },
+  lejeaftalerSection {
+    preHeader,
+    heading,
+    content
+  },
+  koebSalgSection {
+    preHeader,
+    heading,
+    content,
+    documents[] {
+      title,
+      "fileUrl": file.asset->url,
+      url
+    },
+    financingNote
+  },
+  finansieringSection {
+    preHeader,
+    heading,
+    content
+  },
+  ctaSection {
+    heading,
+    description,
+    linkText,
+    linkHref
+  },
+  seo {
+    metaTitle,
+    metaDescription,
+    "openGraphImage": openGraphImage.asset->url,
+    noIndex
+  }
+}`
+
+// ── Bliv Andelshaver Page (singleton) ──
+
+export const blivAndelshaverPageQuery = `*[_type == "blivAndelshaverPage"][0] {
+  _id,
+  title,
+  hero {
+    preHeadline,
+    headline,
+    introText
+  },
+  contactPerson {
+    name,
+    role,
+    "imageUrl": image.asset->url,
+    "imageAlt": image.alt,
+    phoneHref,
+    phoneLabel,
+    callbackReason,
+    callbackLabel
+  },
+  contactSection {
+    preHeader,
+    headline,
+    checkmarkItems[] {
+      title,
+      description
+    }
+  },
+  benefitsSection {
+    preHeader,
+    headline,
+    pillars[] {
+      title,
+      description
+    }
+  },
+  processSection {
+    preHeader,
+    headline,
+    steps[] {
+      number,
+      title,
+      description
+    },
+    ctaLinks[] {
+      text,
+      href,
+      variant,
+      opensCallbackModal,
+      callbackReason
+    }
+  },
+  growerLifeSection {
+    preHeader,
+    headline,
+    description,
+    highlights[] {
+      title
+    }
+  },
+  photoGridSection {
+    headline,
+    photos[] {
+      "url": asset->url,
+      alt
+    }
+  },
+  testimonialsSection {
+    preHeader,
+    headline,
+    testimonials[] {
+      quote,
+      name,
+      title,
+      location
+    }
+  },
+  appSection {
+    preHeader,
+    headline,
+    description,
+    features[] {
+      title,
+      description
+    }
+  },
+  faqSection {
+    preHeader,
+    headline,
+    items[] {
+      question,
+      answer
+    },
+    bottomLinkText,
+    bottomLinkHref
+  },
+  ctaSection {
+    headline,
+    description,
+    contactCardHeadline,
+    ctaLinks[] {
+      text,
+      href,
+      variant,
+      opensCallbackModal,
+      callbackReason
+    }
   },
   seo {
     metaTitle,

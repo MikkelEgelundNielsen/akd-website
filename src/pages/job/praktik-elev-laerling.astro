@@ -9,83 +9,35 @@ import type { InternshipPage } from '@/types/sanity'
 
 export const prerender = true;
 
-let page: InternshipPage | null = null
-try {
-  page = await sanityClient.fetch<InternshipPage>(internshipPageQuery)
-} catch (error) {
-  console.error('Error fetching Internship page from Sanity:', error)
-}
+const page = await sanityClient.fetch<InternshipPage>(internshipPageQuery)
+if (!page) return Astro.redirect('/404')
 
-const headlineHtml = page?.hero?.headline
+const headlineHtml = page.hero?.headline
   ? portableTextToHtml(page.hero.headline, { addHeadingIds: false })
-  : 'PRAKTIK, ELEV- OG <span class="font-serif italic text-mint lowercase">lærlingepladser</span>'
+  : ''
 
-const introHtml = page?.hero?.introText
+const introHtml = page.hero?.introText
   ? portableTextToHtml(page.hero.introText, { addHeadingIds: false })
-  : '<p>Hos AKD investerer vi i fremtidens faglærte medarbejdere. Vi tilbyder praktik-, elev- og lærlingepladser inden for flere forskellige fagområder – fra produktion og teknik til kontor og laboratorium.</p>'
+  : ''
 
-const preHeadline = page?.hero?.preHeadline || 'JOB & KARRIERE'
+const preHeadline = page.hero?.preHeadline
 
-const metaTitle = page?.seo?.metaTitle || 'Praktik, elev- og lærlingepladser – AKD Danmark'
-const metaDescription = page?.seo?.metaDescription || 'Information om uddannelsesmuligheder og praktikpladser hos AKD Danmark. Vi tilbyder praktik-, elev- og lærlingepladser.'
+const metaTitle = page.seo?.metaTitle || page.title || 'Praktik, elev- og lærlingepladser'
+const metaDescription = page.seo?.metaDescription || ''
 
-const pathCards = page?.pathCards || [
-  {
-    title: 'Praktikplads',
-    description: 'Vi modtager praktikanter fra gymnasier, erhvervsskoler og videregående uddannelser. En praktik hos os giver værdifuld erfaring med arbejdslivet i en moderne produktionsvirksomhed.',
-    icon: 'book',
-    linkUrl: '/job/ansoegning',
-    linkLabel: 'Jeg søger praktik',
-  },
-  {
-    title: 'Elevplads',
-    description: 'Vi uddanner elever inden for produktionsteknik, maskinteknologi og andre relevante fagområder. Som elev hos AKD får du en solid faglig uddannelse med erfarne instruktører.',
-    icon: 'building',
-    linkUrl: '/job/ansoegning',
-    linkLabel: 'Jeg søger elevplads',
-  },
-  {
-    title: 'Lærlingeplads',
-    description: 'Vi tilbyder lærepladser til unge, der ønsker at blive faglærte. Blandt andet industrimekanikere, elektrikere og procesoperatører med gode karrieremuligheder.',
-    icon: 'badge',
-    linkUrl: '/job/ansoegning',
-    linkLabel: 'Jeg søger lærlingeplads',
-  },
-]
+const pathCards = page.pathCards || []
 
-const contentBox = page?.contentBox
-const contentBoxItems = contentBox?.items || [
-  { title: 'Fællesskab og sammenhold', description: 'Du bliver en del af et andelsselskab med stærke værdier, hvor vi hjælper hinanden og fejrer vores succeser sammen.', icon: 'check' as const },
-  { title: 'Grundig oplæring og uddannelse', description: 'Vi sørger for, at du får den bedste start med erfarne vejledere, moderne udstyr og en struktureret uddannelsesplan.', icon: 'check' as const },
-  { title: 'Tryghed og fremtidsmuligheder', description: 'Mange af vores elever og lærlinge fortsætter i faste stillinger efter endt uddannelse. Vi investerer i din fremtid.', icon: 'check' as const },
-]
+const contentBox = page.contentBox
+const contentBoxItems = contentBox?.items || []
 
-const workAreas = page?.workAreas || [
-  { title: 'Produktion', description: 'Arbejde med stivelsesproduktion, kvalitetskontrol og processtyring i et moderne produktionsmiljø.' },
-  { title: 'Teknik og vedligehold', description: 'Vedligehold, reparation og optimering af produktionsudstyr, maskiner og automatiseringsanlæg.' },
-  { title: 'Laboratorium', description: 'Kvalitetsanalyser, prøvetagning og laboratoriearbejde med fokus på fødevaresikkerhed.' },
-  { title: 'Kontor og administration', description: 'Opgaver inden for økonomi, HR, indkøb og kundeservice i et professionelt kontormiljø.' },
-]
+const workAreas = page.workAreas || []
+const steps = page.steps || []
+const faqItems = page.faqItems || []
 
-const steps = page?.steps || [
-  { title: 'Find den rette plads', description: 'Se vores aktuelle praktik-, elev- og lærlingepladser under ledige stillinger, eller send en uopfordret ansøgning.' },
-  { title: 'Send din ansøgning', description: 'Skriv en kort ansøgning og vedlæg dit CV. Fortæl os, hvorfor du gerne vil i praktik eller uddannelse hos AKD.' },
-  { title: 'Kom til samtale', description: 'Vi inviterer interessante kandidater til en uformel samtale, hvor vi lærer hinanden at kende og afstemmer forventninger.' },
-  { title: 'Start din rejse', description: 'Velkommen ombord! Du får en grundig introduktion og en personlig vejleder, der følger dig hele vejen.' },
-]
-
-const faqItems = page?.faqItems || [
-  { question: 'Hvilke uddannelser tilbyder AKD?', answer: 'Vi tilbyder elev- og lærlingepladser inden for bl.a. produktionsteknik, industrimekaniker, elektriker, procesoperatør, kontor og laboratorium. Vi modtager også praktikanter fra gymnasier og videregående uddannelser.' },
-  { question: 'Hvor lang tid varer en praktik?', answer: 'En praktik hos AKD varer typisk fra 2 til 12 uger, afhængigt af din uddannelse og aftale med dit uddannelsessted.' },
-  { question: 'Får jeg løn som elev eller lærling?', answer: 'Ja, elever og lærlinge modtager løn under hele uddannelsen i henhold til gældende overenskomst.' },
-  { question: 'Hvor ligger AKD?', answer: 'AKD har fabrikker i Brande (Midtjylland) og Toftlund (Sønderjylland). Praktik-, elev- og lærlingepladser kan være på begge lokationer.' },
-  { question: 'Kan jeg søge, selvom der ikke er opslåede pladser?', answer: 'Ja, du er altid velkommen til at sende en uopfordret ansøgning. Vi gemmer gerne din ansøgning til fremtidige muligheder.' },
-]
-
-const contactHeadline = page?.contactHeadline || 'Har du spørgsmål?'
-const contactText = page?.contactText || 'Har du spørgsmål om praktik, elev- eller lærlingepladser hos AKD, er du altid velkommen til at kontakte os. Vi besvarer gerne dine spørgsmål.'
-const contactPhone = page?.contactPhone || '97 18 09 00'
-const contactEmail = page?.contactEmail || 'job@akd.dk'
+const contactHeadline = page.contactHeadline
+const contactText = page.contactText
+const contactPhone = page.contactPhone
+const contactEmail = page.contactEmail
 
 const iconMap: Record<string, string> = {
   book: `<svg class="w-6 h-6 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>`,
@@ -104,17 +56,23 @@ const iconMap: Record<string, string> = {
   <!-- 1. Hero Section -->
   <section class="relative bg-warm-light pt-12 md:pt-16 lg:pt-20 pb-16 section-after-nav">
     <div class="container-custom">
-      <p class="text-mint font-bold text-base mb-6 uppercase tracking-wide text-center">
-        {preHeadline}
-      </p>
+      {preHeadline && (
+        <p class="text-mint font-bold text-base mb-6 uppercase tracking-wide text-center">
+          {preHeadline}
+        </p>
+      )}
       
-      <h1 class="text-center mb-8 md:mb-12 max-w-4xl mx-auto">
-        <span class="block font-sans font-extrabold text-[43px] md:text-[58px] lg:text-[62px] text-charcoal uppercase leading-tight [&_.font-serif]:lowercase [&_.font-serif]:font-medium" set:html={headlineHtml} />
-      </h1>
+      {headlineHtml && (
+        <h1 class="text-center mb-8 md:mb-12 max-w-4xl mx-auto">
+          <span class="block font-sans font-extrabold text-[43px] md:text-[58px] lg:text-[62px] text-charcoal uppercase leading-tight [&_.font-serif]:lowercase [&_.font-serif]:font-medium" set:html={headlineHtml} />
+        </h1>
+      )}
       
-      <div class="max-w-3xl mx-auto text-center">
-        <div class="text-charcoal text-lg md:text-xl leading-relaxed [&_p]:mb-4 [&_p:last-child]:mb-0" set:html={introHtml} />
-      </div>
+      {introHtml && (
+        <div class="max-w-3xl mx-auto text-center">
+          <div class="text-charcoal text-lg md:text-xl leading-relaxed [&_p]:mb-4 [&_p:last-child]:mb-0" set:html={introHtml} />
+        </div>
+      )}
 
       <div class="flex flex-col sm:flex-row gap-6 justify-center items-center mt-8">
         <a href="/job/ansoegning" class="btn-secondary">
@@ -136,6 +94,7 @@ const iconMap: Record<string, string> = {
   </section>
 
   <!-- 2. Path Cards ("Vælg din vej") -->
+  {pathCards.length > 0 && (
   <section class="bg-warm-light pb-32 md:pb-48">
     <div class="container-custom">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
@@ -151,20 +110,23 @@ const iconMap: Record<string, string> = {
       </div>
     </div>
   </section>
+  )}
 
   <!-- 3. ContentBox ("Derfor vælger mange AKD") -->
+  {contentBox && (
   <section class="relative bg-forest-green pt-1 pb-16 md:pb-24">
     <ContentBox
-      variant={contentBox?.variant as 'light' | 'dark' || 'light'}
-      layout={contentBox?.layout as 'split' | 'full-width' || 'full-width'}
-      preHeader={contentBox?.preHeader || 'UDDANNELSE HOS AKD'}
-      headline={contentBox?.headline || 'Derfor vælger mange AKD'}
-      imageUrl={contentBox?.imageUrl || '/images/job/akd-production.jpg'}
-      imageAlt={contentBox?.imageAlt || 'Medarbejdere hos AKD i produktionen'}
+      variant={contentBox.variant || 'light'}
+      layout={contentBox.layout || 'full-width'}
+      preHeader={contentBox.preHeader}
+      headline={contentBox.headline}
+      imageUrl={contentBox.imageUrl || '/images/job/akd-production.jpg'}
+      imageAlt={contentBox.imageAlt || ''}
       items={contentBoxItems}
-      pullUp={contentBox?.pullUp || 100}
+      pullUp={contentBox.pullUp || 100}
     />
   </section>
+  )}
 
   <!-- 4. Work Areas ("Sådan kan en hverdag hos os se ud") -->
   <section class="bg-forest-green pb-16 md:pb-24">
@@ -243,25 +205,33 @@ const iconMap: Record<string, string> = {
   <!-- 7. Contact CTA Section -->
   <section class="bg-charcoal py-16 md:py-24">
     <div class="container-custom max-w-3xl text-center">
-      <h2 class="font-sans font-extrabold text-[36px] md:text-[43px] text-white uppercase leading-tight mb-6">
-        {contactHeadline}
-      </h2>
-      <p class="text-white/80 text-lg md:text-xl leading-relaxed mb-8">
-        {contactText}
-      </p>
+      {contactHeadline && (
+        <h2 class="font-sans font-extrabold text-[36px] md:text-[43px] text-white uppercase leading-tight mb-6">
+          {contactHeadline}
+        </h2>
+      )}
+      {contactText && (
+        <p class="text-white/80 text-lg md:text-xl leading-relaxed mb-8">
+          {contactText}
+        </p>
+      )}
       <div class="flex flex-col sm:flex-row gap-6 justify-center items-center mb-8">
+        {contactPhone && (
         <a href={`tel:${contactPhone.replace(/\s/g, '')}`} class="flex items-center gap-3 text-white hover:text-mint transition-colors text-lg">
           <svg class="w-6 h-6 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
           </svg>
           {contactPhone}
         </a>
+        )}
+        {contactEmail && (
         <a href={`mailto:${contactEmail}`} class="flex items-center gap-3 text-white hover:text-mint transition-colors text-lg">
           <svg class="w-6 h-6 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
           </svg>
           {contactEmail}
         </a>
+        )}
       </div>
       <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
         <a href="/job/moed-vores-medarbejdere" class="inline-flex items-center gap-2 text-white font-semibold text-base md:text-lg hover:text-mint transition-colors">

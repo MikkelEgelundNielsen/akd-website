@@ -6,6 +6,7 @@
  */
 
 import BaseLayout from '@/layouts/BaseLayout.astro'
+import DateBrick from '@/components/andelshavere/DateBrick.astro'
 import { sanityClient } from '@/lib/sanity'
 import { publicNewsArticlesQuery } from '@/lib/sanityQueries'
 import type { NewsArticle } from '@/types/sanity'
@@ -23,69 +24,66 @@ try {
 <BaseLayout 
   title="Nyheder | AKD Danmark"
   description="Seneste nyheder fra AKD Danmark – kvalitetsstivelse ejet af 600 dedikerede andelshavere"
-  navTheme="light"
+  navTheme="dark"
 >
   <!-- Hero Section -->
-  <section class="relative bg-warm-light pt-12 md:pt-16 lg:pt-20 pb-16 section-after-nav">
+  <section class="bg-forest-green pt-12 md:pt-16 pb-16 section-after-nav">
     <div class="container-custom">
-      <p class="text-mint font-bold text-base mb-6 uppercase tracking-wide text-center">
-        Nyt fra AKD
-      </p>
-      <h1 class="text-center mb-8 max-w-4xl mx-auto">
-        <span class="block font-sans font-extrabold text-[43px] md:text-[58px] lg:text-[62px] text-charcoal uppercase leading-tight">
-          NYHEDER
-        </span>
+      <p class="text-mint font-bold text-base mb-4 uppercase tracking-wide">Nyt fra AKD</p>
+      <h1 class="font-sans font-extrabold text-[43px] md:text-[52px] text-white uppercase leading-tight">
+        NYHEDER
       </h1>
-      <p class="max-w-2xl mx-auto text-center text-charcoal/80 text-lg leading-relaxed">
+      <p class="text-white/80 text-lg mt-4 max-w-2xl">
         Hold dig opdateret med de seneste nyheder fra AKD Danmark.
       </p>
     </div>
   </section>
 
   <!-- News Listing -->
-  <section class="bg-warm-light pb-16 md:pb-24">
+  <section class="bg-warm-light py-12 md:py-16">
     <div class="container-custom">
-      {articles.length > 0 ? (
-        <div class="grid gap-6 max-w-4xl mx-auto">
-          {articles.map((article) => {
-            const dateObj = new Date(article.publishedAt)
-            const dateFormatted = dateObj.toLocaleDateString('da-DK', {
-              day: 'numeric',
-              month: 'long',
-              year: 'numeric',
-            })
-            return (
-              <a
-                href={`/nyheder/${article.slug}`}
-                class="news-card group bg-light rounded-lg p-6 flex gap-5 hover:shadow-md transition-shadow"
-              >
-                <div class="date-brick w-14 h-14 flex-shrink-0 bg-forest-green rounded flex flex-col items-center justify-center mt-1">
-                  <span class="text-white font-bold text-lg leading-tight">
-                    {dateObj.getDate().toString().padStart(2, '0')}
-                  </span>
-                  <span class="text-white text-xs uppercase tracking-wide">
-                    {['JAN','FEB','MAR','APR','MAJ','JUN','JUL','AUG','SEP','OKT','NOV','DEC'][dateObj.getMonth()]}
-                  </span>
-                </div>
-                <div class="flex-grow min-w-0">
-                  <h2 class="text-xl md:text-[22px] font-semibold text-charcoal leading-snug mb-1 group-hover:text-forest-green transition-colors">
-                    {article.title}
-                  </h2>
-                  {article.excerpt && (
-                    <p class="text-sm text-charcoal/70 mb-2 line-clamp-2">
-                      {article.excerpt}
-                    </p>
+      {articles.length > 0 ? (() => {
+        let lastYear: number | null = null
+        return (
+          <div class="grid gap-6 max-w-4xl">
+            {articles.map((article) => {
+              const dateObj = new Date(article.publishedAt)
+              const year = dateObj.getFullYear()
+              const showDivider = year !== lastYear
+              lastYear = year
+              return (
+                <>
+                  {showDivider && (
+                    <div class="text-center" style="padding-top: 3rem; padding-bottom: 3rem;">
+                      <h3 class="text-2xl md:text-3xl font-serif font-bold text-forest-green">{year}</h3>
+                    </div>
                   )}
-                  <span class="inline-flex items-center gap-1 text-burnt-orange text-sm font-medium">
-                    Læs hele nyheden
-                    <span aria-hidden="true">→</span>
-                  </span>
-                </div>
-              </a>
-            )
-          })}
-        </div>
-      ) : (
+                  <a
+                    href={`/nyheder/${article.slug}`}
+                    class="news-card group bg-light rounded-lg p-6 flex gap-5 hover:shadow-md transition-shadow"
+                  >
+                    <DateBrick date={article.publishedAt} class="mt-1" />
+                    <div class="flex-grow min-w-0">
+                      <h2 class="text-xl md:text-[22px] font-semibold text-charcoal leading-snug mb-1 group-hover:text-forest-green transition-colors">
+                        {article.title}
+                      </h2>
+                      {article.excerpt && (
+                        <p class="text-sm text-charcoal/70 mb-2 line-clamp-2">
+                          {article.excerpt}
+                        </p>
+                      )}
+                      <span class="inline-flex items-center gap-1 text-burnt-orange text-sm font-medium">
+                        Læs hele nyheden
+                        <span aria-hidden="true">→</span>
+                      </span>
+                    </div>
+                  </a>
+                </>
+              )
+            })}
+          </div>
+        )
+      })() : (
         <p class="text-center text-charcoal/60 italic text-lg">
           Ingen offentlige nyheder at vise.
         </p>
@@ -95,10 +93,6 @@ try {
 </BaseLayout>
 
 <style>
-  .date-brick {
-    min-width: 3.5rem;
-  }
-
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;

@@ -222,11 +222,6 @@ export interface DashboardStreamer {
   linkText?: string
 }
 
-export interface DashboardKnowledgeTopic {
-  label: string
-  link?: string
-}
-
 export interface DashboardKnowledgeItem {
   contentType: 'article' | 'video'
   articleRef?: {
@@ -237,21 +232,20 @@ export interface DashboardKnowledgeItem {
     mainImage?: string
   }
   manualTitle?: string
+  manualTeaser?: string
   manualLink?: string
   thumbnail?: string
   category?: DashboardCategory
-  videoUrl?: string     // resolved from videoRef->videoFile.asset->url
-  videoTitle?: string   // resolved from videoRef->title
+  videoUrl?: string
+  videoTitle?: string
 }
 
 export interface DashboardKnowledge {
   _id: string
   _type: 'dashboardKnowledge'
   title: string
-  searchPlaceholder?: string
-  searchLink?: string
-  popularTopics?: DashboardKnowledgeTopic[]
   items?: DashboardKnowledgeItem[]
+  tools?: DashboardQuickLink[]
 }
 
 export interface DashboardQuickLink {
@@ -663,6 +657,351 @@ export interface ResponsibilityPage {
   codeOfConductSection?: ResponsibilityDocumentSection
   klimaaftrykSection?: KlimaaftrykSection
   ctaSection?: ResponsibilityCtaSection
+  seo?: SEO
+}
+
+// ── Kontakt Page ──
+
+export interface KontaktHeadquarters {
+  label?: string
+  name: string
+  addressLines: string[]
+  phone?: string
+  email?: string
+  openingHours?: string[]
+  mapsLink?: string
+  imageUrl?: string
+  imageAlt?: string
+  cvr?: string
+}
+
+export interface KontaktFactory {
+  label?: string
+  name: string
+  addressLines: string[]
+  openingHours?: string[]
+  mapsEmbed?: string
+  mapsLink?: string
+}
+
+export interface KontaktChannel {
+  title: string
+  description?: string
+  email: string
+  icon?: 'mail' | 'globe' | 'briefcase'
+}
+
+export interface KontaktChannelsSection {
+  preHeader?: string
+  headline?: string
+  description?: string
+  channels?: KontaktChannel[]
+}
+
+export interface KontaktWhistleblower {
+  headline?: string
+  description?: string
+  linkText?: string
+  linkHref?: string
+}
+
+export interface KontaktPage {
+  _id: string
+  _type: 'kontaktPage'
+  title: string
+  hero?: PageHero
+  headquarters?: KontaktHeadquarters
+  factories?: KontaktFactory[]
+  contactChannels?: KontaktChannelsSection
+  whistleblower?: KontaktWhistleblower
+  seo?: SEO
+}
+
+// ── Rest- og biprodukter Page ──
+
+export interface NutrientRow {
+  name: string
+  content: string
+  price: string
+  total100: string
+  totalAdj: string
+}
+
+export interface FreightRow {
+  label: string
+  v10: string
+  v40: string
+  v80: string
+  v120: string
+}
+
+export interface RestDocumentItem {
+  label: string
+  fileUrl?: string
+  url?: string
+}
+
+export interface RestQuickNavCard {
+  title: string
+  description?: string
+  anchor: string
+  icon?: string
+}
+
+export interface RestProtamylasseSection {
+  preHeader?: string
+  headline?: string
+  introText?: string
+  contentBlocks?: { headline: string; body: string }[]
+  maskinstationer?: string[]
+  afhentningHeadline?: string
+  afhentningText?: string
+  tildeltMaengde?: { headline: string; body: string }
+  pris?: { headline: string; body: string }
+  nutrientTable?: {
+    headline: string
+    rows: NutrientRow[]
+    totalRaw: string
+    totalAdj: string
+    avlerPrice: string
+    footnote?: string
+  }
+  freightTable?: {
+    headline: string
+    rows: FreightRow[]
+  }
+  deklarationer?: {
+    headline: string
+    documents: RestDocumentItem[]
+  }
+}
+
+export interface RestPulpSection {
+  preHeader?: string
+  headline?: string
+  introText?: string
+  bodyText?: string
+  documents?: {
+    headline: string
+    items: RestDocumentItem[]
+  }
+}
+
+export interface RestRestprodukterSection {
+  preHeader?: string
+  headline?: string
+  body?: string
+  document?: RestDocumentItem
+  externalLinkText?: string
+  externalLinkHref?: string
+}
+
+export interface RestContactPerson {
+  name: string
+  role?: string
+  phone?: string
+  email?: string
+}
+
+export interface RestContactSection {
+  headline?: string
+  description?: string
+  contacts?: RestContactPerson[]
+}
+
+// ── Andele Page ──
+
+export interface AndeleLejeaftalerSection {
+  preHeader?: string
+  heading?: string
+  content?: PortableTextContent
+}
+
+export interface AndeleKoebSalgSection {
+  preHeader?: string
+  heading?: string
+  content?: PortableTextContent
+  documents?: Array<{ title: string; fileUrl?: string; url?: string }>
+  financingNote?: string
+}
+
+export interface AndeleFinansieringSection {
+  preHeader?: string
+  heading?: string
+  content?: PortableTextContent
+}
+
+export interface AndeleCtaSection {
+  heading?: string
+  description?: string
+  linkText?: string
+  linkHref?: string
+}
+
+export interface AndelePage {
+  _id: string
+  _type: 'andelePage'
+  title: string
+  hero?: PageHero
+  lejeaftalerSection?: AndeleLejeaftalerSection
+  koebSalgSection?: AndeleKoebSalgSection
+  finansieringSection?: AndeleFinansieringSection
+  ctaSection?: AndeleCtaSection
+  seo?: SEO
+}
+
+// ── Rest- og biprodukter Page ──
+
+export interface RestOgBiprodukterPage {
+  _id: string
+  _type: 'restOgBiprodukterPage'
+  title: string
+  hero?: PageHero
+  quickNavCards?: RestQuickNavCard[]
+  protamylasseSection?: RestProtamylasseSection
+  pulpSection?: RestPulpSection
+  restprodukterSection?: RestRestprodukterSection
+  contactSection?: RestContactSection
+  seo?: SEO
+}
+
+// ── Bliv Andelshaver Page ──
+
+export interface BlivAndelshaverContactPerson {
+  name: string
+  role?: string
+  imageUrl?: string
+  imageAlt?: string
+  phoneHref?: string
+  phoneLabel?: string
+  callbackReason?: string
+  callbackLabel?: string
+}
+
+export interface CheckmarkItem {
+  title: string
+  description?: string
+}
+
+export interface BlivAndelshaverContactSection {
+  preHeader?: string
+  headline?: string
+  checkmarkItems?: CheckmarkItem[]
+}
+
+export interface ValuePillar {
+  title: string
+  description?: string
+}
+
+export interface BlivAndelshaverBenefitsSection {
+  preHeader?: string
+  headline?: PortableTextBlock[]
+  pillars?: ValuePillar[]
+}
+
+export interface ProcessStep {
+  number: number
+  title: string
+  description?: string
+}
+
+export interface CtaLink {
+  text: string
+  href: string
+  variant?: 'primary' | 'secondary'
+  opensCallbackModal?: boolean
+  callbackReason?: string
+}
+
+export interface BlivAndelshaverProcessSection {
+  preHeader?: string
+  headline?: PortableTextBlock[]
+  steps?: ProcessStep[]
+  ctaLinks?: CtaLink[]
+}
+
+export interface GrowerHighlight {
+  title: string
+}
+
+export interface BlivAndelshaverGrowerLifeSection {
+  preHeader?: string
+  headline?: PortableTextBlock[]
+  description?: string
+  highlights?: GrowerHighlight[]
+}
+
+export interface PhotoGridPhoto {
+  url: string
+  alt?: string
+}
+
+export interface BlivAndelshaverPhotoGridSection {
+  headline?: string
+  photos?: PhotoGridPhoto[]
+}
+
+export interface Testimonial {
+  quote: string
+  name: string
+  title?: string
+  location?: string
+}
+
+export interface BlivAndelshaverTestimonialsSection {
+  preHeader?: string
+  headline?: PortableTextBlock[]
+  testimonials?: Testimonial[]
+}
+
+export interface AppFeature {
+  title: string
+  description?: string
+}
+
+export interface BlivAndelshaverAppSection {
+  preHeader?: string
+  headline?: PortableTextBlock[]
+  description?: string
+  features?: AppFeature[]
+}
+
+export interface BlivAndelshaverFaqItem {
+  question: string
+  answer: string
+}
+
+export interface BlivAndelshaverFaqSection {
+  preHeader?: string
+  headline?: string
+  items?: BlivAndelshaverFaqItem[]
+  bottomLinkText?: string
+  bottomLinkHref?: string
+}
+
+export interface BlivAndelshaverCtaSection {
+  headline?: PortableTextBlock[]
+  description?: string
+  contactCardHeadline?: string
+  ctaLinks?: CtaLink[]
+}
+
+export interface BlivAndelshaverPage {
+  _id: string
+  _type: 'blivAndelshaverPage'
+  title: string
+  hero?: PageHero
+  contactPerson?: BlivAndelshaverContactPerson
+  contactSection?: BlivAndelshaverContactSection
+  benefitsSection?: BlivAndelshaverBenefitsSection
+  processSection?: BlivAndelshaverProcessSection
+  growerLifeSection?: BlivAndelshaverGrowerLifeSection
+  photoGridSection?: BlivAndelshaverPhotoGridSection
+  testimonialsSection?: BlivAndelshaverTestimonialsSection
+  appSection?: BlivAndelshaverAppSection
+  faqSection?: BlivAndelshaverFaqSection
+  ctaSection?: BlivAndelshaverCtaSection
   seo?: SEO
 }
 

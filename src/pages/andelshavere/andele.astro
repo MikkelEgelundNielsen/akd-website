@@ -1,0 +1,232 @@
+---
+import AndelshavereLayout from '@/layouts/AndelshavereLayout.astro'
+import PortableText from '@/components/sanity/PortableText.astro'
+import { sanityClient } from '@/lib/sanity'
+import { andelePageQuery } from '@/lib/sanityQueries'
+import { portableTextToHtml } from '@/lib/portableTextSerializer'
+import type { AndelePage } from '@/types/sanity'
+
+export const prerender = true;
+
+let page: AndelePage | null = null
+try {
+  page = await sanityClient.fetch<AndelePage>(andelePageQuery)
+} catch (error) {
+  console.error('Error fetching Andele page from Sanity:', error)
+}
+
+if (!page) {
+  return Astro.redirect('/404')
+}
+
+const headlineHtml = page.hero?.headline
+  ? portableTextToHtml(page.hero.headline, { addHeadingIds: false })
+  : ''
+const introHtml = page.hero?.introText
+  ? portableTextToHtml(page.hero.introText, { addHeadingIds: false })
+  : ''
+const preHeadline = page.hero?.preHeadline
+
+const metaTitle = page.seo?.metaTitle || page.title || 'Andele'
+const metaDescription = page.seo?.metaDescription || ''
+
+const leje = page.lejeaftalerSection
+const koeb = page.koebSalgSection
+const fin = page.finansieringSection
+const cta = page.ctaSection
+
+const koebDocs = koeb?.documents || []
+
+function getDocHref(doc: { fileUrl?: string; url?: string }): string {
+  return doc.fileUrl || doc.url || '#'
+}
+---
+
+<AndelshavereLayout
+  title={metaTitle}
+  description={metaDescription}
+>
+
+  <!-- HERO -->
+  <section class="relative bg-warm-light pt-12 md:pt-16 lg:pt-20 pb-16 section-after-nav">
+    <div class="container-custom">
+      {preHeadline && (
+        <p class="text-mint font-bold text-base mb-6 uppercase tracking-wide text-center">
+          {preHeadline}
+        </p>
+      )}
+
+      {headlineHtml && (
+        <h1 class="text-center mb-8 md:mb-12 max-w-4xl mx-auto">
+          <span class="block font-sans font-extrabold text-[43px] md:text-[58px] lg:text-[62px] text-charcoal uppercase leading-tight" set:html={headlineHtml} />
+        </h1>
+      )}
+
+      {introHtml && (
+        <div class="max-w-3xl mx-auto text-center text-charcoal text-lg md:text-xl leading-relaxed prose-akd" set:html={introHtml} />
+      )}
+    </div>
+  </section>
+
+
+  <!-- QUICK NAV -->
+  <section class="bg-warm-light pb-16 md:pb-24">
+    <div class="container-custom">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+        <a href="#lejeaftaler" class="bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow group text-center">
+          <div class="w-12 h-12 bg-mint/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-6 h-6 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+          </div>
+          <h3 class="font-sans font-bold text-charcoal text-lg mb-2 group-hover:text-mint transition-colors">Lejeaftaler</h3>
+          <p class="text-charcoal/60 text-sm">Indgåelse af lejeaftaler via Avlerinfo</p>
+        </a>
+
+        <a href="#koeb-salg" class="bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow group text-center">
+          <div class="w-12 h-12 bg-mint/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-6 h-6 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+            </svg>
+          </div>
+          <h3 class="font-sans font-bold text-charcoal text-lg mb-2 group-hover:text-mint transition-colors">Køb og salg</h3>
+          <p class="text-charcoal/60 text-sm">Regler for handel med andele</p>
+        </a>
+
+        <a href="#finansiering" class="bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow group text-center">
+          <div class="w-12 h-12 bg-mint/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-6 h-6 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
+          <h3 class="font-sans font-bold text-charcoal text-lg mb-2 group-hover:text-mint transition-colors">Finansiering</h3>
+          <p class="text-charcoal/60 text-sm">Finansiering af andele købt mellem andelshavere</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- LEJEAFTALER -->
+  {leje && (
+    <section id="lejeaftaler" class="bg-white py-16 md:py-24 scroll-mt-24">
+      <div class="container-custom">
+        <div class="max-w-4xl mx-auto">
+          {leje.preHeader && <p class="text-mint font-bold text-sm mb-4 uppercase tracking-wide">{leje.preHeader}</p>}
+          {leje.heading && (
+            <h2 class="font-sans font-extrabold text-3xl md:text-4xl lg:text-[43px] text-charcoal leading-tight mb-8">
+              {leje.heading}
+            </h2>
+          )}
+          {leje.content && (
+            <div class="prose-akd text-charcoal/80 text-lg leading-relaxed">
+              <PortableText content={leje.content} addHeadingIds={false} />
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )}
+
+
+  <!-- KØB OG SALG -->
+  {koeb && (
+    <section id="koeb-salg" class="bg-warm-light py-16 md:py-24 scroll-mt-24">
+      <div class="container-custom">
+        <div class="max-w-4xl mx-auto">
+          {koeb.preHeader && <p class="text-mint font-bold text-sm mb-4 uppercase tracking-wide">{koeb.preHeader}</p>}
+          {koeb.heading && (
+            <h2 class="font-sans font-extrabold text-3xl md:text-4xl lg:text-[43px] text-charcoal leading-tight mb-8">
+              {koeb.heading}
+            </h2>
+          )}
+          {koeb.content && (
+            <div class="prose-akd text-charcoal/80 text-lg leading-relaxed mb-8">
+              <PortableText content={koeb.content} addHeadingIds={false} />
+            </div>
+          )}
+
+          {koebDocs.length > 0 && (
+            <div class="bg-white rounded-2xl p-6 md:p-8 mb-8">
+              <h4 class="font-sans font-bold text-lg text-charcoal mb-4">Dokumenter</h4>
+              <div class="space-y-3">
+                {koebDocs.map((doc) => (
+                  <a href={getDocHref(doc)} class="flex items-center gap-3 text-charcoal hover:text-mint transition-colors group">
+                    <svg class="w-5 h-5 text-mint flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <span class="text-lg group-hover:underline">{doc.title}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {koeb.financingNote && (
+            <div class="bg-mint/10 rounded-2xl p-6 md:p-8">
+              <p class="text-charcoal text-lg">
+                {koeb.financingNote}
+                <a href="#finansiering" class="text-mint font-semibold hover:underline ml-1">Læs mere &rarr;</a>
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )}
+
+
+  <!-- FINANSIERING -->
+  {fin && (
+    <section id="finansiering" class="bg-white py-16 md:py-24 scroll-mt-24">
+      <div class="container-custom">
+        <div class="max-w-4xl mx-auto">
+          {fin.preHeader && <p class="text-mint font-bold text-sm mb-4 uppercase tracking-wide">{fin.preHeader}</p>}
+          {fin.heading && (
+            <h2 class="font-sans font-extrabold text-3xl md:text-4xl lg:text-[43px] text-charcoal leading-tight mb-8">
+              {fin.heading}
+            </h2>
+          )}
+          {fin.content && (
+            <div class="prose-akd text-charcoal/80 text-lg leading-relaxed">
+              <PortableText content={fin.content} addHeadingIds={false} />
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )}
+
+
+  <!-- CTA: NY AVLER -->
+  {cta && (
+    <section class="bg-charcoal py-16 md:py-24">
+      <div class="container-custom">
+        <div class="max-w-4xl mx-auto text-center">
+          {cta.heading && (
+            <h2 class="font-sans font-bold text-2xl md:text-3xl text-white mb-4">
+              {cta.heading}
+            </h2>
+          )}
+          {cta.description && (
+            <p class="text-white/70 text-lg mb-8">
+              {cta.description}
+            </p>
+          )}
+          {cta.linkHref && (
+            <a
+              href={cta.linkHref}
+              class="inline-flex items-center gap-2 bg-mint text-charcoal font-bold px-8 py-4 rounded-full hover:bg-mint/90 transition-colors"
+            >
+              {cta.linkText}
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+              </svg>
+            </a>
+          )}
+        </div>
+      </div>
+    </section>
+  )}
+
+</AndelshavereLayout>

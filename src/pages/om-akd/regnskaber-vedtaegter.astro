@@ -28,8 +28,7 @@ const introHtml = page?.hero?.introText
 const metaTitle = page?.seo?.metaTitle || 'Regnskaber & vedtægter – AKD Danmark'
 const metaDescription = page?.seo?.metaDescription || 'Download AKD\'s vedtægter og årsrapporter.'
 
-// Fallbacks
-const preHeadline = page?.hero?.preHeadline || 'Om AKD'
+const preHeadline = page?.hero?.preHeadline
 
 // Document groups (fallback data)
 const documentGroups = page?.documentGroups || [
@@ -60,9 +59,11 @@ const documentGroups = page?.documentGroups || [
   <!-- Hero Section -->
   <section class="relative bg-warm-light pt-12 md:pt-16 lg:pt-20 pb-16 section-after-nav">
     <div class="container-custom">
-      <p class="text-mint font-bold text-base mb-6 uppercase tracking-wide text-center">
-        {preHeadline}
-      </p>
+      {preHeadline && (
+        <p class="text-mint font-bold text-base mb-6 uppercase tracking-wide text-center">
+          {preHeadline}
+        </p>
+      )}
       
       <h1 class="text-center mb-8 md:mb-12 max-w-4xl mx-auto">
         <span class="block font-sans font-extrabold text-[43px] md:text-[58px] lg:text-[62px] text-charcoal uppercase leading-tight [&_.font-serif]:lowercase [&_.font-serif]:font-medium" set:html={headlineHtml} />

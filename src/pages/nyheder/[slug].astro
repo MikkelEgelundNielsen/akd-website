@@ -61,14 +61,14 @@ const metaDescription = article.seo?.metaDescription || article.excerpt || ''
 <BaseLayout 
   title={metaTitle}
   description={metaDescription}
-  navTheme="light"
+  navTheme="dark"
 >
   <!-- Hero Section -->
-  <section class="relative bg-warm-light pt-12 md:pt-16 lg:pt-20 pb-16 section-after-nav">
+  <section class="bg-forest-green pt-12 md:pt-16 pb-16 section-after-nav">
     <div class="container-custom">
       <a 
         href="/nyheder"
-        class="inline-flex items-center gap-1.5 text-charcoal/60 hover:text-charcoal text-sm font-medium mb-6 transition-colors"
+        class="inline-flex items-center gap-1.5 text-white/70 hover:text-white text-sm font-medium mb-6 transition-colors"
       >
         <span aria-hidden="true">←</span>
         Tilbage til nyheder
@@ -76,14 +76,14 @@ const metaDescription = article.seo?.metaDescription || article.excerpt || ''
       <p class="text-mint font-bold text-base mb-4 uppercase tracking-wide">
         {dateFormatted}
       </p>
-      <h1 class="font-sans font-extrabold text-[34px] md:text-[43px] lg:text-[52px] text-charcoal uppercase leading-tight max-w-4xl">
+      <h1 class="font-sans font-extrabold text-[34px] md:text-[43px] lg:text-[52px] text-white uppercase leading-tight max-w-4xl">
         {article.title}
       </h1>
     </div>
   </section>
 
   <!-- Article Content -->
-  <section class="bg-warm-light pb-16 md:pb-24">
+  <section class="bg-warm-light py-12 md:py-16">
     <div class="container-custom">
       <article class="max-w-3xl">
         {article.mainImage && (

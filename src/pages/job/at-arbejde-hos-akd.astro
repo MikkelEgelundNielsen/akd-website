@@ -8,44 +8,30 @@ import type { WorkingAtAkdPage } from '@/types/sanity'
 
 export const prerender = true;
 
-// Fetch page data from Sanity
-let page: WorkingAtAkdPage | null = null
-try {
-  page = await sanityClient.fetch<WorkingAtAkdPage>(workingAtAkdPageQuery)
-} catch (error) {
-  console.error('Error fetching Working at AKD page from Sanity:', error)
-}
+const page = await sanityClient.fetch<WorkingAtAkdPage>(workingAtAkdPageQuery)
+if (!page) return Astro.redirect('/404')
 
-// Convert hero portable text to HTML
-const headlineHtml = page?.hero?.headline
+const headlineHtml = page.hero?.headline
   ? portableTextToHtml(page.hero.headline, { addHeadingIds: false })
-  : 'DIN KARRIERE <span class="font-serif italic text-mint">kan gro</span> HOS AKD'
+  : ''
 
-const introHtml = page?.hero?.introText
+const introHtml = page.hero?.introText
   ? portableTextToHtml(page.hero.introText, { addHeadingIds: false })
   : ''
 
-// SEO
-const metaTitle = page?.seo?.metaTitle || 'At arbejde hos AKD'
-const metaDescription = page?.seo?.metaDescription || 'Lær mere om, hvordan det er at arbejde hos AKD. Fællesskab, tryghed og udvikling i hverdagen.'
+const metaTitle = page.seo?.metaTitle || page.title || 'At arbejde hos AKD'
+const metaDescription = page.seo?.metaDescription || ''
 
-// Fallbacks
-const preHeadline = page?.hero?.preHeadline || 'Job & karriere'
-const primaryCtaText = page?.primaryCtaText || 'Se ledige stillinger'
-const primaryCtaUrl = page?.primaryCtaUrl || '/job/stillinger'
-const secondaryCtaText = page?.secondaryCtaText || 'Mød vores medarbejdere'
-const secondaryCtaUrl = page?.secondaryCtaUrl || '/job/moed-vores-medarbejdere'
+const preHeadline = page.hero?.preHeadline
+const primaryCtaText = page.primaryCtaText
+const primaryCtaUrl = page.primaryCtaUrl
+const secondaryCtaText = page.secondaryCtaText
+const secondaryCtaUrl = page.secondaryCtaUrl
 
-// ContentBox data
-const contentBox = page?.contentBox
-const contentBoxItems = contentBox?.items || [
-  { title: 'Kultur & værdier', description: 'KMC bygger på stærke værdier. Vi passer på hinanden, vi deler viden, og vi arbejder side om side med fokus på sikkerhed og kvalitet.', icon: 'arrow' as const },
-  { title: 'Udvikling & efteruddannelse', description: 'Vi tror på, at du aldrig stopper med at lære. Derfor tilbyder vi oplæring fra første dag, efteruddannelse, og muligheder for at udvikle dig både fagligt og personligt.', icon: 'arrow' as const },
-  { title: 'Personalegoder & personaleforening', description: 'Vi vil gerne have, at det er rart at gå på arbejde. Derfor tilbyder vi frokostordning, ordnede forhold, sociale aktiviteter og en aktiv personaleforening.', icon: 'arrow' as const },
-]
+const contentBox = page.contentBox
+const contentBoxItems = contentBox?.items || []
 
-// Photo gallery
-const gallery = page?.photoGallery
+const gallery = page.photoGallery
 const galleryImages = gallery?.images || []
 ---
 
@@ -58,14 +44,18 @@ const galleryImages = gallery?.images || []
   <section class="relative bg-warm-light pt-12 md:pt-16 lg:pt-20 pb-16 pb-28 md:pb-48 section-after-nav">
     <div class="container-custom">
       <!-- Pre-headline -->
-      <p class="text-mint font-bold text-base mb-6 uppercase tracking-wide text-center">
-        {preHeadline}
-      </p>
+      {preHeadline && (
+        <p class="text-mint font-bold text-base mb-6 uppercase tracking-wide text-center">
+          {preHeadline}
+        </p>
+      )}
       
       <!-- Main Headline -->
-      <h1 class="text-center mb-8 md:mb-12 max-w-4xl mx-auto">
-        <span class="block font-sans font-extrabold text-[43px] md:text-[58px] lg:text-[62px] text-charcoal uppercase leading-tight [&_.font-serif]:lowercase [&_.font-serif]:font-medium" set:html={headlineHtml} />
-      </h1>
+      {headlineHtml && (
+        <h1 class="text-center mb-8 md:mb-12 max-w-4xl mx-auto">
+          <span class="block font-sans font-extrabold text-[43px] md:text-[58px] lg:text-[62px] text-charcoal uppercase leading-tight [&_.font-serif]:lowercase [&_.font-serif]:font-medium" set:html={headlineHtml} />
+        </h1>
+      )}
       
       <!-- Body Text -->
       {introHtml && (
@@ -75,25 +65,29 @@ const galleryImages = gallery?.images || []
   </section>
 
   <!-- Content Box Section -->
-  <section class="relative bg-forest-green pt-1 pb-16 md:pb-24">
-    <ContentBox
-      variant={contentBox?.variant || 'light'}
-      preHeader={contentBox?.preHeader || 'At arbejde hos AKD'}
-      headline={contentBox?.headline || 'Fællesskab, tryghed og udvikling i hverdagen'}
-      imageUrl={contentBox?.image || '/images/at-arbejde-hos-akd/Medarbejdere-44.jpg'}
-      imageAlt={contentBox?.imageAlt || 'Medarbejdere hos AKD i produktionen'}
-      pullUp={contentBox?.pullUp || 100}
-      items={contentBoxItems}
-    />
-  </section>
+  {contentBox && (
+    <section class="relative bg-forest-green pt-1 pb-16 md:pb-24">
+      <ContentBox
+        variant={contentBox.variant || 'light'}
+        preHeader={contentBox.preHeader}
+        headline={contentBox.headline}
+        imageUrl={contentBox.image || '/images/at-arbejde-hos-akd/Medarbejdere-44.jpg'}
+        imageAlt={contentBox.imageAlt || ''}
+        pullUp={contentBox.pullUp || 100}
+        items={contentBoxItems}
+      />
+    </section>
+  )}
 
   <!-- Photo Grid Section -->
   {galleryImages.length > 0 && (
     <section class="relative bg-forest-green py-16 md:py-24">
       <div class="container-custom">
-        <h2 class="text-white text-center text-4xl md:text-[43px] font-serif font-bold italic mb-12">
-          {gallery?.title || 'Hverdagsbilleder fra AKD'}
-        </h2>
+        {gallery?.title && (
+          <h2 class="text-white text-center text-4xl md:text-[43px] font-serif font-bold italic mb-12">
+            {gallery.title}
+          </h2>
+        )}
         
         <div class="photo-grid" id="photo-grid">
           {galleryImages.map((img) => (

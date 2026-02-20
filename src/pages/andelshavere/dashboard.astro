@@ -19,13 +19,13 @@ import {
   dashboardNewsArticlesQuery,
   dashboardStreamerQuery,
   dashboardQuickLinksQuery,
-  allVideosQuery,
+  dashboardKnowledgeQuery,
 } from '@/lib/sanityQueries'
 import type {
   NewsArticle,
   DashboardStreamer as DashboardStreamerType,
   DashboardQuickLinks,
-  Video,
+  DashboardKnowledge,
 } from '@/types/sanity'
 
 export const prerender = false; // This page must be server-rendered for authentication
@@ -34,11 +34,11 @@ export const prerender = false; // This page must be server-rendered for authent
 const user = Astro.locals.user;
 
 // Fetch all dashboard content from Sanity
-const [newsItems, streamer, quickLinks, videos] = await Promise.all([
+const [newsItems, streamer, quickLinks, knowledge] = await Promise.all([
   sanityClient.fetch<NewsArticle[]>(dashboardNewsArticlesQuery),
   sanityClient.fetch<DashboardStreamerType>(dashboardStreamerQuery),
   sanityClient.fetch<DashboardQuickLinks>(dashboardQuickLinksQuery),
-  sanityClient.fetch<Video[]>(allVideosQuery),
+  sanityClient.fetch<DashboardKnowledge>(dashboardKnowledgeQuery),
 ])
 ---
 
@@ -76,7 +76,7 @@ const [newsItems, streamer, quickLinks, videos] = await Promise.all([
         <NewsColumn news={newsItems || []} />
         
         <!-- Column 2: Knowledge & Quick Access -->
-        <QuickAccessColumn quickLinks={quickLinks} video={videos?.[0] ?? null} />
+        <QuickAccessColumn knowledge={knowledge} quickLinks={quickLinks} />
       </div>
     </div>
   </section>

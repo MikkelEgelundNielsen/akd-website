@@ -8,34 +8,26 @@ import type { MeetEmployeesPage } from '@/types/sanity'
 
 export const prerender = true;
 
-// Fetch page data from Sanity
-let page: MeetEmployeesPage | null = null
-try {
-  page = await sanityClient.fetch<MeetEmployeesPage>(meetEmployeesPageQuery)
-} catch (error) {
-  console.error('Error fetching Meet Employees page from Sanity:', error)
-}
+const page = await sanityClient.fetch<MeetEmployeesPage>(meetEmployeesPageQuery)
+if (!page) return Astro.redirect('/404')
 
-// Convert hero portable text fields to HTML
-const headlineHtml = page?.hero?.headline
+const headlineHtml = page.hero?.headline
   ? portableTextToHtml(page.hero.headline, { addHeadingIds: false })
-  : 'HISTORIER <span class="font-serif italic text-mint">fra hverdagen</span> PÅ FABRIKKERNE I BRANDE OG TOFTLUND'
+  : ''
 
-const introHtml = page?.hero?.introText
+const introHtml = page.hero?.introText
   ? portableTextToHtml(page.hero.introText, { addHeadingIds: false })
   : ''
 
-// SEO metadata
-const metaTitle = page?.seo?.metaTitle || 'Mød vores medarbejdere'
-const metaDescription = page?.seo?.metaDescription || 'Hør om hverdagen hos AKD fra nogle af vores medarbejdere'
+const metaTitle = page.seo?.metaTitle || page.title || 'Mød vores medarbejdere'
+const metaDescription = page.seo?.metaDescription || ''
 
-// Fallback values
-const preHeadline = page?.hero?.preHeadline || 'MØD VORES MEDARBEJDERE'
-const departments = page?.departments || []
-const primaryCtaText = page?.primaryCtaText || 'Se vores ledige stillinger'
-const primaryCtaUrl = page?.primaryCtaUrl || '/job/stillinger'
-const secondaryCtaText = page?.secondaryCtaText || 'Send en uopfordret ansøgning'
-const secondaryCtaUrl = page?.secondaryCtaUrl || '/job/ansoegning'
+const preHeadline = page.hero?.preHeadline
+const departments = page.departments || []
+const primaryCtaText = page.primaryCtaText
+const primaryCtaUrl = page.primaryCtaUrl
+const secondaryCtaText = page.secondaryCtaText
+const secondaryCtaUrl = page.secondaryCtaUrl
 ---
 
 <BaseLayout 
@@ -47,14 +39,18 @@ const secondaryCtaUrl = page?.secondaryCtaUrl || '/job/ansoegning'
   <section class="relative bg-warm-light pt-12 md:pt-16 lg:pt-20 pb-8 md:pb-12 section-after-nav">
     <div class="container-custom">
       <!-- Pre-headline -->
-      <p class="text-mint font-bold text-base mb-6 uppercase tracking-wide text-center">
-        {preHeadline}
-      </p>
+      {preHeadline && (
+        <p class="text-mint font-bold text-base mb-6 uppercase tracking-wide text-center">
+          {preHeadline}
+        </p>
+      )}
       
       <!-- Main Headline -->
-      <h1 class="text-center mb-8 md:mb-12 max-w-4xl mx-auto">
-        <span class="block font-sans font-extrabold text-[43px] md:text-[58px] lg:text-[62px] text-charcoal uppercase leading-tight [&_.font-serif]:lowercase [&_.font-serif]:font-medium" set:html={headlineHtml} />
-      </h1>
+      {headlineHtml && (
+        <h1 class="text-center mb-8 md:mb-12 max-w-4xl mx-auto">
+          <span class="block font-sans font-extrabold text-[43px] md:text-[58px] lg:text-[62px] text-charcoal uppercase leading-tight [&_.font-serif]:lowercase [&_.font-serif]:font-medium" set:html={headlineHtml} />
+        </h1>
+      )}
       
       <!-- Body Text -->
       {introHtml && (
@@ -94,27 +90,33 @@ const secondaryCtaUrl = page?.secondaryCtaUrl || '/job/ansoegning'
   )}
 
   <!-- CTA Section -->
-  <section class="relative bg-warm-light pb-16 md:pb-24">
-    <div class="container-custom">
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
-        <!-- Secondary CTA -->
-        <a href={secondaryCtaUrl} class="btn-secondary">
-          {secondaryCtaText}
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-          </svg>
-        </a>
-        
-        <!-- Primary CTA -->
-        <a href={primaryCtaUrl} class="btn-primary">
-          <span>{primaryCtaText}</span>
-          <span class="btn-icon-circle">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-            </svg>
-          </span>
-        </a>
+  {(secondaryCtaText || primaryCtaText) && (
+    <section class="relative bg-warm-light pb-16 md:pb-24">
+      <div class="container-custom">
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+          <!-- Secondary CTA -->
+          {secondaryCtaText && secondaryCtaUrl && (
+            <a href={secondaryCtaUrl} class="btn-secondary">
+              {secondaryCtaText}
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+              </svg>
+            </a>
+          )}
+          
+          <!-- Primary CTA -->
+          {primaryCtaText && primaryCtaUrl && (
+            <a href={primaryCtaUrl} class="btn-primary">
+              <span>{primaryCtaText}</span>
+              <span class="btn-icon-circle">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                </svg>
+              </span>
+            </a>
+          )}
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+  )}
 </BaseLayout>

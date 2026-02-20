@@ -3,7 +3,7 @@ import type { MiddlewareNext } from 'astro';
 
 // Protected route patterns - all routes under /andelshavere except login
 const protectedRoutes = ['/andelshavere'];
-const publicRoutes = ['/andelshavere/login'];
+const publicRoutes = ['/andelshavere/login', '/andelshavere/andele'];
 
 export const onRequest = defineMiddleware(async (context, next: MiddlewareNext) => {
   const { url, cookies, redirect } = context;
