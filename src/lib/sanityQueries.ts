@@ -49,7 +49,12 @@ export const siteSettingsQuery = `*[_type == "siteSettings"][0] {
       "/"
     ),
     openInNewTab
-  }
+  },
+  callbackReasons[] {
+    label,
+    email
+  },
+  callbackFallbackEmail
 }`
 
 // Navigation

@@ -4,7 +4,22 @@
  * A global overlay form for requesting a callback.
  * Include once in BaseLayout — it listens for `openCallbackModal()` calls
  * and for clicks on any element with class `callback-trigger`.
+ *
+ * Dropdown options are managed in Sanity under Hjemmeside indstillinger → Kontaktformular.
  */
+import { sanityClient } from '@/lib/sanity'
+import type { CallbackReason } from '@/types/sanity'
+
+const reasons: CallbackReason[] = await sanityClient.fetch(
+  `*[_type == "siteSettings"][0].callbackReasons[] { label, email }`
+) || []
+
+const fallbackReasons: CallbackReason[] = [
+  { label: 'Generel henvendelse', email: '' },
+  { label: 'Andet', email: '' },
+]
+
+const displayReasons = reasons.length > 0 ? reasons : fallbackReasons
 ---
 
 <div
@@ -50,13 +65,9 @@
             name="reason"
             class="w-full border border-charcoal/20 rounded-lg px-4 py-3 text-charcoal bg-white focus:ring-2 focus:ring-mint focus:border-mint outline-none transition-shadow appearance-none"
           >
-            <option value="Generel henvendelse">Generel henvendelse</option>
-            <option value="Bliv andelshaver">Bliv andelshaver</option>
-            <option value="Interesseliste - bliv andelshaver">Interesseliste - bliv andelshaver</option>
-            <option value="Agro-rådgivning">Agro-rådgivning</option>
-            <option value="Job og karriere">Job og karriere</option>
-            <option value="Avlerinfo Selvbetjening">Avlerinfo Selvbetjening</option>
-            <option value="Andet">Andet</option>
+            {displayReasons.map((r) => (
+              <option value={r.label}>{r.label}</option>
+            ))}
           </select>
         </div>
 

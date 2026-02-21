@@ -113,9 +113,18 @@ export interface SiteSettings {
   andelshavereDescription?: string
   andelshavereLoginLink?: string
   
+  // Contact form
+  callbackReasons?: CallbackReason[]
+  callbackFallbackEmail?: string
+
   // Links
   quickLinks?: LinkGroup[]
   tertiaryLinks?: Link[]
+}
+
+export interface CallbackReason {
+  label: string
+  email: string
 }
 
 // Navigation
