@@ -1,18 +1,21 @@
 import { defineMiddleware } from 'astro:middleware';
 import type { MiddlewareNext } from 'astro';
 
-const publicRoutes = ['/andelshavere/login', '/andelshavere/andele'];
+// Prerendered routes under /andelshavere — skip cookie access entirely to
+// avoid "Astro.request.headers" build warnings.
+const prerenderPublicRoutes = ['/andelshavere/andele'];
+// SSR public routes that still need cookie access but not auth enforcement.
+const ssrPublicRoutes = ['/andelshavere/login'];
 
 export const onRequest = defineMiddleware(async (context, next: MiddlewareNext) => {
   const { url, cookies, redirect } = context;
 
-  // Only run auth logic for /andelshavere routes — avoids touching
-  // request.headers on prerendered public pages (which triggers build warnings).
-  if (!url.pathname.startsWith('/andelshavere')) {
+  if (!url.pathname.startsWith('/andelshavere') ||
+      prerenderPublicRoutes.some(r => url.pathname === r)) {
     return next();
   }
 
-  const isPublicRoute = publicRoutes.some(route => url.pathname === route);
+  const isPublicRoute = ssrPublicRoutes.some(route => url.pathname === route);
   const isProtectedRoute = !isPublicRoute;
 
   const authToken = cookies.get('akd_auth_token')?.value;
