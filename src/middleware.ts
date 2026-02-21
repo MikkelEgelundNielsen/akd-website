@@ -8,13 +8,17 @@ const prerenderPublicRoutes = ['/andelshavere/andele'];
 const ssrPublicRoutes = ['/andelshavere/login'];
 
 export const onRequest = defineMiddleware(async (context, next: MiddlewareNext) => {
-  const { url, cookies, redirect } = context;
+  const { url } = context;
 
+  // Skip entirely for non-andelshavere routes and prerendered public routes.
+  // Important: do NOT destructure `cookies` above — accessing the getter
+  // triggers Astro.request.headers reads which warns during prerendering.
   if (!url.pathname.startsWith('/andelshavere') ||
       prerenderPublicRoutes.some(r => url.pathname === r)) {
     return next();
   }
 
+  const cookies = context.cookies;
   const isPublicRoute = ssrPublicRoutes.some(route => url.pathname === route);
   const isProtectedRoute = !isPublicRoute;
 
@@ -41,7 +45,7 @@ export const onRequest = defineMiddleware(async (context, next: MiddlewareNext) 
           cookies.delete('akd_user_id', { path: '/' });
 
           if (isProtectedRoute) {
-            return redirect('/andelshavere/login');
+            return context.redirect('/andelshavere/login');
           }
         }
       }
@@ -51,11 +55,11 @@ export const onRequest = defineMiddleware(async (context, next: MiddlewareNext) 
       cookies.delete('akd_user_id', { path: '/' });
 
       if (isProtectedRoute) {
-        return redirect('/andelshavere/login');
+        return context.redirect('/andelshavere/login');
       }
     }
   } else if (isProtectedRoute) {
-    return redirect('/andelshavere/login');
+    return context.redirect('/andelshavere/login');
   }
 
   return next();
