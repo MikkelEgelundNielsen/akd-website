@@ -6,7 +6,7 @@ import { andelePageQuery } from '@/lib/sanityQueries'
 import { portableTextToHtml } from '@/lib/portableTextSerializer'
 import type { AndelePage } from '@/types/sanity'
 
-export const prerender = true;
+export const prerender = false;
 
 let page: AndelePage | null = null
 try {
@@ -18,6 +18,8 @@ try {
 if (!page) {
   return Astro.redirect('/404')
 }
+
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600')
 
 const headlineHtml = page.hero?.headline
   ? portableTextToHtml(page.hero.headline, { addHeadingIds: false })
