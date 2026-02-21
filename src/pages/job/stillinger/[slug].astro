@@ -2,31 +2,22 @@
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import EmployeeStoryBox from '@/components/job/EmployeeStoryBox.astro'
 import { sanityClient } from '@/lib/sanity'
-import { activeJobListingsQuery, jobListingBySlugQuery } from '@/lib/sanityQueries'
+import { fullJobListingsQuery } from '@/lib/sanityQueries'
 import { portableTextToHtml } from '@/lib/portableTextSerializer'
 import type { JobListing } from '@/types/sanity'
 
 export const prerender = true;
 
 export async function getStaticPaths() {
-  const listings = await sanityClient.fetch<JobListing[]>(activeJobListingsQuery)
-  
+  const listings = await sanityClient.fetch<JobListing[]>(fullJobListingsQuery)
+
   return listings.map((listing) => ({
     params: { slug: listing.slug },
     props: { listing },
   }))
 }
 
-// Get listing from static props or fetch for SSR fallback
-let { listing } = Astro.props as { listing: JobListing }
-
-if (!listing?.body) {
-  // In getStaticPaths we only get the list-level fields — fetch the full document
-  const slug = Astro.params.slug || listing?.slug
-  if (slug) {
-    listing = await sanityClient.fetch<JobListing>(jobListingBySlugQuery(slug))
-  }
-}
+const { listing } = Astro.props as { listing: JobListing }
 
 if (!listing) {
   return Astro.redirect('/job/stillinger')

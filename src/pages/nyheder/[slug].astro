@@ -1,51 +1,25 @@
 ---
 /**
  * Public News Article Detail
- * Displays a single public news article with full rich text body.
- * Pre-rendered at build time using getStaticPaths for all public articles.
+ * Server-rendered on demand for fast builds and always-fresh content.
  */
 
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import PortableText from '@/components/sanity/PortableText.astro'
 import { sanityClient } from '@/lib/sanity'
-import { publicNewsArticlesQuery, newsArticleBySlugQuery } from '@/lib/sanityQueries'
+import { newsArticleBySlugQuery } from '@/lib/sanityQueries'
 import type { NewsArticle } from '@/types/sanity'
 
-export const prerender = true;
+export const prerender = false;
 
-export async function getStaticPaths() {
-  const articles = await sanityClient.fetch<NewsArticle[]>(publicNewsArticlesQuery)
+const { slug } = Astro.params
+const article = await sanityClient.fetch<NewsArticle>(newsArticleBySlugQuery(slug!))
 
-  return articles.map((article) => ({
-    params: { slug: article.slug },
-    props: { article },
-  }))
-}
-
-// Get article from props (pre-rendered) or fetch as fallback
-let { article } = Astro.props as { article: NewsArticle }
-
-if (!article) {
-  const { slug } = Astro.params
-  article = await sanityClient.fetch<NewsArticle>(newsArticleBySlugQuery(slug!))
-
-  if (!article || !article.isPublic) {
-    return Astro.redirect('/404')
-  }
-}
-
-// Fetch full body content if only listing fields were passed from getStaticPaths
-if (!article.body) {
-  const fullArticle = await sanityClient.fetch<NewsArticle>(newsArticleBySlugQuery(article.slug))
-  if (fullArticle) {
-    article = fullArticle
-  }
-}
-
-// Guard: only render public articles on the public route
-if (!article.isPublic) {
+if (!article || !article.isPublic) {
   return Astro.redirect('/404')
 }
+
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600')
 
 const dateObj = new Date(article.publishedAt)
 const dateFormatted = dateObj.toLocaleDateString('da-DK', {

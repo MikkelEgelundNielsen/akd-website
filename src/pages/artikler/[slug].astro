@@ -1,48 +1,25 @@
 ---
 /**
  * Public Article Detail
- * Displays a single public article with full rich text body.
- * Pre-rendered at build time using getStaticPaths for all public articles.
+ * Server-rendered on demand for fast builds and always-fresh content.
  */
 
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import PortableText from '@/components/sanity/PortableText.astro'
 import { sanityClient } from '@/lib/sanity'
-import { publicArticlesQuery, articleBySlugQuery } from '@/lib/sanityQueries'
+import { articleBySlugQuery } from '@/lib/sanityQueries'
 import type { Article } from '@/types/sanity'
 
-export const prerender = true;
+export const prerender = false;
 
-export async function getStaticPaths() {
-  const articles = await sanityClient.fetch<Article[]>(publicArticlesQuery)
+const { slug } = Astro.params
+const article = await sanityClient.fetch<Article>(articleBySlugQuery(slug!))
 
-  return articles.map((article) => ({
-    params: { slug: article.slug },
-    props: { article },
-  }))
-}
-
-let { article } = Astro.props as { article: Article }
-
-if (!article) {
-  const { slug } = Astro.params
-  article = await sanityClient.fetch<Article>(articleBySlugQuery(slug!))
-
-  if (!article || !article.isPublic) {
-    return Astro.redirect('/404')
-  }
-}
-
-if (!article.body) {
-  const fullArticle = await sanityClient.fetch<Article>(articleBySlugQuery(article.slug))
-  if (fullArticle) {
-    article = fullArticle
-  }
-}
-
-if (!article.isPublic) {
+if (!article || !article.isPublic) {
   return Astro.redirect('/404')
 }
+
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600')
 
 const dateObj = new Date(article.publishedAt)
 const dateFormatted = dateObj.toLocaleDateString('da-DK', {

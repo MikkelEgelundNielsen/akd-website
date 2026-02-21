@@ -832,6 +832,43 @@ export const activeJobListingsQuery = `*[_type == "jobListing" && isActive == tr
   applicationDeadline
 }`
 
+// Full job listings with all fields — used by getStaticPaths to avoid N+1 fetches
+export const fullJobListingsQuery = `*[_type == "jobListing" && isActive == true] | order(publishedAt desc) {
+  _id,
+  title,
+  "slug": slug.current,
+  description,
+  location,
+  department,
+  isActive,
+  publishedAt,
+  body,
+  applicationUrl,
+  applicationDeadline,
+  contactName,
+  contactPhone,
+  contactEmail,
+  externalPartner,
+  employees[]-> {
+    _id,
+    name,
+    jobTitle,
+    department,
+    location,
+    quote,
+    description,
+    "image": image.asset->url,
+    "imageAlt": image.alt,
+    startDate
+  },
+  seo {
+    metaTitle,
+    metaDescription,
+    "openGraphImage": openGraphImage.asset->url,
+    noIndex
+  }
+}`
+
 // Job listing by slug (detail page)
 export const jobListingBySlugQuery = (slug: string) =>
   `*[_type == "jobListing" && slug.current == "${slug}"][0] {
