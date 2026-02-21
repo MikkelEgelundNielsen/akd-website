@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /andelshavere/
+Allow: /andelshavere/andele
+Disallow: /api/
+
+Sitemap: https://akddanmark.dk/sitemap-index.xml
