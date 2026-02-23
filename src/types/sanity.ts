@@ -943,14 +943,10 @@ export interface BlivAndelshaverGrowerLifeSection {
   highlights?: GrowerHighlight[]
 }
 
-export interface PhotoGridPhoto {
-  url: string
-  alt?: string
-}
-
-export interface BlivAndelshaverPhotoGridSection {
-  headline?: string
-  photos?: PhotoGridPhoto[]
+export interface BlivAndelshaverPhotoGallery {
+  _id: string
+  title?: string
+  images: PhotoGalleryImage[]
 }
 
 export interface Testimonial {
@@ -1008,7 +1004,7 @@ export interface BlivAndelshaverPage {
   benefitsSection?: BlivAndelshaverBenefitsSection
   processSection?: BlivAndelshaverProcessSection
   growerLifeSection?: BlivAndelshaverGrowerLifeSection
-  photoGridSection?: BlivAndelshaverPhotoGridSection
+  photoGallery?: BlivAndelshaverPhotoGallery
   testimonialsSection?: BlivAndelshaverTestimonialsSection
   appSection?: BlivAndelshaverAppSection
   faqSection?: BlivAndelshaverFaqSection

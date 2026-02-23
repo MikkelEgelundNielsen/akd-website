@@ -1313,9 +1313,10 @@ export const blivAndelshaverPageQuery = `*[_type == "blivAndelshaverPage"][0] {
       title
     }
   },
-  photoGridSection {
-    headline,
-    photos[] {
+  photoGallery-> {
+    _id,
+    title,
+    images[] {
       "url": asset->url,
       alt
     }

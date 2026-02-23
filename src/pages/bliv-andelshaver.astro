@@ -33,7 +33,8 @@ const contactSection = page.contactSection
 const benefits = page.benefitsSection
 const process = page.processSection
 const growerLife = page.growerLifeSection
-const photoGrid = page.photoGridSection
+const gallery = page.photoGallery
+const galleryImages = gallery?.images || []
 const testimonials = page.testimonialsSection
 const app = page.appSection
 const faq = page.faqSection
@@ -291,19 +292,19 @@ const metaDescription = page.seo?.metaDescription || ''
   )}
 
   <!-- SECTION: Photo Grid -->
-  {photoGrid && photoGrid.photos && photoGrid.photos.length > 0 && (
+  {galleryImages.length > 0 && (
     <section class="relative bg-forest-green py-16 md:py-24">
       <div class="container-custom">
-        {photoGrid.headline && (
+        {gallery?.title && (
           <h2 class="text-white text-center text-4xl md:text-[43px] font-serif font-bold italic mb-12">
-            {photoGrid.headline}
+            {gallery.title}
           </h2>
         )}
 
         <div class="avler-photo-grid" id="avler-photo-grid">
-          {photoGrid.photos.map((photo) => (
+          {galleryImages.map((img) => (
             <div class="avler-photo-grid-item">
-              <img src={photo.url} alt={photo.alt || 'Hverdagsbillede fra AKD-avler'} />
+              <img src={img.url} alt={img.alt || 'Hverdagsbillede fra AKD'} loading="lazy" />
             </div>
           ))}
         </div>
