@@ -6,6 +6,7 @@
  */
 
 import AndelshavereLayout from '@/layouts/AndelshavereLayout.astro'
+import NextStepSection from '@/components/andelshavere/NextStepSection.astro'
 import PortableText from '@/components/sanity/PortableText.astro'
 import { sanityClient } from '@/lib/sanity'
 import { articleBySlugQuery } from '@/lib/sanityQueries'
@@ -75,4 +76,6 @@ const metaDescription = article.excerpt || ''
       </article>
     </div>
   </section>
+
+  <NextStepSection />
 </AndelshavereLayout>

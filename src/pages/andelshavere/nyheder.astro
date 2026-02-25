@@ -6,6 +6,7 @@
  */
 
 import AndelshavereLayout from '@/layouts/AndelshavereLayout.astro'
+import NextStepSection from '@/components/andelshavere/NextStepSection.astro'
 import DateBrick from '@/components/andelshavere/DateBrick.astro'
 import { sanityClient } from '@/lib/sanity'
 import { allNewsArticlesQuery } from '@/lib/sanityQueries'
@@ -87,6 +88,8 @@ try {
       )}
     </div>
   </section>
+
+  <NextStepSection />
 </AndelshavereLayout>
 
 <style>

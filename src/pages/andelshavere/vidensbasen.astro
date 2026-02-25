@@ -8,6 +8,7 @@
  */
 
 import AndelshavereLayout from '@/layouts/AndelshavereLayout.astro'
+import NextStepSection from '@/components/andelshavere/NextStepSection.astro'
 import VidensbaseHero from '@/components/andelshavere/VidensbaseHero.astro'
 import VidensbaseIconBar from '@/components/andelshavere/VidensbaseIconBar.astro'
 import { sanityClient } from '@/lib/sanity'
@@ -51,4 +52,6 @@ const metaDescription = page?.seo?.metaDescription || 'AKD Agros vidensbase med 
       </div>
     </div>
   </section>
+
+  <NextStepSection />
 </AndelshavereLayout>
