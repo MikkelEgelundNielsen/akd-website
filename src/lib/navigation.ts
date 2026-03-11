@@ -37,6 +37,7 @@ export const navigationItems: NavItem[] = [
       { label: 'Ledelse og administration', href: '/om-akd/ledelse' },
       { label: 'Regnskaber & vedtægter', href: '/om-akd/regnskaber-vedtaegter' },
       { label: 'Rest- og biprodukter', href: '/om-akd/rest-og-biprodukter' },
+      { label: 'Cirkulær produktion', href: '/om-akd/cirkulaer-produktion' },
       { label: 'Ansvarlighed', href: '/om-akd/ansvarlighed' },
       { label: 'Whistleblower-ordning', href: '/om-akd/whistleblower-ordning' },
     ]

@@ -1041,6 +1041,336 @@ export const responsibilityPageQuery = `*[_type == "responsibilityPage"][0] {
   }
 }`
 
+// ── Circular Production Page (singleton) ──
+
+export const circularProductionPageQuery = `*[_type == "circularProductionPage"][0] {
+  _id,
+  title,
+  hero {
+    preHeadline,
+    headline,
+    introText
+  },
+  primaryCtaText,
+  primaryCtaUrl,
+  secondaryCtaText,
+  secondaryCtaUrl,
+  introSection {
+    heading,
+    body[] {
+      ...,
+      _type == "image" => {
+        "url": asset->url,
+        alt,
+        caption
+      }
+    }
+  },
+  principlesSection {
+    heading,
+    principles[] {
+      title,
+      text,
+      icon
+    }
+  },
+  processSection {
+    heading,
+    introText,
+    steps[] {
+      title,
+      text
+    }
+  },
+  byproductsSection {
+    heading,
+    body[] {
+      ...,
+      _type == "image" => {
+        "url": asset->url,
+        alt,
+        caption
+      }
+    },
+    linkText,
+    linkHref
+  },
+  localSection {
+    heading,
+    body[] {
+      ...,
+      _type == "image" => {
+        "url": asset->url,
+        alt,
+        caption
+      }
+    }
+  },
+  energySection {
+    heading,
+    body[] {
+      ...,
+      _type == "image" => {
+        "url": asset->url,
+        alt,
+        caption
+      }
+    }
+  },
+  relevanceSection {
+    heading,
+    items[] {
+      heading,
+      text
+    }
+  },
+  ctaSection {
+    heading,
+    introText,
+    ctas[] {
+      label,
+      href
+    }
+  },
+  seo {
+    metaTitle,
+    metaDescription,
+    "openGraphImage": openGraphImage.asset->url,
+    noIndex
+  }
+}`
+
+// ── TraceIT Page (singleton) ──
+
+export const traceItPageQuery = `*[_type == "traceItPage"][0] {
+  _id,
+  title,
+  hero {
+    preHeadline,
+    headline,
+    introText
+  },
+  primaryCtaText,
+  primaryCtaUrl,
+  secondaryCtaText,
+  secondaryCtaUrl,
+  contentBox {
+    variant,
+    layout,
+    preHeader,
+    headline,
+    "image": image.asset->url,
+    "imageAlt": image.alt,
+    pullUp,
+    items[] {
+      title,
+      description,
+      icon,
+      href
+    }
+  },
+  introSection {
+    heading,
+    body[] {
+      ...,
+      _type == "image" => {
+        "url": asset->url,
+        alt,
+        caption
+      }
+    }
+  },
+  benefitsSection {
+    heading,
+    benefits[] {
+      title,
+      text
+    }
+  },
+  insightSection {
+    heading,
+    body[] {
+      ...,
+      _type == "image" => {
+        "url": asset->url,
+        alt,
+        caption
+      }
+    }
+  },
+  videoSection {
+    preHeader,
+    heading,
+    description,
+    "videoRef": videoRef-> {
+      _id,
+      title,
+      description,
+      "videoUrl": videoFile.asset->url,
+      "thumbnail": thumbnail.asset->url,
+      "thumbnailAlt": thumbnail.alt,
+      duration
+    }
+  },
+  stepsSection {
+    heading,
+    steps[] {
+      title,
+      text
+    }
+  },
+  dataQualitySection {
+    heading,
+    body[] {
+      ...,
+      _type == "image" => {
+        "url": asset->url,
+        alt,
+        caption
+      }
+    }
+  },
+  noticesSection {
+    heading,
+    notices[] {
+      title,
+      text
+    }
+  },
+  whoCanSendSection {
+    heading,
+    body[] {
+      ...,
+      _type == "image" => {
+        "url": asset->url,
+        alt,
+        caption
+      }
+    }
+  },
+  helpSection {
+    heading,
+    body[] {
+      ...,
+      _type == "image" => {
+        "url": asset->url,
+        alt,
+        caption
+      }
+    },
+    ctaText,
+    ctaHref
+  },
+  faqSection {
+    preHeader,
+    headline,
+    items[] {
+      question,
+      answer
+    }
+  },
+  ctaSection {
+    heading,
+    introText,
+    ctas[] {
+      label,
+      href
+    }
+  },
+  seo {
+    metaTitle,
+    metaDescription,
+    "openGraphImage": openGraphImage.asset->url,
+    noIndex
+  }
+}`
+
+// ── Kartoffeludbytte Page (singleton) ──
+
+export const kartoffeludbyttePageQuery = `*[_type == "kartoffeludbyttePage"][0] {
+  _id,
+  title,
+  hero {
+    preHeadline,
+    headline,
+    introText
+  },
+  primaryCtaText,
+  primaryCtaUrl,
+  secondaryCtaText,
+  secondaryCtaUrl,
+  introSection {
+    heading,
+    body[] {
+      ...,
+      _type == "image" => {
+        "url": asset->url,
+        alt,
+        caption
+      }
+    }
+  },
+  guidesSection {
+    heading,
+    guides[] {
+      title,
+      text,
+      ctaText,
+      "fileUrl": file.asset->url,
+      url
+    }
+  },
+  videoSection {
+    preHeader,
+    heading,
+    description,
+    "videoRef": videoRef-> {
+      _id,
+      title,
+      description,
+      "videoUrl": videoFile.asset->url,
+      "thumbnail": thumbnail.asset->url,
+      "thumbnailAlt": thumbnail.alt,
+      duration
+    }
+  },
+  helpSection {
+    heading,
+    body[] {
+      ...,
+      _type == "image" => {
+        "url": asset->url,
+        alt,
+        caption
+      }
+    },
+    ctaText,
+    ctaHref
+  },
+  faqSection {
+    preHeader,
+    headline,
+    items[] {
+      question,
+      answer
+    }
+  },
+  ctaSection {
+    heading,
+    introText,
+    ctas[] {
+      label,
+      href
+    }
+  },
+  seo {
+    metaTitle,
+    metaDescription,
+    "openGraphImage": openGraphImage.asset->url,
+    noIndex
+  }
+}`
+
 // ── Kontakt Page (singleton) ──
 
 export const kontaktPageQuery = `*[_type == "kontaktPage"][0] {

@@ -671,6 +671,229 @@ export interface ResponsibilityPage {
   seo?: SEO
 }
 
+// ── Circular Production Page ──
+
+export interface CircularPrinciple {
+  title: string
+  text: string
+  icon?: string
+}
+
+export interface CircularProcessStep {
+  title: string
+  text: string
+}
+
+export interface CircularRelevanceItem {
+  heading: string
+  text: string
+}
+
+export interface CircularCtaButton {
+  label: string
+  href: string
+}
+
+export interface CircularProductionPage {
+  _id: string
+  _type: 'circularProductionPage'
+  title: string
+  hero?: PageHero
+  primaryCtaText?: string
+  primaryCtaUrl?: string
+  secondaryCtaText?: string
+  secondaryCtaUrl?: string
+  introSection?: {
+    heading: string
+    body?: PortableTextContent
+  }
+  principlesSection?: {
+    heading: string
+    principles?: CircularPrinciple[]
+  }
+  processSection?: {
+    heading: string
+    introText?: string
+    steps?: CircularProcessStep[]
+  }
+  byproductsSection?: {
+    heading: string
+    body?: PortableTextContent
+    linkText?: string
+    linkHref?: string
+  }
+  localSection?: {
+    heading: string
+    body?: PortableTextContent
+  }
+  energySection?: {
+    heading: string
+    body?: PortableTextContent
+  }
+  relevanceSection?: {
+    heading: string
+    items?: CircularRelevanceItem[]
+  }
+  ctaSection?: {
+    heading?: string
+    introText?: string
+    ctas?: CircularCtaButton[]
+  }
+  seo?: SEO
+}
+
+// ── TraceIT Page ──
+
+export interface TraceItBenefit {
+  title: string
+  text: string
+}
+
+export interface TraceItStep {
+  title: string
+  text: string
+}
+
+export interface TraceItNotice {
+  title: string
+  text: string
+}
+
+export interface TraceItFaqItem {
+  question: string
+  answer: string
+}
+
+export interface TraceItCtaButton {
+  label: string
+  href: string
+}
+
+export interface TraceItPage {
+  _id: string
+  _type: 'traceItPage'
+  title: string
+  hero?: PageHero
+  primaryCtaText?: string
+  primaryCtaUrl?: string
+  secondaryCtaText?: string
+  secondaryCtaUrl?: string
+  contentBox?: ContentBoxSection
+  introSection?: {
+    heading: string
+    body?: PortableTextContent
+  }
+  benefitsSection?: {
+    heading: string
+    benefits?: TraceItBenefit[]
+  }
+  insightSection?: {
+    heading: string
+    body?: PortableTextContent
+  }
+  videoSection?: {
+    preHeader?: string
+    heading?: string
+    description?: string
+    videoRef?: Video
+  }
+  stepsSection?: {
+    heading: string
+    steps?: TraceItStep[]
+  }
+  dataQualitySection?: {
+    heading: string
+    body?: PortableTextContent
+  }
+  noticesSection?: {
+    heading: string
+    notices?: TraceItNotice[]
+  }
+  whoCanSendSection?: {
+    heading: string
+    body?: PortableTextContent
+  }
+  helpSection?: {
+    heading: string
+    body?: PortableTextContent
+    ctaText?: string
+    ctaHref?: string
+  }
+  faqSection?: {
+    preHeader?: string
+    headline?: string
+    items?: TraceItFaqItem[]
+  }
+  ctaSection?: {
+    heading?: string
+    introText?: string
+    ctas?: TraceItCtaButton[]
+  }
+  seo?: SEO
+}
+
+// ── Kartoffeludbytte Page ──
+
+export interface KartoffelGuideCard {
+  title: string
+  text: string
+  ctaText: string
+  fileUrl?: string
+  url?: string
+}
+
+export interface KartoffelFaqItem {
+  question: string
+  answer: string
+}
+
+export interface KartoffelCtaButton {
+  label: string
+  href: string
+}
+
+export interface KartoffeludbyttePage {
+  _id: string
+  _type: 'kartoffeludbyttePage'
+  title: string
+  hero?: PageHero
+  primaryCtaText?: string
+  primaryCtaUrl?: string
+  secondaryCtaText?: string
+  secondaryCtaUrl?: string
+  introSection?: {
+    heading: string
+    body?: PortableTextContent
+  }
+  guidesSection?: {
+    heading: string
+    guides?: KartoffelGuideCard[]
+  }
+  videoSection?: {
+    preHeader?: string
+    heading?: string
+    description?: string
+    videoRef?: Video
+  }
+  helpSection?: {
+    heading: string
+    body?: PortableTextContent
+    ctaText?: string
+    ctaHref?: string
+  }
+  faqSection?: {
+    preHeader?: string
+    headline?: string
+    items?: KartoffelFaqItem[]
+  }
+  ctaSection?: {
+    heading?: string
+    introText?: string
+    ctas?: KartoffelCtaButton[]
+  }
+  seo?: SEO
+}
+
 // ── Kontakt Page ──
 
 export interface KontaktHeadquarters {

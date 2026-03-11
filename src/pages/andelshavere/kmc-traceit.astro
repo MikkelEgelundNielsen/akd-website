@@ -1,0 +1,351 @@
+---
+/**
+ * KMC TraceIT Page
+ * Information page for andelshavere about the KMC TraceIT platform.
+ * Server-rendered (protected by auth middleware).
+ */
+
+import AndelshavereLayout from '@/layouts/AndelshavereLayout.astro'
+import ContentBox from '@/components/sections/ContentBox.astro'
+import ProcessSteps from '@/components/sections/ProcessSteps.astro'
+import FAQAccordion from '@/components/sections/FAQAccordion.astro'
+import VideoCard from '@/components/ui/VideoCard.astro'
+import VidensbaseContactSection from '@/components/andelshavere/VidensbaseContactSection.astro'
+import PortableText from '@/components/sanity/PortableText.astro'
+import { sanityClient } from '@/lib/sanity'
+import { traceItPageQuery } from '@/lib/sanityQueries'
+import { portableTextToHtml } from '@/lib/portableTextSerializer'
+import type { TraceItPage } from '@/types/sanity'
+
+export const prerender = false;
+
+let page: TraceItPage | null = null
+try {
+  page = await sanityClient.fetch<TraceItPage>(traceItPageQuery)
+} catch (error) {
+  console.error('Error fetching TraceIT page from Sanity:', error)
+}
+
+if (!page) {
+  return Astro.redirect('/404')
+}
+
+const heroHeadlineHtml = page.hero?.headline
+  ? portableTextToHtml(page.hero.headline, { addHeadingIds: false })
+  : ''
+const heroIntroHtml = page.hero?.introText
+  ? portableTextToHtml(page.hero.introText, { addHeadingIds: false })
+  : ''
+
+const contentBox = page.contentBox
+const contentBoxItems = contentBox?.items || []
+const intro = page.introSection
+const benefits = page.benefitsSection
+const insight = page.insightSection
+const videoSection = page.videoSection
+const videoRef = videoSection?.videoRef
+const steps = page.stepsSection
+const dataQuality = page.dataQualitySection
+const notices = page.noticesSection
+const whoCanSend = page.whoCanSendSection
+const help = page.helpSection
+const faq = page.faqSection
+const cta = page.ctaSection
+
+const metaTitle = page.seo?.metaTitle || 'KMC TraceIT | AKD'
+const metaDescription = page.seo?.metaDescription || ''
+
+const processSteps = (steps?.steps || []).map((step, i) => ({
+  number: i + 1,
+  title: step.title,
+  description: step.text,
+}))
+
+const faqItems = (faq?.items || []).map((item) => ({
+  question: item.question,
+  answer: item.answer,
+}))
+---
+
+<AndelshavereLayout
+  title={metaTitle}
+  description={metaDescription}
+>
+
+  <!-- SECTION 1: HERO -->
+  <section class="relative bg-forest-green pt-12 md:pt-16 lg:pt-20 pb-48 md:pb-56 section-after-nav">
+    <div class="container-custom">
+      {page.hero?.preHeadline && (
+        <p class="text-mint font-bold text-base mb-6 uppercase tracking-wide text-center">
+          {page.hero.preHeadline}
+        </p>
+      )}
+
+      {heroHeadlineHtml && (
+        <h1 class="text-center mb-8 md:mb-12 max-w-5xl mx-auto">
+          <span class="block font-sans font-extrabold text-[43px] md:text-[58px] lg:text-[58px] text-white uppercase leading-tight [&_.font-serif]:lowercase [&_.font-serif]:font-medium" set:html={heroHeadlineHtml} />
+        </h1>
+      )}
+
+      {heroIntroHtml && (
+        <div class="max-w-3xl mx-auto text-center text-white/80 text-lg md:text-xl leading-relaxed mb-10 prose-akd" set:html={heroIntroHtml} />
+      )}
+
+      {(page.primaryCtaUrl || page.secondaryCtaUrl) && (
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+          {page.secondaryCtaUrl && (
+            <a href={page.secondaryCtaUrl} class="inline-flex items-center gap-2 text-white font-semibold hover:text-mint transition-colors">
+              {page.secondaryCtaText}
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+              </svg>
+            </a>
+          )}
+          {page.primaryCtaUrl && (
+            <a href={page.primaryCtaUrl} class="inline-flex items-center gap-2 bg-mint text-charcoal font-bold px-6 py-3.5 rounded-full hover:bg-mint/90 transition-colors">
+              {page.primaryCtaText}
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+              </svg>
+            </a>
+          )}
+        </div>
+      )}
+    </div>
+  </section>
+
+
+  <!-- SECTION 2: CONTENT BOX (pulled up from hero) -->
+  {contentBox && (
+    <section class="relative bg-warm-light pt-1 pb-16 md:pb-24">
+      <ContentBox
+        variant={contentBox.variant || 'light'}
+        layout={contentBox.layout || 'full-width'}
+        preHeader={contentBox.preHeader}
+        headline={contentBox.headline}
+        imageUrl={contentBox.image || ''}
+        imageAlt={contentBox.imageAlt || ''}
+        pullUp={contentBox.pullUp || 200}
+        items={contentBoxItems}
+      />
+    </section>
+  )}
+
+
+  <!-- SECTION 3: INTRO 
+  {intro && (
+    <section class="bg-white py-16 md:py-24">
+      <div class="container-custom">
+        <div class="max-w-4xl mx-auto">
+          {intro.heading && (
+            <h2 class="font-serif font-semibold italic text-4xl md:text-[43px] text-charcoal leading-tight mb-8">
+              {intro.heading}
+            </h2>
+          )}
+          {intro.body && (
+            <div class="text-charcoal/80 text-lg md:text-xl leading-relaxed">
+              <PortableText content={intro.body} addHeadingIds={false} />
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )}-->
+
+  <!-- SECTION 5: VIDEO -->
+  {videoSection && videoRef && (
+    <section class="bg-warm-light py-16 md:py-24">
+      <div class="container-custom">
+        <div class="max-w-3xl mx-auto text-center mb-10">
+          {videoSection.preHeader && <p class="text-mint font-bold text-base mb-4 uppercase tracking-wide">{videoSection.preHeader}</p>}
+          {videoSection.heading && (
+            <h2 class="font-sans font-bold text-2xl md:text-3xl text-charcoal mb-4">
+              {videoSection.heading}
+            </h2>
+          )}
+          {videoSection.description && (
+            <p class="text-charcoal/70 text-base md:text-lg leading-relaxed">
+              {videoSection.description}
+            </p>
+          )}
+        </div>
+
+        <div class="max-w-2xl mx-auto">
+          <VideoCard
+            videoUrl={videoRef.videoUrl}
+            title={videoRef.title}
+            description={videoRef.description}
+            thumbnail={videoRef.thumbnail}
+            thumbnailAlt={videoRef.thumbnailAlt}
+            duration={videoRef.duration}
+          />
+        </div>
+      </div>
+    </section>
+  )}
+  <!-- SECTION 4: INSIGHT -->
+  {insight && (
+    <section class="bg-white py-16 md:py-24">
+      <div class="container-custom">
+        <div class="max-w-4xl mx-auto">
+          {insight.heading && (
+            <h2 class="font-sans font-bold text-2xl md:text-3xl text-charcoal mb-6">
+              {insight.heading}
+            </h2>
+          )}
+          {insight.body && (
+            <div class="text-charcoal/80 text-lg md:text-xl leading-relaxed">
+              <PortableText content={insight.body} addHeadingIds={false} />
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )}
+
+
+
+
+  <!-- SECTION 6: STEPS -->
+  {steps && processSteps.length > 0 && (
+    <section id="steps" class="bg-warm-light py-16 md:py-24 scroll-mt-24">
+      <div class="container-custom">
+        <div class="max-w-3xl mx-auto">
+          <h2 class="font-sans font-bold text-2xl md:text-3xl text-charcoal text-center mb-12">
+            {steps.heading}
+          </h2>
+
+          <ProcessSteps steps={processSteps} variant="light" />
+        </div>
+      </div>
+    </section>
+  )}
+
+
+
+  <!-- SECTION 7: DATA QUALITY -->
+  {dataQuality && (
+    <section id="datakvalitet" class="bg-white py-16 md:py-24 scroll-mt-24">
+      <div class="container-custom">
+        <div class="max-w-4xl mx-auto">
+          {dataQuality.heading && (
+            <h2 class="font-sans font-bold text-2xl md:text-3xl text-charcoal mb-6">
+              {dataQuality.heading}
+            </h2>
+          )}
+          {dataQuality.body && (
+            <div class="text-charcoal/80 text-lg md:text-xl leading-relaxed">
+              <PortableText content={dataQuality.body} addHeadingIds={false} />
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )}
+
+
+  <!-- SECTION 8: NOTICES -->
+  {notices && notices.notices && notices.notices.length > 0 && (
+    <section class="bg-warm-light py-16 md:py-24">
+      <div class="container-custom">
+        <h2 class="font-sans font-bold text-2xl md:text-3xl text-charcoal text-center mb-12">
+          {notices.heading}
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          {notices.notices.map((notice) => (
+            <div class="bg-white rounded-2xl p-6 md:p-8 shadow-md">
+              <div class="w-12 h-12 bg-burnt-orange/10 rounded-full flex items-center justify-center mb-5">
+                <svg class="w-6 h-6 text-burnt-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                </svg>
+              </div>
+              <h3 class="font-sans font-bold text-charcoal text-xl md:text-[22px] mb-3">{notice.title}</h3>
+              <p class="text-charcoal/70 text-base md:text-lg leading-relaxed">{notice.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+
+  <!-- SECTION 9: WHO CAN SEND -->
+  {whoCanSend && (
+    <section class="bg-white py-16 md:py-24">
+      <div class="container-custom">
+        <div class="max-w-4xl mx-auto">
+          {whoCanSend.heading && (
+            <h2 class="font-sans font-bold text-2xl md:text-3xl text-charcoal mb-6">
+              {whoCanSend.heading}
+            </h2>
+          )}
+          {whoCanSend.body && (
+            <div class="text-charcoal/80 text-lg md:text-xl leading-relaxed">
+              <PortableText content={whoCanSend.body} addHeadingIds={false} />
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )}
+
+
+  <!-- SECTION 10: HELP 
+  {help && (
+    <section class="bg-warm-light py-16 md:py-24">
+      <div class="container-custom">
+        <div class="max-w-4xl mx-auto">
+          {help.heading && (
+            <h2 class="font-sans font-bold text-2xl md:text-3xl text-charcoal mb-6">
+              {help.heading}
+            </h2>
+          )}
+          {help.body && (
+            <div class="text-charcoal/80 text-lg md:text-xl leading-relaxed mb-8">
+              <PortableText content={help.body} addHeadingIds={false} />
+            </div>
+          )}
+          {help.ctaHref && (
+            <a href={help.ctaHref} class="inline-flex items-center gap-2 bg-mint text-charcoal font-bold px-6 py-3.5 rounded-full hover:bg-mint/90 transition-colors">
+              {help.ctaText}
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+              </svg>
+            </a>
+          )}
+        </div>
+      </div>
+    </section>
+  )}-->
+
+
+  <!-- SECTION 11: FAQ -->
+  {faq && faqItems.length > 0 && (
+    <section id="faq" class="relative bg-light pt-16 md:pt-24 pb-16 md:pb-24 scroll-mt-32">
+      <div class="container-custom">
+        {faq.preHeader && (
+          <p class="text-mint font-bold text-lg mb-4 uppercase tracking-wide text-center">
+            {faq.preHeader}
+          </p>
+        )}
+        {faq.headline && (
+          <h2 class="text-center mb-12 md:mb-16 max-w-3xl mx-auto">
+            <span class="block font-sans font-extrabold text-4xl md:text-[43px] lg:text-[49px] text-charcoal uppercase leading-tight">
+              {faq.headline}
+            </span>
+          </h2>
+        )}
+
+        <div class="max-w-3xl mx-auto">
+          <FAQAccordion items={faqItems} variant="light" />
+        </div>
+      </div>
+    </section>
+  )}
+
+
+  <!-- CONTACT -->
+  <VidensbaseContactSection />
+
+</AndelshavereLayout>

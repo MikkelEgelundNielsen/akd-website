@@ -20,7 +20,7 @@ if (!page) {
   return Astro.redirect('/404')
 }
 
-Astro.response.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600')
+Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=60, stale-while-revalidate=120')
 
 const headlineHtml = page.hero?.headline
   ? portableTextToHtml(page.hero.headline, { addHeadingIds: false })

@@ -1,0 +1,314 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import ProcessSteps from '@/components/sections/ProcessSteps.astro'
+import PortableText from '@/components/sanity/PortableText.astro'
+import { sanityClient } from '@/lib/sanity'
+import { circularProductionPageQuery } from '@/lib/sanityQueries'
+import { portableTextToHtml } from '@/lib/portableTextSerializer'
+import type { CircularProductionPage } from '@/types/sanity'
+
+export const prerender = true;
+
+let page: CircularProductionPage | null = null
+try {
+  page = await sanityClient.fetch<CircularProductionPage>(circularProductionPageQuery)
+} catch (error) {
+  console.error('Error fetching Circular Production page from Sanity:', error)
+}
+
+if (!page) {
+  return Astro.redirect('/404')
+}
+
+const headlineHtml = page.hero?.headline
+  ? portableTextToHtml(page.hero.headline, { addHeadingIds: false })
+  : ''
+
+const introHtml = page.hero?.introText
+  ? portableTextToHtml(page.hero.introText, { addHeadingIds: false })
+  : ''
+
+const preHeadline = page.hero?.preHeadline
+
+const metaTitle = page.seo?.metaTitle || page.title || 'Cirkulær produktion'
+const metaDescription = page.seo?.metaDescription || ''
+
+const intro = page.introSection
+const principles = page.principlesSection
+const process = page.processSection
+const byproducts = page.byproductsSection
+const local = page.localSection
+const energy = page.energySection
+const relevance = page.relevanceSection
+const cta = page.ctaSection
+
+const iconPaths: Record<string, string> = {
+  recycle: 'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15',
+  check: 'M5 13l4 4L19 7',
+  star: 'M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z',
+  leaf: 'M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z',
+}
+
+const processSteps = (process?.steps || []).map((step, i) => ({
+  number: i + 1,
+  title: step.title,
+  description: step.text,
+}))
+---
+
+<BaseLayout
+  title={metaTitle}
+  description={metaDescription}
+  navTheme="light"
+>
+
+  <!-- SECTION 1: HERO -->
+  <section class="relative bg-warm-light pt-12 md:pt-16 lg:pt-20 pb-16 md:pb-24 section-after-nav">
+    <div class="container-custom">
+      {preHeadline && (
+        <p class="text-mint font-bold text-base mb-6 uppercase tracking-wide text-center">
+          {preHeadline}
+        </p>
+      )}
+
+      {headlineHtml && (
+        <h1 class="text-center mb-8 md:mb-12 max-w-4xl mx-auto">
+          <span class="block font-sans font-extrabold text-[43px] md:text-[58px] lg:text-[62px] text-charcoal uppercase leading-tight [&_.font-serif]:lowercase [&_.font-serif]:font-medium" set:html={headlineHtml} />
+        </h1>
+      )}
+
+      {introHtml && (
+        <div class="max-w-3xl mx-auto text-center text-charcoal text-lg md:text-xl leading-relaxed prose-akd mb-10" set:html={introHtml} />
+      )}
+
+      {(page.primaryCtaUrl || page.secondaryCtaUrl) && (
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+          {page.secondaryCtaUrl && (
+            <a href={page.secondaryCtaUrl} class="btn-secondary">
+              {page.secondaryCtaText}
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+              </svg>
+            </a>
+          )}
+          {page.primaryCtaUrl && (
+            <a href={page.primaryCtaUrl} class="btn-primary">
+              <span>{page.primaryCtaText}</span>
+              <span class="btn-icon-circle">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                </svg>
+              </span>
+            </a>
+          )}
+        </div>
+      )}
+    </div>
+  </section>
+
+
+  <!-- SECTION 2: INTRO -->
+  {intro && (
+    <section class="bg-white py-16 md:py-24">
+      <div class="container-custom">
+        <div class="max-w-4xl mx-auto">
+          {intro.heading && (
+            <h2 class="font-serif font-semibold italic text-4xl md:text-[43px] text-charcoal leading-tight mb-8 text-center">
+              {intro.heading}
+            </h2>
+          )}
+          {intro.body && (
+            <div class="text-charcoal/80 text-lg md:text-xl leading-relaxed text-center">
+              <PortableText content={intro.body} addHeadingIds={false} />
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )}
+
+
+  <!-- SECTION 3: PRINCIPLES -->
+  {principles && principles.principles && principles.principles.length > 0 && (
+    <section class="bg-warm-light py-16 md:py-24">
+      <div class="container-custom">
+        <h2 class="font-sans font-bold text-2xl md:text-3xl text-charcoal text-center mb-12">
+          {principles.heading}
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          {principles.principles.map((principle) => (
+            <div class="bg-white rounded-2xl p-6 md:p-8 shadow-md">
+              <div class="w-12 h-12 bg-mint/10 rounded-full flex items-center justify-center mb-5">
+                <svg class="w-6 h-6 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={iconPaths[principle.icon || 'check'] || iconPaths.check} />
+                </svg>
+              </div>
+              <h3 class="font-sans font-bold text-charcoal text-xl md:text-[22px] mb-3">{principle.title}</h3>
+              <p class="text-charcoal/70 text-base md:text-lg leading-relaxed">{principle.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+
+  <!-- SECTION 4: PROCESS -->
+  {process && processSteps.length > 0 && (
+    <section class="bg-white py-16 md:py-24">
+      <div class="container-custom">
+        <div class="max-w-3xl mx-auto">
+          <h2 class="font-sans font-bold text-2xl md:text-3xl text-charcoal text-center mb-4">
+            {process.heading}
+          </h2>
+          {process.introText && (
+            <p class="text-charcoal/70 text-lg md:text-xl leading-relaxed text-center mb-12">
+              {process.introText}
+            </p>
+          )}
+
+          <ProcessSteps steps={processSteps} variant="light" />
+        </div>
+      </div>
+    </section>
+  )}
+
+
+  <!-- SECTION 5: BYPRODUCTS 
+  {byproducts && (
+    <section class="bg-warm-light py-16 md:py-24">
+      <div class="container-custom">
+        <div class="max-w-4xl mx-auto">
+          {byproducts.heading && (
+            <h2 class="font-sans font-bold text-2xl md:text-3xl text-charcoal mb-6">
+              {byproducts.heading}
+            </h2>
+          )}
+          {byproducts.body && (
+            <div class="text-charcoal/80 text-lg md:text-xl leading-relaxed mb-8">
+              <PortableText content={byproducts.body} addHeadingIds={false} />
+            </div>
+          )}
+          {byproducts.linkHref && (
+            <a href={byproducts.linkHref} class="link-arrow">
+              {byproducts.linkText}
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+              </svg>
+            </a>
+          )}
+        </div>
+      </div>
+    </section>
+  )}-->
+
+
+  <!-- SECTION 6: LOCAL LOOPS -->
+  {local && (
+    <section class="bg-white py-16 md:py-24">
+      <div class="container-custom">
+        <div class="max-w-4xl mx-auto">
+          {local.heading && (
+            <h2 class="font-sans font-bold text-2xl md:text-3xl text-charcoal mb-6">
+              {local.heading}
+            </h2>
+          )}
+          {local.body && (
+            <div class="text-charcoal/80 text-lg md:text-xl leading-relaxed">
+              <PortableText content={local.body} addHeadingIds={false} />
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )}
+
+
+  <!-- SECTION 7: ENERGY -->
+  {energy && (
+    <section class="bg-warm-light py-16 md:py-24">
+      <div class="container-custom">
+        <div class="max-w-4xl mx-auto">
+          {energy.heading && (
+            <h2 class="font-sans font-bold text-2xl md:text-3xl text-charcoal mb-6">
+              {energy.heading}
+            </h2>
+          )}
+          {energy.body && (
+            <div class="text-charcoal/80 text-lg md:text-xl leading-relaxed">
+              <PortableText content={energy.body} addHeadingIds={false} />
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )}
+
+
+  <!-- SECTION 8: RELEVANCE -->
+  {relevance && relevance.items && relevance.items.length > 0 && (
+    <section class="bg-white py-16 md:py-24">
+      <div class="container-custom">
+        <h2 class="font-sans font-bold text-2xl md:text-3xl text-charcoal text-center mb-12">
+          {relevance.heading}
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 max-w-5xl mx-auto">
+          {relevance.items.map((item) => (
+            <div>
+              <h3 class="font-sans font-bold text-charcoal text-xl md:text-[22px] mb-3">{item.heading}</h3>
+              <p class="text-charcoal/70 text-base md:text-lg leading-relaxed">{item.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+
+  <!-- SECTION 9: CTA BAND -->
+  {cta && (
+    <section class="bg-charcoal py-16 md:py-24">
+      <div class="container-custom">
+        <div class="max-w-4xl mx-auto text-center">
+          {cta.heading && (
+            <h2 class="font-sans font-bold text-2xl md:text-3xl text-white mb-4">
+              {cta.heading}
+            </h2>
+          )}
+          {cta.introText && (
+            <p class="text-white/70 text-lg mb-10">
+              {cta.introText}
+            </p>
+          )}
+
+          {cta.ctas && cta.ctas.length > 0 && (
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
+              {cta.ctas.map((ctaItem, index) => (
+                index === 0 ? (
+                  <a href={ctaItem.href} class="btn-primary">
+                    <span>{ctaItem.label}</span>
+                    <span class="btn-icon-circle">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                      </svg>
+                    </span>
+                  </a>
+                ) : (
+                  <a href={ctaItem.href} class="btn-secondary">
+                    {ctaItem.label}
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                    </svg>
+                  </a>
+                )
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )}
+
+</BaseLayout>

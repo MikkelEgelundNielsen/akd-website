@@ -1,0 +1,224 @@
+---
+/**
+ * Kartoffeludbytte.dk Page
+ * Service page for andelshavere with guides and video for Kartoffeludbytte.dk.
+ * Server-rendered (protected by auth middleware).
+ */
+
+import AndelshavereLayout from '@/layouts/AndelshavereLayout.astro'
+import FAQAccordion from '@/components/sections/FAQAccordion.astro'
+import VideoCard from '@/components/ui/VideoCard.astro'
+import VidensbaseContactSection from '@/components/andelshavere/VidensbaseContactSection.astro'
+import PortableText from '@/components/sanity/PortableText.astro'
+import { sanityClient } from '@/lib/sanity'
+import { kartoffeludbyttePageQuery } from '@/lib/sanityQueries'
+import { portableTextToHtml } from '@/lib/portableTextSerializer'
+import type { KartoffeludbyttePage } from '@/types/sanity'
+
+export const prerender = false;
+
+let page: KartoffeludbyttePage | null = null
+try {
+  page = await sanityClient.fetch<KartoffeludbyttePage>(kartoffeludbyttePageQuery)
+} catch (error) {
+  console.error('Error fetching Kartoffeludbytte page from Sanity:', error)
+}
+
+if (!page) {
+  return Astro.redirect('/404')
+}
+
+const heroHeadlineHtml = page.hero?.headline
+  ? portableTextToHtml(page.hero.headline, { addHeadingIds: false })
+  : ''
+const heroIntroHtml = page.hero?.introText
+  ? portableTextToHtml(page.hero.introText, { addHeadingIds: false })
+  : ''
+
+const intro = page.introSection
+const guides = page.guidesSection
+const videoSection = page.videoSection
+const videoRef = videoSection?.videoRef
+const faq = page.faqSection
+
+function getDocHref(doc: { fileUrl?: string; url?: string }): string {
+  return doc.fileUrl || doc.url || '#'
+}
+
+const metaTitle = page.seo?.metaTitle || 'Kartoffeludbytte.dk | AKD'
+const metaDescription = page.seo?.metaDescription || ''
+
+const faqItems = (faq?.items || []).map((item) => ({
+  question: item.question,
+  answer: item.answer,
+}))
+---
+
+<AndelshavereLayout
+  title={metaTitle}
+  description={metaDescription}
+>
+
+  <!-- SECTION 1: HERO -->
+  <section class="relative bg-forest-green pt-12 md:pt-16 lg:pt-20 pb-16 md:pb-24 section-after-nav">
+    <div class="container-custom">
+      {page.hero?.preHeadline && (
+        <p class="text-mint font-bold text-base mb-6 uppercase tracking-wide text-center">
+          {page.hero.preHeadline}
+        </p>
+      )}
+
+      {heroHeadlineHtml && (
+        <h1 class="text-center mb-8 md:mb-12 max-w-5xl mx-auto">
+          <span class="block font-sans font-extrabold text-[43px] md:text-[58px] lg:text-[58px] text-white uppercase leading-tight [&_.font-serif]:lowercase [&_.font-serif]:font-medium" set:html={heroHeadlineHtml} />
+        </h1>
+      )}
+
+      {heroIntroHtml && (
+        <div class="max-w-3xl mx-auto text-center text-white/80 text-lg md:text-xl leading-relaxed mb-10 prose-akd" set:html={heroIntroHtml} />
+      )}
+
+      {(page.primaryCtaUrl || page.secondaryCtaUrl) && (
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+          {page.primaryCtaUrl && (
+            <a href={page.primaryCtaUrl} class="inline-flex items-center gap-2 bg-mint text-charcoal font-bold px-6 py-3.5 rounded-full hover:bg-mint/90 transition-colors">
+              {page.primaryCtaText}
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+              </svg>
+            </a>
+          )}
+          {page.secondaryCtaUrl && (
+            <a href={page.secondaryCtaUrl} class="inline-flex items-center gap-2 text-white font-semibold hover:text-mint transition-colors">
+              {page.secondaryCtaText}
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+              </svg>
+            </a>
+          )}
+        </div>
+      )}
+    </div>
+  </section>
+
+
+  <!-- SECTION 2: INTRO -->
+  {intro && (
+    <section class="bg-white py-16 md:py-24">
+      <div class="container-custom">
+        <div class="max-w-4xl mx-auto">
+          {intro.heading && (
+            <h2 class="font-sans font-extrabold text-3xl md:text-4xl lg:text-[43px] text-charcoal leading-tight mb-6">
+              {intro.heading}
+            </h2>
+          )}
+          {intro.body && (
+            <div class="text-charcoal/80 text-xl md:text-2xl leading-relaxed">
+              <PortableText content={intro.body} addHeadingIds={false} />
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )}
+
+
+  <!-- SECTION 3: VEJLEDNINGER -->
+  {guides && guides.guides && guides.guides.length > 0 && (
+    <section id="vejledninger" class="bg-warm-light py-16 md:py-24 scroll-mt-24">
+      <div class="container-custom">
+        <div class="max-w-4xl mx-auto">
+          <h2 class="font-sans font-extrabold text-3xl md:text-4xl lg:text-[43px] text-charcoal leading-tight mb-8">
+            {guides.heading}
+          </h2>
+
+          <div class="bg-white rounded-2xl p-6 md:p-8 shadow-md">
+            <div class="space-y-3">
+              {guides.guides.map((guide) => {
+                const href = getDocHref(guide)
+                const isFile = !!guide.fileUrl
+                return (
+                  <a
+                    href={href}
+                    download={isFile ? '' : undefined}
+                    target={isFile ? undefined : '_blank'}
+                    rel={isFile ? undefined : 'noopener noreferrer'}
+                    class="flex items-center gap-3 text-charcoal hover:text-mint transition-colors group"
+                  >
+                    <svg class="w-5 h-5 text-mint flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <span class="text-lg group-hover:underline">{guide.title}</span>
+                  </a>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )}
+
+
+  <!-- SECTION 4: VIDEO -->
+  {videoSection && videoRef && (
+    <section class="relative bg-light py-16 md:py-24">
+      <div class="container-custom">
+        <div class="max-w-3xl mx-auto text-center mb-10">
+          {videoSection.preHeader && <p class="text-mint font-bold text-base mb-4 uppercase tracking-wide">{videoSection.preHeader}</p>}
+          {videoSection.heading && (
+            <h2 class="font-sans font-bold text-2xl md:text-3xl text-charcoal mb-4">
+              {videoSection.heading}
+            </h2>
+          )}
+          {videoSection.description && (
+            <p class="text-charcoal/70 text-base md:text-lg leading-relaxed">
+              {videoSection.description}
+            </p>
+          )}
+        </div>
+
+        <div class="max-w-2xl mx-auto">
+          <VideoCard
+            videoUrl={videoRef.videoUrl}
+            title={videoRef.title}
+            description={videoRef.description}
+            thumbnail={videoRef.thumbnail}
+            thumbnailAlt={videoRef.thumbnailAlt}
+            duration={videoRef.duration}
+          />
+        </div>
+      </div>
+    </section>
+  )}
+
+
+  <!-- SECTION 5: FAQ -->
+  {faq && faqItems.length > 0 && (
+    <section id="faq" class="relative bg-light pt-16 md:pt-24 pb-16 md:pb-24 scroll-mt-32">
+      <div class="container-custom">
+        {faq.preHeader && (
+          <p class="text-mint font-bold text-lg mb-4 uppercase tracking-wide text-center">
+            {faq.preHeader}
+          </p>
+        )}
+        {faq.headline && (
+          <h2 class="text-center mb-12 md:mb-16 max-w-3xl mx-auto">
+            <span class="block font-sans font-extrabold text-4xl md:text-[43px] lg:text-[49px] text-charcoal uppercase leading-tight">
+              {faq.headline}
+            </span>
+          </h2>
+        )}
+
+        <div class="max-w-3xl mx-auto">
+          <FAQAccordion items={faqItems} variant="light" />
+        </div>
+      </div>
+    </section>
+  )}
+
+
+  <!-- CONTACT -->
+  <VidensbaseContactSection />
+
+</AndelshavereLayout>

@@ -194,6 +194,49 @@ export const POST: APIRoute = async (context) => {
       );
     }
     
+    // Verify the farmer has the `akd` flag before granting access
+    const farmerUrl = `${apiUrl}/api/farmers/${userId}?access_token=${token}`;
+    let farmer: any;
+    try {
+      const farmerResponse = await fetch(farmerUrl);
+      if (!farmerResponse.ok) {
+        console.error('Failed to fetch farmer profile:', farmerResponse.status);
+        return new Response(
+          JSON.stringify({
+            message: 'Der opstod et problem med at hente din profil. Prøv venligst igen.',
+            error: 'FARMER_FETCH_FAILED',
+          }),
+          { status: 500, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+      farmer = await farmerResponse.json();
+    } catch (fetchError) {
+      console.error('Error fetching farmer profile:', fetchError);
+      return new Response(
+        JSON.stringify({
+          message: 'Der opstod et problem med at hente din profil. Prøv venligst igen.',
+          error: 'FARMER_FETCH_FAILED',
+        }),
+        { status: 500, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (!farmer.akd) {
+      console.log('Farmer does not have akd access, denying login for userId:', userId);
+      // Invalidate the Loopback token so it can't be reused
+      await fetch(`${apiUrl}/api/farmers/logout?access_token=${token}`, {
+        method: 'POST',
+      }).catch(() => {});
+
+      return new Response(
+        JSON.stringify({
+          message: 'Din konto har ikke adgang til denne sektion.',
+          error: 'AKD_ACCESS_DENIED',
+        }),
+        { status: 403, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
     // Set secure HTTP-only cookies - store both token and userId
     console.log('Setting auth cookies...');
     cookies.set('akd_auth_token', token, {
@@ -201,7 +244,7 @@ export const POST: APIRoute = async (context) => {
       httpOnly: true,
       secure: import.meta.env.PROD, // HTTPS in production
       sameSite: 'strict',
-      maxAge: 60 * 60 * 24 * 7, // 7 days
+      maxAge: 60 * 60 * 24 * 30, // 30 days
     });
     
     // Also store userId to fetch farmer data later
@@ -210,7 +253,7 @@ export const POST: APIRoute = async (context) => {
       httpOnly: true,
       secure: import.meta.env.PROD,
       sameSite: 'strict',
-      maxAge: 60 * 60 * 24 * 7, // 7 days
+      maxAge: 60 * 60 * 24 * 30, // 30 days
     });
     
     console.log('Login successful, returning success response');
