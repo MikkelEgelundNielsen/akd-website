@@ -309,14 +309,11 @@ export const latestPublicNewsQuery = `*[_type == "newsArticle" && isPublic == tr
 }`
 
 // Portal news articles (for avlerinfo.dk) — includes non-public with isPublic flag for lock icons
-export const portalNewsArticlesQuery = `*[_type == "newsArticle" && showOnPortal == true] | order(publishedAt desc) {
-  _id,
+export const portalNewsArticlesQuery = `*[_type == "newsArticle" && showOnPortal == true] | order(publishedAt desc) [0...5] {
   title,
   "slug": slug.current,
   publishedAt,
   excerpt,
-  "mainImage": mainImage.asset->url,
-  "mainImageAlt": mainImage.alt,
   isPublic
 }`
 

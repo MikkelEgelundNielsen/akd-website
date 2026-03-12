@@ -37,7 +37,6 @@ export const GET: APIRoute = async ({ request }) => {
       slug: a.slug,
       date: a.publishedAt,
       excerpt: a.excerpt || '',
-      image: a.mainImage || null,
       isPublic: a.isPublic ?? true,
       url: a.isPublic
         ? `https://akd-website.pages.dev/nyheder/${a.slug}`
