@@ -1,8 +1,10 @@
 ---
+import { sanityImageUrl } from '@/lib/imageUtils'
+
 interface Item {
   title: string
   description: string
-  icon: 'arrow' | 'check'
+  icon: 'arrow' | 'check' | 'none'
   href?: string
 }
 
@@ -34,6 +36,8 @@ const pullUpValue = typeof pullUp === 'number' ? pullUp : (pullUp ? 200 : 0)
 const bgColor = variant === 'dark' ? 'bg-charcoal' : 'bg-white'
 const textColor = variant === 'dark' ? 'text-white' : 'text-charcoal'
 const textColorLight = variant === 'dark' ? 'text-white/90' : 'text-charcoal'
+const mintColor = variant === 'dark' ? 'text-mint' : 'text-mint-dark'
+const optimisedImageUrl = sanityImageUrl(imageUrl, layout === 'full-width' ? 1200 : 650)
 ---
 
 <style>
@@ -105,7 +109,7 @@ const textColorLight = variant === 'dark' ? 'text-white/90' : 'text-charcoal'
         <div class="p-4 md:p-5 lg:p-6 pb-0">
           <div class="relative h-64 md:h-96 lg:h-[500px] rounded-lg overflow-hidden">
             <img 
-              src={imageUrl}
+              src={optimisedImageUrl}
               alt={imageAlt}
               class="w-full h-full object-cover"
             />
@@ -145,7 +149,7 @@ const textColorLight = variant === 'dark' ? 'text-white/90' : 'text-charcoal'
                     </h3>
                     {item.icon === 'check' && (
                       <svg 
-                        class="w-6 h-6 text-mint flex-shrink-0 mt-1" 
+                        class:list={[mintColor, 'w-6 h-6 flex-shrink-0 mt-1']}
                         fill="currentColor" 
                         viewBox="0 0 20 20" 
                         aria-hidden="true"
@@ -172,7 +176,7 @@ const textColorLight = variant === 'dark' ? 'text-white/90' : 'text-charcoal'
         <!-- Image - Left Half -->
         <div class="content-box-image-wrapper h-64 md:h-96">
           <img 
-            src={imageUrl}
+            src={optimisedImageUrl}
             alt={imageAlt}
             class="w-full h-full object-cover"
           />
@@ -181,7 +185,7 @@ const textColorLight = variant === 'dark' ? 'text-white/90' : 'text-charcoal'
         <!-- Content - Right Half -->
         <div class="p-8 md:p-10 lg:p-12">
           <!-- Pre-header -->
-          <p class="text-mint font-bold text-base mb-4 uppercase tracking-wide">
+          <p class:list={[mintColor, 'font-bold text-base mb-4 uppercase tracking-wide']}>
             {preHeader}
           </p>
           
@@ -225,7 +229,7 @@ const textColorLight = variant === 'dark' ? 'text-white/90' : 'text-charcoal'
                   {item.icon === 'arrow' && (
                     <svg 
                       class:list={[
-                        'w-5 h-5 md:w-6 md:h-6 text-mint flex-shrink-0 ml-4',
+                        `w-5 h-5 md:w-6 md:h-6 ${mintColor} flex-shrink-0 ml-4`,
                         item.href && 'transition-transform group-hover:translate-x-1'
                       ]}
                       fill="none" 
@@ -239,7 +243,7 @@ const textColorLight = variant === 'dark' ? 'text-white/90' : 'text-charcoal'
                   
                   {item.icon === 'check' && (
                     <svg 
-                      class="w-6 h-6 text-mint flex-shrink-0" 
+                      class:list={[mintColor, 'w-6 h-6 flex-shrink-0']}
                       fill="currentColor" 
                       viewBox="0 0 20 20" 
                       aria-hidden="true"

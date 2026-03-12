@@ -52,7 +52,7 @@ function getDocHref(doc: { fileUrl?: string; url?: string }): string {
   <section class="relative bg-warm-light pt-12 md:pt-16 lg:pt-20 pb-16 section-after-nav">
     <div class="container-custom">
       {preHeadline && (
-        <p class="text-mint font-bold text-base mb-6 uppercase tracking-wide text-center">
+        <p class="text-mint-dark font-bold text-base mb-6 uppercase tracking-wide text-center">
           {preHeadline}
         </p>
       )}
@@ -75,32 +75,32 @@ function getDocHref(doc: { fileUrl?: string; url?: string }): string {
     <div class="container-custom">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
         <a href="#lejeaftaler" class="bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow group text-center">
-          <div class="w-12 h-12 bg-mint/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg class="w-6 h-6 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <div class="w-12 h-12 bg-mint-dark/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-6 h-6 text-mint-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
             </svg>
           </div>
-          <h3 class="font-sans font-bold text-charcoal text-lg mb-2 group-hover:text-mint transition-colors">Lejeaftaler</h3>
+          <h3 class="font-sans font-bold text-charcoal text-lg mb-2 group-hover:text-mint-dark transition-colors">Lejeaftaler</h3>
           <p class="text-charcoal/60 text-sm">Indgåelse af lejeaftaler via Avlerinfo</p>
         </a>
 
         <a href="#koeb-salg" class="bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow group text-center">
-          <div class="w-12 h-12 bg-mint/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg class="w-6 h-6 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <div class="w-12 h-12 bg-mint-dark/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-6 h-6 text-mint-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
             </svg>
           </div>
-          <h3 class="font-sans font-bold text-charcoal text-lg mb-2 group-hover:text-mint transition-colors">Køb og salg</h3>
+          <h3 class="font-sans font-bold text-charcoal text-lg mb-2 group-hover:text-mint-dark transition-colors">Køb og salg</h3>
           <p class="text-charcoal/60 text-sm">Regler for handel med andele</p>
         </a>
 
         <a href="#finansiering" class="bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow group text-center">
-          <div class="w-12 h-12 bg-mint/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg class="w-6 h-6 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <div class="w-12 h-12 bg-mint-dark/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-6 h-6 text-mint-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
           </div>
-          <h3 class="font-sans font-bold text-charcoal text-lg mb-2 group-hover:text-mint transition-colors">Finansiering</h3>
+          <h3 class="font-sans font-bold text-charcoal text-lg mb-2 group-hover:text-mint-dark transition-colors">Finansiering</h3>
           <p class="text-charcoal/60 text-sm">Finansiering af andele købt mellem andelshavere</p>
         </a>
       </div>
@@ -113,7 +113,7 @@ function getDocHref(doc: { fileUrl?: string; url?: string }): string {
     <section id="lejeaftaler" class="bg-white py-16 md:py-24 scroll-mt-24">
       <div class="container-custom">
         <div class="max-w-4xl mx-auto">
-          {leje.preHeader && <p class="text-mint font-bold text-sm mb-4 uppercase tracking-wide">{leje.preHeader}</p>}
+          {leje.preHeader && <p class="text-mint-dark font-bold text-sm mb-4 uppercase tracking-wide">{leje.preHeader}</p>}
           {leje.heading && (
             <h2 class="font-sans font-extrabold text-3xl md:text-4xl lg:text-[43px] text-charcoal leading-tight mb-8">
               {leje.heading}
@@ -135,7 +135,7 @@ function getDocHref(doc: { fileUrl?: string; url?: string }): string {
     <section id="koeb-salg" class="bg-warm-light py-16 md:py-24 scroll-mt-24">
       <div class="container-custom">
         <div class="max-w-4xl mx-auto">
-          {koeb.preHeader && <p class="text-mint font-bold text-sm mb-4 uppercase tracking-wide">{koeb.preHeader}</p>}
+          {koeb.preHeader && <p class="text-mint-dark font-bold text-sm mb-4 uppercase tracking-wide">{koeb.preHeader}</p>}
           {koeb.heading && (
             <h2 class="font-sans font-extrabold text-3xl md:text-4xl lg:text-[43px] text-charcoal leading-tight mb-8">
               {koeb.heading}
@@ -152,8 +152,8 @@ function getDocHref(doc: { fileUrl?: string; url?: string }): string {
               <h4 class="font-sans font-bold text-lg text-charcoal mb-4">Dokumenter</h4>
               <div class="space-y-3">
                 {koebDocs.map((doc) => (
-                  <a href={getDocHref(doc)} class="flex items-center gap-3 text-charcoal hover:text-mint transition-colors group">
-                    <svg class="w-5 h-5 text-mint flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <a href={getDocHref(doc)} class="flex items-center gap-3 text-charcoal hover:text-mint-dark transition-colors group">
+                    <svg class="w-5 h-5 text-mint-dark flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                     </svg>
                     <span class="text-lg group-hover:underline">{doc.title}</span>
@@ -164,10 +164,10 @@ function getDocHref(doc: { fileUrl?: string; url?: string }): string {
           )}
 
           {koeb.financingNote && (
-            <div class="bg-mint/10 rounded-2xl p-6 md:p-8">
+            <div class="bg-mint-dark/10 rounded-2xl p-6 md:p-8">
               <p class="text-charcoal text-lg">
                 {koeb.financingNote}
-                <a href="#finansiering" class="text-mint font-semibold hover:underline ml-1">Læs mere &rarr;</a>
+                <a href="#finansiering" class="text-mint-dark font-semibold hover:underline ml-1">Læs mere &rarr;</a>
               </p>
             </div>
           )}
@@ -182,7 +182,7 @@ function getDocHref(doc: { fileUrl?: string; url?: string }): string {
     <section id="finansiering" class="bg-white py-16 md:py-24 scroll-mt-24">
       <div class="container-custom">
         <div class="max-w-4xl mx-auto">
-          {fin.preHeader && <p class="text-mint font-bold text-sm mb-4 uppercase tracking-wide">{fin.preHeader}</p>}
+          {fin.preHeader && <p class="text-mint-dark font-bold text-sm mb-4 uppercase tracking-wide">{fin.preHeader}</p>}
           {fin.heading && (
             <h2 class="font-sans font-extrabold text-3xl md:text-4xl lg:text-[43px] text-charcoal leading-tight mb-8">
               {fin.heading}

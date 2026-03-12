@@ -1,4 +1,6 @@
 ---
+import { sanityImageUrl } from '@/lib/imageUtils'
+
 interface Props {
   quote: string
   name: string
@@ -74,7 +76,7 @@ const formattedDate = startDate ? formatDanishDate(startDate) : ''
       imagePosition === 'right' && 'lg:rounded-r-lg'
     ]}>
       <img 
-        src={imageUrl}
+        src={sanityImageUrl(imageUrl, 800)}
         alt={imageAlt}
         class="w-full h-full object-cover"
       />

@@ -25,6 +25,8 @@ interface Props {
   class?: string
 }
 
+import { sanityImageUrl } from '@/lib/imageUtils'
+
 const { 
   name, 
   title, 
@@ -52,7 +54,7 @@ const isPrimary = variant === 'primary'
   <!-- Portrait -->
   <div class="contact-card-portrait">
     <img 
-      src={imageUrl} 
+      src={sanityImageUrl(imageUrl, 128)} 
       alt={`${name}, ${title}`}
       class="w-full h-full object-cover"
     />

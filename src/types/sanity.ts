@@ -707,10 +707,7 @@ export interface CircularProductionPage {
     heading: string
     body?: PortableTextContent
   }
-  principlesSection?: {
-    heading: string
-    principles?: CircularPrinciple[]
-  }
+  contentBox?: ContentBoxSection
   processSection?: {
     heading: string
     introText?: string
@@ -730,10 +727,7 @@ export interface CircularProductionPage {
     heading: string
     body?: PortableTextContent
   }
-  relevanceSection?: {
-    heading: string
-    items?: CircularRelevanceItem[]
-  }
+  relevanceContentBox?: ContentBoxSection
   ctaSection?: {
     heading?: string
     introText?: string
@@ -1371,6 +1365,130 @@ export interface AsbPage {
   downloadSection?: AsbDownloadSection
   faqSection?: AsbFaqSection
   contactSection?: AsbContactSection
+  seo?: SEO
+}
+
+// ── Levering og kampagne section ──
+
+export interface NavCard {
+  title: string
+  description?: string
+  href: string
+}
+
+export interface TextSection {
+  heading: string
+  body?: any[]
+}
+
+export interface ProcessStep {
+  title: string
+  text: string
+}
+
+export interface FAQItem {
+  question: string
+  answer: string
+}
+
+export interface CtaButton {
+  label: string
+  href: string
+}
+
+export interface CtaSection {
+  heading?: string
+  introText?: string
+  ctas?: CtaButton[]
+}
+
+export interface LeveringKampagnePage {
+  _id: string
+  _type: 'leveringKampagnePage'
+  title: string
+  hero?: PageHero
+  statusBox?: {
+    heading?: string
+    body?: any[]
+  }
+  navCards?: NavCard[]
+  introSection?: {
+    preHeader?: string
+    heading?: string
+    body?: any[]
+  }
+  processSection?: {
+    heading?: string
+    steps?: ProcessStep[]
+  }
+  linksSection?: {
+    heading?: string
+    links?: CtaButton[]
+  }
+  seo?: SEO
+}
+
+export interface KampagneOgLeveringPage {
+  _id: string
+  _type: 'kampagneOgLeveringPage'
+  title: string
+  hero?: PageHero
+  navCards?: NavCard[]
+  highlightBox?: {
+    heading?: string
+    body?: any[]
+  }
+  sections?: TextSection[]
+  faqSection?: {
+    heading?: string
+    items?: FAQItem[]
+  }
+  ctaSection?: CtaSection
+  seo?: SEO
+}
+
+export interface PrincipleCard {
+  title: string
+  description: string
+}
+
+export interface TransportOgVilkarPage {
+  _id: string
+  _type: 'transportOgVilkarPage'
+  title: string
+  hero?: PageHero
+  navCards?: NavCard[]
+  principleCards?: PrincipleCard[]
+  sections?: TextSection[]
+  ctaSection?: CtaSection
+  seo?: SEO
+}
+
+export interface DocLink {
+  label: string
+  href?: string
+  fileUrl?: string
+}
+
+export interface VejningOgAfregningPage {
+  _id: string
+  _type: 'vejningOgAfregningPage'
+  title: string
+  hero?: PageHero
+  navCards?: NavCard[]
+  processSection?: {
+    heading?: string
+    steps?: ProcessStep[]
+  }
+  sections?: TextSection[]
+  documentsSection?: {
+    heading?: string
+    links?: DocLink[]
+  }
+  faqSection?: {
+    heading?: string
+    items?: FAQItem[]
+  }
   seo?: SEO
 }
 

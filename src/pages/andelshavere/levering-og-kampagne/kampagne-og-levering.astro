@@ -1,0 +1,183 @@
+---
+import AndelshavereLayout from '@/layouts/AndelshavereLayout.astro'
+import LeveringNavCards from '@/components/andelshavere/LeveringNavCards.astro'
+import FAQAccordion from '@/components/sections/FAQAccordion.astro'
+import PortableText from '@/components/sanity/PortableText.astro'
+import { sanityClient } from '@/lib/sanity'
+import { kampagneOgLeveringPageQuery } from '@/lib/sanityQueries'
+import { portableTextToHtml } from '@/lib/portableTextSerializer'
+import type { KampagneOgLeveringPage } from '@/types/sanity'
+
+export const prerender = false;
+
+let page: KampagneOgLeveringPage | null = null
+try {
+  page = await sanityClient.fetch<KampagneOgLeveringPage>(kampagneOgLeveringPageQuery)
+} catch (error) {
+  console.error('Error fetching Kampagne og levering page from Sanity:', error)
+}
+
+if (!page) {
+  return Astro.redirect('/404')
+}
+
+const headlineHtml = page.hero?.headline
+  ? portableTextToHtml(page.hero.headline, { addHeadingIds: false })
+  : ''
+
+const introHtml = page.hero?.introText
+  ? portableTextToHtml(page.hero.introText, { addHeadingIds: false })
+  : ''
+
+const preHeadline = page.hero?.preHeadline
+const metaTitle = page.seo?.metaTitle || page.title || 'Kampagne og levering'
+const metaDescription = page.seo?.metaDescription || ''
+
+const faqItems = (page.faqSection?.items || []).map(item => ({
+  question: item.question,
+  answer: item.answer,
+}))
+---
+
+<AndelshavereLayout
+  title={metaTitle}
+  description={metaDescription}
+>
+
+  <!-- HERO -->
+  <section class="relative bg-warm-light pt-12 md:pt-16 lg:pt-20 pb-16 section-after-nav">
+    <div class="container-custom">
+      {preHeadline && (
+        <p class="text-mint-dark font-bold text-base mb-6 uppercase tracking-wide text-center">
+          {preHeadline}
+        </p>
+      )}
+
+      {headlineHtml && (
+        <h1 class="text-center mb-8 md:mb-12 max-w-4xl mx-auto">
+          <span class="block font-sans font-extrabold text-[43px] md:text-[58px] lg:text-[62px] text-charcoal uppercase leading-tight [&_.font-serif]:lowercase [&_.font-serif]:font-medium" set:html={headlineHtml} />
+        </h1>
+      )}
+
+      {introHtml && (
+        <div class="max-w-3xl mx-auto text-center text-charcoal text-lg md:text-xl leading-relaxed prose-akd mb-10" set:html={introHtml} />
+      )}
+    </div>
+  </section>
+
+
+  <!-- NAVIGATION CARDS -->
+  <section class="bg-warm-light pb-16 md:pb-20">
+    <div class="container-custom">
+      <LeveringNavCards
+        cards={page.navCards || []}
+        currentHref="/andelshavere/levering-og-kampagne/kampagne-og-levering"
+      />
+    </div>
+  </section>
+
+
+  <!-- HIGHLIGHT BOX -->
+  {page.highlightBox && (
+    <section class="bg-white py-10">
+      <div class="container-custom">
+        <div class="max-w-4xl mx-auto bg-light border-l-4 border-mint rounded-r-lg p-6 md:p-8">
+          {page.highlightBox.heading && (
+            <h2 class="font-sans font-bold text-xl md:text-2xl text-charcoal mb-4">
+              {page.highlightBox.heading}
+            </h2>
+          )}
+          {page.highlightBox.body && (
+            <div class="text-charcoal/80 text-base md:text-lg leading-relaxed prose-akd">
+              <PortableText content={page.highlightBox.body} addHeadingIds={false} />
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )}
+
+
+  <!-- TEXT SECTIONS -->
+  {page.sections && page.sections.length > 0 && page.sections.map((section, index) => (
+    <section class:list={[
+      'py-16 md:py-24',
+      index % 2 === 0 ? 'bg-white' : 'bg-warm-light'
+    ]}>
+      <div class="container-custom">
+        <div class="max-w-4xl mx-auto">
+          {section.heading && (
+            <h2 class="font-sans font-extrabold text-3xl md:text-4xl lg:text-[43px] text-charcoal leading-tight mb-6">
+              {section.heading}
+            </h2>
+          )}
+          {section.body && (
+            <div class="text-charcoal/80 text-lg md:text-xl leading-relaxed prose-akd">
+              <PortableText content={section.body} addHeadingIds={false} />
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  ))}
+
+
+  <!-- FAQ -->
+  {page.faqSection && faqItems.length > 0 && (
+    <section class="bg-warm-light py-16 md:py-24">
+      <div class="container-custom">
+        <div class="max-w-3xl mx-auto">
+          {page.faqSection.heading && (
+            <h2 class="font-sans font-bold text-2xl md:text-3xl text-charcoal text-center mb-8 md:mb-12">
+              {page.faqSection.heading}
+            </h2>
+          )}
+          <FAQAccordion items={faqItems} variant="light" />
+        </div>
+      </div>
+    </section>
+  )}
+
+
+  <!-- CTA BAND -->
+  {page.ctaSection && page.ctaSection.ctas && page.ctaSection.ctas.length > 0 && (
+    <section class="bg-charcoal py-16 md:py-24">
+      <div class="container-custom">
+        <div class="max-w-4xl mx-auto text-center">
+          {page.ctaSection.heading && (
+            <h2 class="font-sans font-bold text-2xl md:text-3xl text-white mb-4">
+              {page.ctaSection.heading}
+            </h2>
+          )}
+          {page.ctaSection.introText && (
+            <p class="text-white/70 text-lg mb-10">
+              {page.ctaSection.introText}
+            </p>
+          )}
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
+            {page.ctaSection.ctas.map((ctaItem, index) => (
+              index === 0 ? (
+                <a href={ctaItem.href} class="btn-primary">
+                  <span>{ctaItem.label}</span>
+                  <span class="btn-icon-circle">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                    </svg>
+                  </span>
+                </a>
+              ) : (
+                <a href={ctaItem.href} class="btn-secondary">
+                  {ctaItem.label}
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                  </svg>
+                </a>
+              )
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )}
+
+</AndelshavereLayout>

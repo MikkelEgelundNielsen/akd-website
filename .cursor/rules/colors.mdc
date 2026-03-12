@@ -24,7 +24,10 @@ ALWAYS use these Tailwind classes. NEVER use arbitrary values like `bg-[#E87722]
   - Secondary CTAs, highlights, hover states on secondary buttons
 
 - `bg-mint` / `text-mint` - #10E397
-  - Minor accents only, hover states on links, decorative elements
+  - Bright mint for dark backgrounds (forest-green, charcoal sections)
+  
+- `text-mint-dark` - #0A8F5F
+  - Accessible mint for light backgrounds (white, warm-light, light). Use for pre-headers, icons, links, and any text on pale backgrounds to meet WCAG AA contrast.
 
 ### Neutrals
 - `bg-charcoal` / `text-charcoal` - #26251E (body text)
@@ -61,7 +64,8 @@ ALWAYS use these Tailwind classes. NEVER use arbitrary values like `bg-[#E87722]
 
 1. **Is it a PRIMARY call-to-action?** → Use `burnt-orange`
 2. **Is it a SECONDARY action?** → Use `amber`
-3. **Is it a text link or small accent?** → Use `mint`
+3. **Is it a text link or small accent on a DARK background?** → Use `mint`
+3b. **Is it a text link, pre-header, or accent on a LIGHT background?** → Use `mint-dark`
 4. **Is it navigation or headers?** → Use `forest-green`
 5. **Is it body text?** → Use `charcoal`
 6. **Is it a page background?** → Use `warm-light`

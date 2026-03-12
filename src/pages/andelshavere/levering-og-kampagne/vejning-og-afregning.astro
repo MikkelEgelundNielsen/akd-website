@@ -1,0 +1,176 @@
+---
+import AndelshavereLayout from '@/layouts/AndelshavereLayout.astro'
+import LeveringNavCards from '@/components/andelshavere/LeveringNavCards.astro'
+import ProcessSteps from '@/components/sections/ProcessSteps.astro'
+import FAQAccordion from '@/components/sections/FAQAccordion.astro'
+import PortableText from '@/components/sanity/PortableText.astro'
+import { sanityClient } from '@/lib/sanity'
+import { vejningOgAfregningPageQuery } from '@/lib/sanityQueries'
+import { portableTextToHtml } from '@/lib/portableTextSerializer'
+import type { VejningOgAfregningPage } from '@/types/sanity'
+
+export const prerender = false;
+
+let page: VejningOgAfregningPage | null = null
+try {
+  page = await sanityClient.fetch<VejningOgAfregningPage>(vejningOgAfregningPageQuery)
+} catch (error) {
+  console.error('Error fetching Vejning og afregning page from Sanity:', error)
+}
+
+if (!page) {
+  return Astro.redirect('/404')
+}
+
+const headlineHtml = page.hero?.headline
+  ? portableTextToHtml(page.hero.headline, { addHeadingIds: false })
+  : ''
+
+const introHtml = page.hero?.introText
+  ? portableTextToHtml(page.hero.introText, { addHeadingIds: false })
+  : ''
+
+const preHeadline = page.hero?.preHeadline
+const metaTitle = page.seo?.metaTitle || page.title || 'Vejning og afregning'
+const metaDescription = page.seo?.metaDescription || ''
+
+const processSteps = (page.processSection?.steps || []).map((step, i) => ({
+  number: i + 1,
+  title: step.title,
+  description: step.text,
+}))
+
+const faqItems = (page.faqSection?.items || []).map(item => ({
+  question: item.question,
+  answer: item.answer,
+}))
+
+function getDocHref(doc: { fileUrl?: string; href?: string }): string {
+  return doc.fileUrl || doc.href || '#'
+}
+---
+
+<AndelshavereLayout
+  title={metaTitle}
+  description={metaDescription}
+>
+
+  <!-- HERO -->
+  <section class="relative bg-warm-light pt-12 md:pt-16 lg:pt-20 pb-16 section-after-nav">
+    <div class="container-custom">
+      {preHeadline && (
+        <p class="text-mint-dark font-bold text-base mb-6 uppercase tracking-wide text-center">
+          {preHeadline}
+        </p>
+      )}
+
+      {headlineHtml && (
+        <h1 class="text-center mb-8 md:mb-12 max-w-4xl mx-auto">
+          <span class="block font-sans font-extrabold text-[43px] md:text-[58px] lg:text-[62px] text-charcoal uppercase leading-tight [&_.font-serif]:lowercase [&_.font-serif]:font-medium" set:html={headlineHtml} />
+        </h1>
+      )}
+
+      {introHtml && (
+        <div class="max-w-3xl mx-auto text-center text-charcoal text-lg md:text-xl leading-relaxed prose-akd mb-10" set:html={introHtml} />
+      )}
+    </div>
+  </section>
+
+
+  <!-- NAVIGATION CARDS -->
+  <section class="bg-warm-light pb-16 md:pb-20">
+    <div class="container-custom">
+      <LeveringNavCards
+        cards={page.navCards || []}
+        currentHref="/andelshavere/levering-og-kampagne/vejning-og-afregning"
+      />
+    </div>
+  </section>
+
+
+  <!-- PROCESS STEPS -->
+  {page.processSection && processSteps.length > 0 && (
+    <section class="bg-white py-16 md:py-24">
+      <div class="container-custom">
+        <div class="max-w-3xl mx-auto">
+          {page.processSection.heading && (
+            <h2 class="font-sans font-bold text-2xl md:text-3xl text-charcoal text-center mb-4 md:mb-12">
+              {page.processSection.heading}
+            </h2>
+          )}
+          <ProcessSteps steps={processSteps} variant="light" />
+        </div>
+      </div>
+    </section>
+  )}
+
+
+  <!-- TEXT SECTIONS -->
+  {page.sections && page.sections.length > 0 && page.sections.map((section, index) => (
+    <section class:list={[
+      'py-16 md:py-24',
+      index % 2 === 0 ? 'bg-warm-light' : 'bg-white'
+    ]}>
+      <div class="container-custom">
+        <div class="max-w-4xl mx-auto">
+          {section.heading && (
+            <h2 class="font-sans font-extrabold text-3xl md:text-4xl lg:text-[43px] text-charcoal leading-tight mb-6">
+              {section.heading}
+            </h2>
+          )}
+          {section.body && (
+            <div class="text-charcoal/80 text-lg md:text-xl leading-relaxed prose-akd">
+              <PortableText content={section.body} addHeadingIds={false} />
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  ))}
+
+
+  <!-- DOCUMENTS SECTION -->
+  {page.documentsSection && page.documentsSection.links && page.documentsSection.links.length > 0 && (
+    <section class="bg-white py-16 md:py-24">
+      <div class="container-custom">
+        <div class="max-w-4xl mx-auto">
+          {page.documentsSection.heading && (
+            <h2 class="font-sans font-extrabold text-3xl md:text-4xl lg:text-[43px] text-charcoal leading-tight mb-8">
+              {page.documentsSection.heading}
+            </h2>
+          )}
+          <div class="bg-warm-light rounded-2xl p-6 md:p-8">
+            <div class="space-y-3">
+              {page.documentsSection.links.map((doc) => (
+                <a href={getDocHref(doc)} class="flex items-center gap-3 text-charcoal hover:text-mint-dark transition-colors group">
+                  <svg class="w-5 h-5 text-mint-dark flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                  </svg>
+                  <span class="text-lg group-hover:underline">{doc.label}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )}
+
+
+  <!-- FAQ -->
+  {page.faqSection && faqItems.length > 0 && (
+    <section class="bg-warm-light py-16 md:py-24">
+      <div class="container-custom">
+        <div class="max-w-3xl mx-auto">
+          {page.faqSection.heading && (
+            <h2 class="font-sans font-bold text-2xl md:text-3xl text-charcoal text-center mb-8 md:mb-12">
+              {page.faqSection.heading}
+            </h2>
+          )}
+          <FAQAccordion items={faqItems} variant="light" />
+        </div>
+      </div>
+    </section>
+  )}
+
+</AndelshavereLayout>

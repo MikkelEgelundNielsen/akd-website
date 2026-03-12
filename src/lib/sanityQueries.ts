@@ -1066,14 +1066,7 @@ export const circularProductionPageQuery = `*[_type == "circularProductionPage"]
       }
     }
   },
-  principlesSection {
-    heading,
-    principles[] {
-      title,
-      text,
-      icon
-    }
-  },
+  "contentBox": contentBox ${contentBoxProjection},
   processSection {
     heading,
     introText,
@@ -1117,13 +1110,7 @@ export const circularProductionPageQuery = `*[_type == "circularProductionPage"]
       }
     }
   },
-  relevanceSection {
-    heading,
-    items[] {
-      heading,
-      text
-    }
-  },
+  "relevanceContentBox": relevanceContentBox ${contentBoxProjection},
   ctaSection {
     heading,
     introText,
@@ -1808,6 +1795,228 @@ export const asbPageQuery = `*[_type == "asbPage"][0] {
     opensCallbackModal,
     callbackReason,
     ctaHref
+  },
+  seo {
+    metaTitle,
+    metaDescription,
+    "openGraphImage": openGraphImage.asset->url,
+    noIndex
+  }
+}`
+
+// ── Levering og kampagne (overview) ──
+
+export const leveringKampagnePageQuery = `*[_type == "leveringKampagnePage"][0] {
+  _id,
+  title,
+  hero {
+    preHeadline,
+    headline,
+    introText
+  },
+  statusBox {
+    heading,
+    body[] {
+      ...,
+      _type == "image" => {
+        "url": asset->url,
+        alt,
+        caption
+      }
+    }
+  },
+  navCards[] {
+    title,
+    description,
+    href
+  },
+  introSection {
+    preHeader,
+    heading,
+    body[] {
+      ...,
+      _type == "image" => {
+        "url": asset->url,
+        alt,
+        caption
+      }
+    }
+  },
+  processSection {
+    heading,
+    steps[] {
+      title,
+      text
+    }
+  },
+  linksSection {
+    heading,
+    links[] {
+      label,
+      href
+    }
+  },
+  seo {
+    metaTitle,
+    metaDescription,
+    "openGraphImage": openGraphImage.asset->url,
+    noIndex
+  }
+}`
+
+// ── Kampagne og levering (sub-page) ──
+
+export const kampagneOgLeveringPageQuery = `*[_type == "kampagneOgLeveringPage"][0] {
+  _id,
+  title,
+  hero {
+    preHeadline,
+    headline,
+    introText
+  },
+  navCards[] {
+    title,
+    description,
+    href
+  },
+  highlightBox {
+    heading,
+    body[] {
+      ...,
+      _type == "image" => {
+        "url": asset->url,
+        alt,
+        caption
+      }
+    }
+  },
+  sections[] {
+    heading,
+    body[] {
+      ...,
+      _type == "image" => {
+        "url": asset->url,
+        alt,
+        caption
+      }
+    }
+  },
+  faqSection {
+    heading,
+    items[] {
+      question,
+      answer
+    }
+  },
+  ctaSection {
+    heading,
+    introText,
+    ctas[] {
+      label,
+      href
+    }
+  },
+  seo {
+    metaTitle,
+    metaDescription,
+    "openGraphImage": openGraphImage.asset->url,
+    noIndex
+  }
+}`
+
+// ── Transport og vilkår (sub-page) ──
+
+export const transportOgVilkarPageQuery = `*[_type == "transportOgVilkarPage"][0] {
+  _id,
+  title,
+  hero {
+    preHeadline,
+    headline,
+    introText
+  },
+  navCards[] {
+    title,
+    description,
+    href
+  },
+  principleCards[] {
+    title,
+    description
+  },
+  sections[] {
+    heading,
+    body[] {
+      ...,
+      _type == "image" => {
+        "url": asset->url,
+        alt,
+        caption
+      }
+    }
+  },
+  ctaSection {
+    heading,
+    introText,
+    ctas[] {
+      label,
+      href
+    }
+  },
+  seo {
+    metaTitle,
+    metaDescription,
+    "openGraphImage": openGraphImage.asset->url,
+    noIndex
+  }
+}`
+
+// ── Vejning og afregning (sub-page) ──
+
+export const vejningOgAfregningPageQuery = `*[_type == "vejningOgAfregningPage"][0] {
+  _id,
+  title,
+  hero {
+    preHeadline,
+    headline,
+    introText
+  },
+  navCards[] {
+    title,
+    description,
+    href
+  },
+  processSection {
+    heading,
+    steps[] {
+      title,
+      text
+    }
+  },
+  sections[] {
+    heading,
+    body[] {
+      ...,
+      _type == "image" => {
+        "url": asset->url,
+        alt,
+        caption
+      }
+    }
+  },
+  documentsSection {
+    heading,
+    links[] {
+      label,
+      href,
+      "fileUrl": file.asset->url
+    }
+  },
+  faqSection {
+    heading,
+    items[] {
+      question,
+      answer
+    }
   },
   seo {
     metaTitle,

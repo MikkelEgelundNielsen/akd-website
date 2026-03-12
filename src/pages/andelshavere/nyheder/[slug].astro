@@ -60,16 +60,6 @@ const metaDescription = article.seo?.metaDescription || article.excerpt || ''
   <section class="bg-warm-light py-12 md:py-16">
     <div class="container-custom">
       <article class="max-w-3xl">
-        {article.mainImage && (
-          <figure class="mb-10">
-            <img
-              src={article.mainImage}
-              alt={article.mainImageAlt || article.title}
-              class="w-full h-auto rounded-lg"
-            />
-          </figure>
-        )}
-
         {article.body && article.body.length > 0 && (
           <PortableText content={article.body} addHeadingIds={true} />
         )}

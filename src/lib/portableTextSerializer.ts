@@ -22,43 +22,42 @@ export function portableTextToHtml(
   if (!blocks || !Array.isArray(blocks)) return ''
 
   const result: string[] = []
-  let currentList: { type: 'bullet' | 'number'; items: string[] } | null = null
+  let currentList: { type: string; items: string[] } | null = null
+
+  function listOpenTag(type: string): string {
+    if (type === 'number') return '<ol>'
+    if (type === 'check') return '<ul class="checklist">'
+    return '<ul>'
+  }
+
+  function listCloseTag(type: string): string {
+    return type === 'number' ? '</ol>' : '</ul>'
+  }
 
   blocks.forEach((block, index) => {
-    // Check if this is a list item
     if (block._type === 'block' && block.listItem) {
-      const listType = block.listItem === 'bullet' ? 'bullet' : 'number'
+      const listType = block.listItem as string
       const itemHtml = serializeBlock(block, options)
 
-      // Start a new list or continue existing one
       if (!currentList || currentList.type !== listType) {
-        // Close previous list if exists
         if (currentList) {
-          const tag = currentList.type === 'bullet' ? 'ul' : 'ol'
-          result.push(`<${tag}>${currentList.items.join('')}</${tag}>`)
+          result.push(`${listOpenTag(currentList.type)}${currentList.items.join('')}${listCloseTag(currentList.type)}`)
         }
-        // Start new list
         currentList = { type: listType, items: [itemHtml] }
       } else {
-        // Add to current list
         currentList.items.push(itemHtml)
       }
     } else {
-      // Not a list item - close any open list first
       if (currentList) {
-        const tag = currentList.type === 'bullet' ? 'ul' : 'ol'
-        result.push(`<${tag}>${currentList.items.join('')}</${tag}>`)
+        result.push(`${listOpenTag(currentList.type)}${currentList.items.join('')}${listCloseTag(currentList.type)}`)
         currentList = null
       }
-      // Add the non-list block
       result.push(serializeBlock(block, options))
     }
   })
 
-  // Close any remaining open list
   if (currentList) {
-    const tag = currentList.type === 'bullet' ? 'ul' : 'ol'
-    result.push(`<${tag}>${currentList.items.join('')}</${tag}>`)
+    result.push(`${listOpenTag(currentList.type)}${currentList.items.join('')}${listCloseTag(currentList.type)}`)
   }
 
   return result.join('')

@@ -9,6 +9,7 @@ import AndelshavereLayout from '@/layouts/AndelshavereLayout.astro'
 import NextStepSection from '@/components/andelshavere/NextStepSection.astro'
 import PortableText from '@/components/sanity/PortableText.astro'
 import { sanityClient } from '@/lib/sanity'
+import { sanityImageUrl } from '@/lib/imageUtils'
 import { articleBySlugQuery } from '@/lib/sanityQueries'
 import type { Article } from '@/types/sanity'
 
@@ -63,7 +64,7 @@ const metaDescription = article.excerpt || ''
         {article.mainImage && (
           <figure class="mb-10">
             <img
-              src={article.mainImage}
+              src={sanityImageUrl(article.mainImage, 1000)}
               alt={article.mainImageAlt || article.title}
               class="w-full h-auto rounded-lg"
             />

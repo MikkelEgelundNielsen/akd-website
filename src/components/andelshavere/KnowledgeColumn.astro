@@ -5,6 +5,7 @@
  * Contains search placeholder, popular topics chips, and curated content
  */
 
+import { sanityImageUrl } from '@/lib/imageUtils'
 import type { DashboardKnowledge, DashboardCategory } from '@/types/sanity'
 
 interface Props {
@@ -104,7 +105,7 @@ const items = knowledge?.items || []
               >
                 {item.thumbnail ? (
                   <img 
-                    src={item.thumbnail} 
+                    src={sanityImageUrl(item.thumbnail, 400)} 
                     alt="" 
                     class="w-full h-full object-cover"
                   />

@@ -8,6 +8,7 @@
 import AndelshavereLayout from '@/layouts/AndelshavereLayout.astro'
 import FAQAccordion from '@/components/sections/FAQAccordion.astro'
 import { sanityClient } from '@/lib/sanity'
+import { sanityImageUrl } from '@/lib/imageUtils'
 import { asbPageQuery } from '@/lib/sanityQueries'
 import { portableTextToHtml } from '@/lib/portableTextSerializer'
 import type { AsbPage } from '@/types/sanity'
@@ -113,7 +114,7 @@ const metaDescription = page.seo?.metaDescription || ''
       {page.heroImage && (
         <div class="flex justify-center">
           <img
-            src={page.heroImage}
+            src={sanityImageUrl(page.heroImage, 1200)}
             alt={page.heroImageAlt || 'Avlerinfo Selvbetjening'}
             class="w-full max-w-md rounded-2xl shadow-2xl"
           />
@@ -128,7 +129,7 @@ const metaDescription = page.seo?.metaDescription || ''
     <section id="overblik" class="bg-warm-light py-16 md:py-24 scroll-mt-24">
       <div class="container-custom">
         {overview.preHeader && (
-          <p class="text-mint font-bold text-sm mb-4 uppercase tracking-wide text-center">{overview.preHeader}</p>
+          <p class="text-mint-dark font-bold text-sm mb-4 uppercase tracking-wide text-center">{overview.preHeader}</p>
         )}
         {overview.heading && (
           <h2 class="font-sans font-extrabold text-3xl md:text-4xl lg:text-[43px] text-charcoal leading-tight mb-12 text-center">
@@ -142,7 +143,7 @@ const metaDescription = page.seo?.metaDescription || ''
               <div class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-shadow">
                 {card.image && (
                   <div class="aspect-video bg-charcoal/5 overflow-hidden">
-                    <img src={card.image} alt={card.imageAlt || card.title} class="w-full h-full object-cover" />
+                    <img src={sanityImageUrl(card.image, 400)} alt={card.imageAlt || card.title} class="w-full h-full object-cover" />
                   </div>
                 )}
                 <div class="p-6 md:p-8">
@@ -165,7 +166,7 @@ const metaDescription = page.seo?.metaDescription || ''
     <section id="funktioner" class="bg-white py-16 md:py-24 scroll-mt-24">
       <div class="container-custom">
         {features.preHeader && (
-          <p class="text-mint font-bold text-sm mb-4 uppercase tracking-wide">{features.preHeader}</p>
+          <p class="text-mint-dark font-bold text-sm mb-4 uppercase tracking-wide">{features.preHeader}</p>
         )}
         {features.heading && (
           <h2 class="font-sans font-extrabold text-3xl md:text-4xl lg:text-[43px] text-charcoal leading-tight mb-4">
@@ -185,7 +186,7 @@ const metaDescription = page.seo?.metaDescription || ''
               ]}>
                 {block.image && (
                   <div class="rounded-2xl overflow-hidden bg-charcoal/5 shadow-lg">
-                    <img src={block.image} alt={block.imageAlt || block.title} class="w-full h-auto" />
+                    <img src={sanityImageUrl(block.image, 800)} alt={block.imageAlt || block.title} class="w-full h-auto" />
                   </div>
                 )}
                 <div>
@@ -194,7 +195,7 @@ const metaDescription = page.seo?.metaDescription || ''
                     <ul class="space-y-3">
                       {block.items.map((item) => (
                         <li class="flex items-start gap-3 text-charcoal/80 text-base leading-relaxed">
-                          <svg class="w-5 h-5 text-mint flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                          <svg class="w-5 h-5 text-mint-dark flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                           </svg>
                           <span>{item}</span>
@@ -219,7 +220,7 @@ const metaDescription = page.seo?.metaDescription || ''
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
           <div>
             {drift.preHeader && (
-              <p class="text-mint font-bold text-sm mb-4 uppercase tracking-wide">{drift.preHeader}</p>
+              <p class="text-mint-dark font-bold text-sm mb-4 uppercase tracking-wide">{drift.preHeader}</p>
             )}
             {drift.heading && (
               <h2 class="font-sans font-extrabold text-3xl md:text-4xl lg:text-[43px] text-charcoal leading-tight mb-6">
@@ -237,7 +238,7 @@ const metaDescription = page.seo?.metaDescription || ''
               <ul class="space-y-3 mb-6">
                 {drift.bullets.map((bullet) => (
                   <li class="flex items-start gap-3 text-charcoal/80 text-base leading-relaxed">
-                    <svg class="w-5 h-5 text-mint flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <svg class="w-5 h-5 text-mint-dark flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                     </svg>
                     <span>{bullet}</span>
@@ -253,7 +254,7 @@ const metaDescription = page.seo?.metaDescription || ''
 
           {drift.image && (
             <div class="rounded-2xl overflow-hidden">
-              <img src={drift.image} alt={drift.imageAlt || 'Drift & levering'} class="w-full h-auto" />
+              <img src={sanityImageUrl(drift.image, 800)} alt={drift.imageAlt || 'Drift & levering'} class="w-full h-auto" />
             </div>
           )}
         </div>
@@ -268,7 +269,7 @@ const metaDescription = page.seo?.metaDescription || ''
       <div class="container-custom">
         <div class="max-w-4xl">
           {dueslag.preHeader && (
-            <p class="text-mint font-bold text-sm mb-4 uppercase tracking-wide">{dueslag.preHeader}</p>
+            <p class="text-mint-dark font-bold text-sm mb-4 uppercase tracking-wide">{dueslag.preHeader}</p>
           )}
           {dueslag.heading && (
             <h2 class="font-sans font-extrabold text-3xl md:text-4xl lg:text-[43px] text-charcoal leading-tight mb-6">
@@ -282,7 +283,7 @@ const metaDescription = page.seo?.metaDescription || ''
 
         {dueslag.image && (
           <div class="rounded-2xl overflow-hidden  mb-12 max-w-3xl">
-            <img src={dueslag.image} alt={dueslag.imageAlt || 'Dueslag'} class="w-full h-auto" />
+            <img src={sanityImageUrl(dueslag.image, 800)} alt={dueslag.imageAlt || 'Dueslag'} class="w-full h-auto" />
           </div>
         )}
 
@@ -295,8 +296,8 @@ const metaDescription = page.seo?.metaDescription || ''
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
               {dueslag.principles.map((p, idx) => (
                 <div class="bg-warm-light rounded-2xl p-6 md:p-8">
-                  <div class="w-10 h-10 bg-mint/20 rounded-full flex items-center justify-center mb-4">
-                    <span class="font-sans font-bold text-mint text-lg">{idx + 1}</span>
+                  <div class="w-10 h-10 bg-mint-dark/20 rounded-full flex items-center justify-center mb-4">
+                    <span class="font-sans font-bold text-mint-dark text-lg">{idx + 1}</span>
                   </div>
                   <h4 class="font-sans font-bold text-lg text-charcoal mb-2">{p.title}</h4>
                   {p.description && (
@@ -319,7 +320,7 @@ const metaDescription = page.seo?.metaDescription || ''
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center bg-warm-light rounded-2xl overflow-hidden">
                   {ex.image && (
                     <div class="bg-charcoal/5">
-                      <img src={ex.image} alt={ex.imageAlt || ''} class="w-full h-auto" />
+                      <img src={sanityImageUrl(ex.image, 600)} alt={ex.imageAlt || ''} class="w-full h-auto" />
                     </div>
                   )}
                   <div class="p-6 md:p-8">
@@ -342,13 +343,13 @@ const metaDescription = page.seo?.metaDescription || ''
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
           {kalender.image && (
             <div class="rounded-2xl overflow-hidden  order-2 lg:order-1">
-              <img src={kalender.image} alt={kalender.imageAlt || 'Aktivitetskalender'} class="w-full h-auto" />
+              <img src={sanityImageUrl(kalender.image, 800)} alt={kalender.imageAlt || 'Aktivitetskalender'} class="w-full h-auto" />
             </div>
           )}
 
           <div class="order-1 lg:order-2">
             {kalender.preHeader && (
-              <p class="text-mint font-bold text-sm mb-4 uppercase tracking-wide">{kalender.preHeader}</p>
+              <p class="text-mint-dark font-bold text-sm mb-4 uppercase tracking-wide">{kalender.preHeader}</p>
             )}
             {kalender.heading && (
               <h2 class="font-sans font-extrabold text-3xl md:text-4xl lg:text-[43px] text-charcoal leading-tight mb-6">
@@ -366,7 +367,7 @@ const metaDescription = page.seo?.metaDescription || ''
               <ul class="space-y-3">
                 {kalender.bullets.map((bullet) => (
                   <li class="flex items-start gap-3 text-charcoal/80 text-base leading-relaxed">
-                    <svg class="w-5 h-5 text-mint flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <svg class="w-5 h-5 text-mint-dark flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                     </svg>
                     <span>{bullet}</span>
@@ -387,7 +388,7 @@ const metaDescription = page.seo?.metaDescription || ''
       <div class="container-custom">
         <div class="max-w-4xl">
           {roadmap.preHeader && (
-            <p class="text-mint font-bold text-sm mb-4 uppercase tracking-wide">{roadmap.preHeader}</p>
+            <p class="text-mint-dark font-bold text-sm mb-4 uppercase tracking-wide">{roadmap.preHeader}</p>
           )}
           {roadmap.heading && (
             <h2 class="font-sans font-extrabold text-3xl md:text-4xl lg:text-[43px] text-charcoal leading-tight mb-4">
@@ -404,8 +405,8 @@ const metaDescription = page.seo?.metaDescription || ''
           {roadmap.currentItems && roadmap.currentItems.length > 0 && (
             <div class="bg-warm-light rounded-2xl p-6 md:p-8">
               <div class="flex items-center gap-3 mb-5">
-                <div class="w-8 h-8 bg-mint/20 rounded-full flex items-center justify-center">
-                  <svg class="w-4 h-4 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <div class="w-8 h-8 bg-mint-dark/20 rounded-full flex items-center justify-center">
+                  <svg class="w-4 h-4 text-mint-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                   </svg>
                 </div>
@@ -414,7 +415,7 @@ const metaDescription = page.seo?.metaDescription || ''
               <ul class="space-y-3">
                 {roadmap.currentItems.map((item) => (
                   <li class="flex items-start gap-3 text-charcoal/80 text-base leading-relaxed">
-                    <svg class="w-5 h-5 text-mint flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <svg class="w-5 h-5 text-mint-dark flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                     </svg>
                     <span>{item}</span>
@@ -516,7 +517,7 @@ const metaDescription = page.seo?.metaDescription || ''
       <div class="container-custom">
         <div class="max-w-3xl mx-auto">
           {faq.preHeader && (
-            <p class="text-mint font-bold text-sm mb-4 uppercase tracking-wide text-center">{faq.preHeader}</p>
+            <p class="text-mint-dark font-bold text-sm mb-4 uppercase tracking-wide text-center">{faq.preHeader}</p>
           )}
           {faq.headline && (
             <h2 class="font-sans font-extrabold text-3xl md:text-4xl text-charcoal leading-tight mb-10 text-center">

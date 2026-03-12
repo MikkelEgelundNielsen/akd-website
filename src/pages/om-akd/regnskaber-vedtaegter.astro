@@ -18,7 +18,7 @@ try {
 // Convert hero portable text to HTML
 const headlineHtml = page?.hero?.headline
   ? portableTextToHtml(page.hero.headline, { addHeadingIds: false })
-  : 'REGNSKABER & <span class="font-serif italic text-mint">vedtægter</span>'
+  : 'REGNSKABER & <span class="font-serif italic text-mint-dark">vedtægter</span>'
 
 const introHtml = page?.hero?.introText
   ? portableTextToHtml(page.hero.introText, { addHeadingIds: false })
@@ -60,7 +60,7 @@ const documentGroups = page?.documentGroups || [
   <section class="relative bg-warm-light pt-12 md:pt-16 lg:pt-20 pb-16 section-after-nav">
     <div class="container-custom">
       {preHeadline && (
-        <p class="text-mint font-bold text-base mb-6 uppercase tracking-wide text-center">
+        <p class="text-mint-dark font-bold text-base mb-6 uppercase tracking-wide text-center">
           {preHeadline}
         </p>
       )}
@@ -98,9 +98,9 @@ const documentGroups = page?.documentGroups || [
                     target={isExternal ? '_blank' : undefined}
                     rel={isExternal ? 'noopener noreferrer' : undefined}
                     download={doc.fileUrl ? '' : undefined}
-                    class="flex items-center gap-3 text-charcoal hover:text-mint transition-colors group p-3 -mx-3 rounded-lg hover:bg-warm-light/50"
+                    class="flex items-center gap-3 text-charcoal hover:text-mint-dark transition-colors group p-3 -mx-3 rounded-lg hover:bg-warm-light/50"
                   >
-                    <svg class="w-5 h-5 text-mint flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <svg class="w-5 h-5 text-mint-dark flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                     </svg>
                     <span class="text-lg font-medium group-hover:underline">{doc.title}</span>

@@ -66,11 +66,24 @@ if (authToken) {
           </button>
         </form>
         
-        <div class="mt-6 text-center text-sm text-charcoal/70">
-          <p>Problemer med at logge ind?</p>
-          <a href="/kontakt" class="text-mint hover:text-forest-green transition-colors font-semibold">
-            Kontakt os
-          </a>
+        <div class="mt-6 text-center">
+          <button
+            type="button"
+            id="help-toggle"
+            class="text-sm text-charcoal/70 hover:text-charcoal transition-colors font-semibold inline-flex items-center gap-1"
+          >
+            Problemer med at logge ind?
+
+          </button>
+
+          <div id="help-info" class="hidden mt-4 text-left text-sm bg-warm-light border border-gray-200 rounded-lg p-4">
+            <p class="text-charcoal mb-3">
+              Kontrollér om du har tastet oplysningerne korrekt og tag ellers fat i Kristian Dalsgaard på <a href="tel:+4540293040" class="text-mint-dark font-semibold hover:underline">4029 3040</a>.
+            </p>
+            <p class="text-charcoal/70">
+              <strong>Bemærk:</strong> Du kan nulstille din adgangskode via Avlerinfo Selvbetjening appen.
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -78,6 +91,13 @@ if (authToken) {
 </BaseLayout>
 
 <script>
+  const helpToggle = document.getElementById('help-toggle') as HTMLButtonElement;
+  const helpInfo = document.getElementById('help-info') as HTMLDivElement;
+
+  helpToggle.addEventListener('click', () => {
+    helpInfo.classList.toggle('hidden');
+  });
+
   const form = document.getElementById('login-form') as HTMLFormElement;
   const errorMessage = document.getElementById('error-message') as HTMLDivElement;
   const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;

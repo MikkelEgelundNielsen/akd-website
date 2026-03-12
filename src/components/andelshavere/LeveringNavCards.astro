@@ -1,0 +1,59 @@
+---
+/**
+ * Shared sub-navigation cards for the Levering og kampagne section.
+ * Displayed on all 4 pages (overview + 3 sub-pages).
+ * Highlights the currently active page.
+ */
+
+import type { NavCard } from '@/types/sanity'
+
+interface Props {
+  cards: NavCard[]
+  currentHref?: string
+}
+
+const { cards, currentHref } = Astro.props
+---
+
+{cards && cards.length > 0 && (
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+    {cards.map((card) => {
+      const isCurrent = currentHref && card.href === currentHref
+      return (
+        <a
+          href={card.href}
+          class:list={[
+            'rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow group text-center',
+            isCurrent ? 'bg-forest-green' : 'bg-white'
+          ]}
+          aria-current={isCurrent ? 'page' : undefined}
+        >
+          <h3 class:list={[
+            'font-sans font-bold text-lg mb-2 transition-colors',
+            isCurrent ? 'text-white' : 'text-charcoal group-hover:text-mint-dark'
+          ]}>
+            {card.title}
+          </h3>
+          <p class:list={[
+            'text-sm mb-3',
+            isCurrent ? 'text-white/80' : 'text-charcoal/60'
+          ]}>
+            {card.description}
+          </p>
+          <svg
+            class:list={[
+              'w-5 h-5 mx-auto transition-transform group-hover:translate-x-1',
+              isCurrent ? 'text-white/80' : 'text-mint-dark'
+            ]}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+          </svg>
+        </a>
+      )
+    })}
+  </div>
+)}

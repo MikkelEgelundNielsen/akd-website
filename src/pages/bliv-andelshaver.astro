@@ -4,6 +4,7 @@ import IconLink from '@/components/ui/IconLink.astro'
 import ProcessSteps from '@/components/sections/ProcessSteps.astro'
 import FAQAccordion from '@/components/sections/FAQAccordion.astro'
 import { sanityClient } from '@/lib/sanity'
+import { sanityImageUrl } from '@/lib/imageUtils'
 import { blivAndelshaverPageQuery } from '@/lib/sanityQueries'
 import { portableTextToHtml } from '@/lib/portableTextSerializer'
 import type { BlivAndelshaverPage } from '@/types/sanity'
@@ -72,7 +73,7 @@ const metaDescription = page.seo?.metaDescription || ''
   <section class="relative bg-warm-light pt-12 md:pt-16 lg:pt-20 pb-28 md:pb-48 section-after-nav">
     <div class="container-custom">
       {page.hero?.preHeadline && (
-        <p class="text-mint font-bold text-lg mb-6 uppercase tracking-wide text-center">
+        <p class="text-mint-dark font-bold text-lg mb-6 uppercase tracking-wide text-center">
           {page.hero.preHeadline}
         </p>
       )}
@@ -97,7 +98,7 @@ const metaDescription = page.seo?.metaDescription || ''
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-0">
             <div class="relative aspect-square lg:aspect-auto min-h-[300px] lg:min-h-[400px]">
               <img
-                src={contact.imageUrl || '/images/bjarne.jpg'}
+                src={sanityImageUrl(contact.imageUrl, 400) || '/images/bjarne.jpg'}
                 alt={contact.imageAlt || ''}
                 class="absolute inset-0 w-full h-full object-cover bg-warm-light"
               />
@@ -105,7 +106,7 @@ const metaDescription = page.seo?.metaDescription || ''
 
             <div class="p-8 md:p-10 lg:p-12 flex flex-col justify-center">
               {contactSection.preHeader && (
-                <p class="text-mint font-bold text-sm mb-4 uppercase tracking-wide">
+                <p class="text-mint-dark font-bold text-sm mb-4 uppercase tracking-wide">
                   {contactSection.preHeader}
                 </p>
               )}
@@ -130,7 +131,7 @@ const metaDescription = page.seo?.metaDescription || ''
                           </p>
                         )}
                       </div>
-                      <svg class="w-6 h-6 text-mint flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                      <svg class="w-6 h-6 text-mint-dark flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                         <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                       </svg>
                     </div>
@@ -196,7 +197,7 @@ const metaDescription = page.seo?.metaDescription || ''
     <section id="trinfortrin" class="relative bg-warm-light pt-16 md:pt-24 pb-16 md:pb-24 scroll-mt-32">
       <div class="container-custom">
         {process.preHeader && (
-          <p class="text-mint font-bold text-lg mb-4 uppercase tracking-wide text-center">
+          <p class="text-mint-dark font-bold text-lg mb-4 uppercase tracking-wide text-center">
             {process.preHeader}
           </p>
         )}
@@ -304,7 +305,7 @@ const metaDescription = page.seo?.metaDescription || ''
         <div class="avler-photo-grid" id="avler-photo-grid">
           {galleryImages.map((img) => (
             <div class="avler-photo-grid-item">
-              <img src={img.url} alt={img.alt || 'Hverdagsbillede fra AKD'} loading="lazy" />
+              <img src={sanityImageUrl(img.url, 600)} alt={img.alt || 'Hverdagsbillede fra AKD'} loading="lazy" />
             </div>
           ))}
         </div>
@@ -317,7 +318,7 @@ const metaDescription = page.seo?.metaDescription || ''
     <section class="relative bg-warm-light pt-16 md:pt-24 pb-16 md:pb-24">
       <div class="container-custom">
         {testimonials.preHeader && (
-          <p class="text-mint font-bold text-lg mb-4 uppercase tracking-wide text-center">
+          <p class="text-mint-dark font-bold text-lg mb-4 uppercase tracking-wide text-center">
             {testimonials.preHeader}
           </p>
         )}
@@ -330,7 +331,7 @@ const metaDescription = page.seo?.metaDescription || ''
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
           {testimonials.testimonials.map((t) => (
             <div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
-              <svg class="w-8 h-8 text-mint mb-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <svg class="w-8 h-8 text-mint-dark mb-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
               </svg>
 
@@ -401,7 +402,7 @@ const metaDescription = page.seo?.metaDescription || ''
     <section id="faq" class="relative bg-light pt-16 md:pt-24 pb-16 md:pb-24 scroll-mt-32">
       <div class="container-custom">
         {faq.preHeader && (
-          <p class="text-mint font-bold text-lg mb-4 uppercase tracking-wide text-center">
+          <p class="text-mint-dark font-bold text-lg mb-4 uppercase tracking-wide text-center">
             {faq.preHeader}
           </p>
         )}
@@ -453,7 +454,7 @@ const metaDescription = page.seo?.metaDescription || ''
               <div class="flex flex-col sm:flex-row">
                 <div class="sm:w-1/3 aspect-square relative bg-warm-light">
                   <img
-                    src={contact.imageUrl || '/images/bjarne.jpg'}
+                    src={sanityImageUrl(contact.imageUrl, 400) || '/images/bjarne.jpg'}
                     alt={contact.imageAlt || ''}
                     class="w-full h-full object-cover"
                   />

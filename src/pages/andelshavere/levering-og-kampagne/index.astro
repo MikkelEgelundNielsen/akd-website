@@ -1,0 +1,178 @@
+---
+import AndelshavereLayout from '@/layouts/AndelshavereLayout.astro'
+import LeveringNavCards from '@/components/andelshavere/LeveringNavCards.astro'
+import ProcessSteps from '@/components/sections/ProcessSteps.astro'
+import PortableText from '@/components/sanity/PortableText.astro'
+import { sanityClient } from '@/lib/sanity'
+import { leveringKampagnePageQuery } from '@/lib/sanityQueries'
+import { portableTextToHtml } from '@/lib/portableTextSerializer'
+import type { LeveringKampagnePage } from '@/types/sanity'
+
+export const prerender = false;
+
+let page: LeveringKampagnePage | null = null
+try {
+  page = await sanityClient.fetch<LeveringKampagnePage>(leveringKampagnePageQuery)
+} catch (error) {
+  console.error('Error fetching Levering og kampagne page from Sanity:', error)
+}
+
+if (!page) {
+  return Astro.redirect('/404')
+}
+
+const headlineHtml = page.hero?.headline
+  ? portableTextToHtml(page.hero.headline, { addHeadingIds: false })
+  : ''
+
+const introHtml = page.hero?.introText
+  ? portableTextToHtml(page.hero.introText, { addHeadingIds: false })
+  : ''
+
+const preHeadline = page.hero?.preHeadline
+const metaTitle = page.seo?.metaTitle || page.title || 'Levering og kampagne'
+const metaDescription = page.seo?.metaDescription || ''
+
+const processSteps = (page.processSection?.steps || []).map((step, i) => ({
+  number: i + 1,
+  title: step.title,
+  description: step.text,
+}))
+---
+
+<AndelshavereLayout
+  title={metaTitle}
+  description={metaDescription}
+>
+
+  <!-- HERO -->
+  <section class="relative bg-warm-light pt-12 md:pt-16 lg:pt-20 pb-16 section-after-nav">
+    <div class="container-custom">
+      {preHeadline && (
+        <p class="text-mint-dark font-bold text-base mb-6 uppercase tracking-wide text-center">
+          {preHeadline}
+        </p>
+      )}
+
+      {headlineHtml && (
+        <h1 class="text-center mb-8 md:mb-12 max-w-4xl mx-auto">
+          <span class="block font-sans font-extrabold text-[43px] md:text-[58px] lg:text-[62px] text-charcoal uppercase leading-tight [&_.font-serif]:lowercase [&_.font-serif]:font-medium" set:html={headlineHtml} />
+        </h1>
+      )}
+
+      {introHtml && (
+        <div class="max-w-3xl mx-auto text-center text-charcoal text-lg md:text-xl leading-relaxed prose-akd mb-10" set:html={introHtml} />
+      )}
+    </div>
+  </section>
+
+
+  <!-- STATUS BOX -->
+  {page.statusBox && (
+    <section class="bg-warm-light pb-10">
+      <div class="container-custom">
+        <div class="max-w-3xl mx-auto bg-white border-l-4 border-mint rounded-r-lg p-6 md:p-8 shadow-md">
+          {page.statusBox.heading && (
+            <h2 class="font-sans font-bold text-xl md:text-2xl text-charcoal mb-4">
+              {page.statusBox.heading}
+            </h2>
+          )}
+          {page.statusBox.body && (
+            <div class="text-charcoal/80 text-base md:text-lg leading-relaxed prose-akd">
+              <PortableText content={page.statusBox.body} addHeadingIds={false} />
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )}
+
+
+  <!-- NAVIGATION CARDS -->
+  <section class="bg-warm-light pb-16 md:pb-24">
+    <div class="container-custom">
+      <LeveringNavCards cards={page.navCards || []} />
+    </div>
+  </section>
+
+
+  <!-- INTRO SECTION -->
+  {page.introSection && (
+    <section class="bg-white py-16 md:py-24">
+      <div class="container-custom">
+        <div class="max-w-4xl mx-auto text-center">
+          {page.introSection.preHeader && (
+            <p class="text-mint-dark font-bold text-sm mb-4 uppercase tracking-wide">
+              {page.introSection.preHeader}
+            </p>
+          )}
+          {page.introSection.heading && (
+            <h2 class="font-serif font-semibold italic text-4xl md:text-[43px] text-charcoal leading-tight mb-8">
+              {page.introSection.heading}
+            </h2>
+          )}
+          {page.introSection.body && (
+            <div class="text-charcoal/80 text-lg md:text-xl leading-relaxed">
+              <PortableText content={page.introSection.body} addHeadingIds={false} />
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )}
+
+
+  <!-- PROCESS STEPS -->
+  {page.processSection && processSteps.length > 0 && (
+    <section class="bg-warm-light py-16 md:py-24">
+      <div class="container-custom">
+        <div class="max-w-3xl mx-auto">
+          {page.processSection.heading && (
+            <h2 class="font-sans font-bold text-2xl md:text-3xl text-charcoal text-center mb-4 md:mb-12">
+              {page.processSection.heading}
+            </h2>
+          )}
+          <ProcessSteps steps={processSteps} variant="light" />
+        </div>
+      </div>
+    </section>
+  )}
+
+
+  <!-- LINKS / SHORTCUTS -->
+  {page.linksSection && page.linksSection.links && page.linksSection.links.length > 0 && (
+    <section class="bg-charcoal py-16 md:py-24">
+      <div class="container-custom">
+        <div class="max-w-4xl mx-auto text-center">
+          {page.linksSection.heading && (
+            <h2 class="font-sans font-bold text-2xl md:text-3xl text-white mb-8">
+              {page.linksSection.heading}
+            </h2>
+          )}
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 flex-wrap">
+            {page.linksSection.links.map((link, index) => (
+              index === 0 ? (
+                <a href={link.href} class="btn-primary">
+                  <span>{link.label}</span>
+                  <span class="btn-icon-circle">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                    </svg>
+                  </span>
+                </a>
+              ) : (
+                <a href={link.href} class="btn-secondary">
+                  {link.label}
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                  </svg>
+                </a>
+              )
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )}
+
+</AndelshavereLayout>

@@ -74,6 +74,25 @@ const html = portableTextToHtml(content, { addHeadingIds })
   .prose-akd :global(ol li) {
     @apply list-decimal;
   }
+
+  /* Checklist (kravliste) — SVG checkmark-prefixed requirement items */
+  .prose-akd :global(ul.checklist) {
+    @apply text-base text-charcoal leading-relaxed mb-4 ml-0 list-none;
+  }
+
+  .prose-akd :global(ul.checklist li) {
+    @apply mb-2 pl-7 relative list-none;
+  }
+
+  .prose-akd :global(ul.checklist li::before) {
+    content: '';
+    @apply absolute left-0 w-4 h-4;
+    top: 0.25em;
+    background-color: currentColor;
+    color: #0A8F5F;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6L9 17l-5-5'/%3E%3C/svg%3E") no-repeat center;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6L9 17l-5-5'/%3E%3C/svg%3E") no-repeat center;
+  }
   
   /* Links */
   .prose-akd :global(a) {
@@ -132,9 +151,9 @@ const html = portableTextToHtml(content, { addHeadingIds })
     background-color: #F2F1EC4D; /* warm-light at ~30% opacity */
   }
 
-  /* Mint accent (custom mark) */
+  /* Mint accent (custom mark) — dark variant for readability on light backgrounds */
   .prose-akd :global(.text-mint) {
-    color: #10E397;
+    color: #0A8F5F;
     font-family: 'Lora', serif;
     font-style: italic;
     text-transform: lowercase;

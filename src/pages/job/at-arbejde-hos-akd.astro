@@ -2,6 +2,7 @@
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import ContentBox from '@/components/sections/ContentBox.astro'
 import { sanityClient } from '@/lib/sanity'
+import { sanityImageUrl } from '@/lib/imageUtils'
 import { workingAtAkdPageQuery } from '@/lib/sanityQueries'
 import { portableTextToHtml } from '@/lib/portableTextSerializer'
 import type { WorkingAtAkdPage } from '@/types/sanity'
@@ -45,7 +46,7 @@ const galleryImages = gallery?.images || []
     <div class="container-custom">
       <!-- Pre-headline -->
       {preHeadline && (
-        <p class="text-mint font-bold text-base mb-6 uppercase tracking-wide text-center">
+        <p class="text-mint-dark font-bold text-base mb-6 uppercase tracking-wide text-center">
           {preHeadline}
         </p>
       )}
@@ -92,7 +93,7 @@ const galleryImages = gallery?.images || []
         <div class="photo-grid" id="photo-grid">
           {galleryImages.map((img) => (
             <div class="photo-grid-item">
-              <img src={img.url} alt={img.alt || 'Hverdagsbillede fra AKD'} loading="lazy" />
+              <img src={sanityImageUrl(img.url, 600)} alt={img.alt || 'Hverdagsbillede fra AKD'} loading="lazy" />
             </div>
           ))}
         </div>

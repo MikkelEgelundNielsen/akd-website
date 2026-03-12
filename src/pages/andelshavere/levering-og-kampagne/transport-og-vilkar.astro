@@ -1,0 +1,139 @@
+---
+import AndelshavereLayout from '@/layouts/AndelshavereLayout.astro'
+import LeveringNavCards from '@/components/andelshavere/LeveringNavCards.astro'
+import PortableText from '@/components/sanity/PortableText.astro'
+import { sanityClient } from '@/lib/sanity'
+import { transportOgVilkarPageQuery } from '@/lib/sanityQueries'
+import { portableTextToHtml } from '@/lib/portableTextSerializer'
+import type { TransportOgVilkarPage } from '@/types/sanity'
+
+export const prerender = false;
+
+let page: TransportOgVilkarPage | null = null
+try {
+  page = await sanityClient.fetch<TransportOgVilkarPage>(transportOgVilkarPageQuery)
+} catch (error) {
+  console.error('Error fetching Transport og vilkår page from Sanity:', error)
+}
+
+if (!page) {
+  return Astro.redirect('/404')
+}
+
+const headlineHtml = page.hero?.headline
+  ? portableTextToHtml(page.hero.headline, { addHeadingIds: false })
+  : ''
+
+const introHtml = page.hero?.introText
+  ? portableTextToHtml(page.hero.introText, { addHeadingIds: false })
+  : ''
+
+const preHeadline = page.hero?.preHeadline
+const metaTitle = page.seo?.metaTitle || page.title || 'Transport og vilkår'
+const metaDescription = page.seo?.metaDescription || ''
+---
+
+<AndelshavereLayout
+  title={metaTitle}
+  description={metaDescription}
+>
+
+  <!-- HERO -->
+  <section class="relative bg-warm-light pt-12 md:pt-16 lg:pt-20 pb-16 section-after-nav">
+    <div class="container-custom">
+      {preHeadline && (
+        <p class="text-mint-dark font-bold text-base mb-6 uppercase tracking-wide text-center">
+          {preHeadline}
+        </p>
+      )}
+
+      {headlineHtml && (
+        <h1 class="text-center mb-8 md:mb-12 max-w-4xl mx-auto">
+          <span class="block font-sans font-extrabold text-[43px] md:text-[58px] lg:text-[62px] text-charcoal uppercase leading-tight [&_.font-serif]:lowercase [&_.font-serif]:font-medium" set:html={headlineHtml} />
+        </h1>
+      )}
+
+      {introHtml && (
+        <div class="max-w-3xl mx-auto text-center text-charcoal text-lg md:text-xl leading-relaxed prose-akd mb-10" set:html={introHtml} />
+      )}
+    </div>
+  </section>
+
+
+  <!-- NAVIGATION CARDS -->
+  <section class="bg-warm-light pb-16 md:pb-20">
+    <div class="container-custom">
+      <LeveringNavCards
+        cards={page.navCards || []}
+        currentHref="/andelshavere/levering-og-kampagne/transport-og-vilkar"
+      />
+    </div>
+  </section>
+
+
+  <!-- TEXT SECTIONS -->
+  {page.sections && page.sections.length > 0 && page.sections.map((section, index) => (
+    <section class:list={[
+      'py-16 md:py-24',
+      index % 2 === 0 ? 'bg-warm-light' : 'bg-white'
+    ]}>
+      <div class="container-custom">
+        <div class="max-w-4xl mx-auto">
+          {section.heading && (
+            <h2 class="font-sans font-extrabold text-3xl md:text-4xl lg:text-[43px] text-charcoal leading-tight mb-6">
+              {section.heading}
+            </h2>
+          )}
+          {section.body && (
+            <div class="text-charcoal/80 text-lg md:text-xl leading-relaxed prose-akd">
+              <PortableText content={section.body} addHeadingIds={false} />
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  ))}
+
+
+  <!-- CTA BAND -->
+  {page.ctaSection && page.ctaSection.ctas && page.ctaSection.ctas.length > 0 && (
+    <section class="bg-charcoal py-16 md:py-24">
+      <div class="container-custom">
+        <div class="max-w-4xl mx-auto text-center">
+          {page.ctaSection.heading && (
+            <h2 class="font-sans font-bold text-2xl md:text-3xl text-white mb-4">
+              {page.ctaSection.heading}
+            </h2>
+          )}
+          {page.ctaSection.introText && (
+            <p class="text-white/70 text-lg mb-10">
+              {page.ctaSection.introText}
+            </p>
+          )}
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
+            {page.ctaSection.ctas.map((ctaItem, index) => (
+              index === 0 ? (
+                <a href={ctaItem.href} class="btn-primary">
+                  <span>{ctaItem.label}</span>
+                  <span class="btn-icon-circle">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                    </svg>
+                  </span>
+                </a>
+              ) : (
+                <a href={ctaItem.href} class="btn-secondary">
+                  {ctaItem.label}
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                  </svg>
+                </a>
+              )
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )}
+
+</AndelshavereLayout>

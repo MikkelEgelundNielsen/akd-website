@@ -46,7 +46,7 @@ function getDocHref(doc: { fileUrl?: string; url?: string }) {
     <section class="relative bg-warm-light pt-12 md:pt-16 lg:pt-20 pb-16 section-after-nav">
       <div class="container-custom">
         {page.hero.preHeadline && (
-          <p class="text-mint font-bold text-base mb-6 uppercase tracking-wide text-center">
+          <p class="text-mint-dark font-bold text-base mb-6 uppercase tracking-wide text-center">
             {page.hero.preHeadline}
           </p>
         )}
@@ -71,12 +71,12 @@ function getDocHref(doc: { fileUrl?: string; url?: string }) {
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
           {page.quickNavCards.map((card) => (
             <a href={card.anchor} class="bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow group text-center">
-              <div class="w-12 h-12 bg-mint/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg class="w-6 h-6 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <div class="w-12 h-12 bg-mint-dark/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-6 h-6 text-mint-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <Fragment set:html={quickNavIcons[card.icon || 'document'] || quickNavIcons.document} />
                 </svg>
               </div>
-              <h3 class="font-sans font-bold text-charcoal text-lg mb-2 group-hover:text-mint transition-colors">{card.title}</h3>
+              <h3 class="font-sans font-bold text-charcoal text-lg mb-2 group-hover:text-mint-dark transition-colors">{card.title}</h3>
               {card.description && <p class="text-charcoal/60 text-sm">{card.description}</p>}
             </a>
           ))}
@@ -91,7 +91,7 @@ function getDocHref(doc: { fileUrl?: string; url?: string }) {
     <section id="protamylasse" class="bg-white py-16 md:py-24 scroll-mt-24">
       <div class="container-custom">
         <div class="max-w-4xl mx-auto">
-          {proto.preHeader && <p class="text-mint font-bold text-sm mb-4 uppercase tracking-wide">{proto.preHeader}</p>}
+          {proto.preHeader && <p class="text-mint-dark font-bold text-sm mb-4 uppercase tracking-wide">{proto.preHeader}</p>}
           {proto.headline && (
             <h2 class="font-sans font-extrabold text-3xl md:text-4xl lg:text-[43px] text-charcoal leading-tight mb-6">
               {proto.headline}
@@ -123,7 +123,7 @@ function getDocHref(doc: { fileUrl?: string; url?: string }) {
                 <ul class="space-y-2 mb-6">
                   {proto.maskinstationer.map((station: string) => (
                     <li class="flex items-start gap-3 text-charcoal/80 text-lg">
-                      <svg class="w-5 h-5 text-mint flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <svg class="w-5 h-5 text-mint-dark flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                       </svg>
@@ -194,9 +194,9 @@ function getDocHref(doc: { fileUrl?: string; url?: string }) {
                             <td class="px-4 py-3 text-right font-bold text-charcoal">{proto.nutrientTable.totalRaw}</td>
                             <td class="px-4 py-3 text-right font-bold text-charcoal">{proto.nutrientTable.totalAdj}</td>
                           </tr>
-                          <tr class="bg-mint/10 border-t border-charcoal/10">
+                          <tr class="bg-mint-dark/10 border-t border-charcoal/10">
                             <td class="px-4 py-3 font-bold text-charcoal" colspan="4">Avlerbetaling, ca. 50 %</td>
-                            <td class="px-4 py-3 text-right font-bold text-mint text-base">{proto.nutrientTable.avlerPrice}</td>
+                            <td class="px-4 py-3 text-right font-bold text-mint-dark text-base">{proto.nutrientTable.avlerPrice}</td>
                           </tr>
                         </tbody>
                       </table>
@@ -246,8 +246,8 @@ function getDocHref(doc: { fileUrl?: string; url?: string }) {
                 <h4 class="font-sans font-bold text-lg text-charcoal mb-4">{proto.deklarationer.headline}</h4>
                 <div class="space-y-3">
                   {proto.deklarationer.documents.map((doc) => (
-                    <a href={getDocHref(doc)} class="flex items-center gap-3 text-charcoal hover:text-mint transition-colors group">
-                      <svg class="w-5 h-5 text-mint flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <a href={getDocHref(doc)} class="flex items-center gap-3 text-charcoal hover:text-mint-dark transition-colors group">
+                      <svg class="w-5 h-5 text-mint-dark flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                       </svg>
                       <span class="text-lg group-hover:underline">{doc.label}</span>
@@ -268,7 +268,7 @@ function getDocHref(doc: { fileUrl?: string; url?: string }) {
     <section id="pulp" class="bg-warm-light py-16 md:py-24 scroll-mt-24">
       <div class="container-custom">
         <div class="max-w-4xl mx-auto">
-          {pulp.preHeader && <p class="text-mint font-bold text-sm mb-4 uppercase tracking-wide">{pulp.preHeader}</p>}
+          {pulp.preHeader && <p class="text-mint-dark font-bold text-sm mb-4 uppercase tracking-wide">{pulp.preHeader}</p>}
           {pulp.headline && (
             <h2 class="font-sans font-extrabold text-3xl md:text-4xl lg:text-[43px] text-charcoal leading-tight mb-6">
               {pulp.headline}
@@ -280,7 +280,7 @@ function getDocHref(doc: { fileUrl?: string; url?: string }) {
             </p>
           )}
           {pulp.bodyText && (
-            <p class="text-charcoal/80 text-lg leading-relaxed mb-8" set:html={pulp.bodyText.replace(/(tlf\.\s*\d[\d\s]+)/g, '<a href="tel:+4597180888" class="text-mint hover:underline font-semibold">$1</a>')} />
+            <p class="text-charcoal/80 text-lg leading-relaxed mb-8" set:html={pulp.bodyText.replace(/(tlf\.\s*\d[\d\s]+)/g, '<a href="tel:+4597180888" class="text-mint-dark hover:underline font-semibold">$1</a>')} />
           )}
 
           {pulp.documents && pulp.documents.items?.length > 0 && (
@@ -288,8 +288,8 @@ function getDocHref(doc: { fileUrl?: string; url?: string }) {
               <h4 class="font-sans font-bold text-lg text-charcoal mb-4">{pulp.documents.headline}</h4>
               <div class="space-y-3">
                 {pulp.documents.items.map((doc) => (
-                  <a href={getDocHref(doc)} class="flex items-center gap-3 text-charcoal hover:text-mint transition-colors group">
-                    <svg class="w-5 h-5 text-mint flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <a href={getDocHref(doc)} class="flex items-center gap-3 text-charcoal hover:text-mint-dark transition-colors group">
+                    <svg class="w-5 h-5 text-mint-dark flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                     </svg>
                     <span class="text-lg group-hover:underline">{doc.label}</span>
@@ -309,7 +309,7 @@ function getDocHref(doc: { fileUrl?: string; url?: string }) {
     <section id="restprodukter" class="bg-white py-16 md:py-24 scroll-mt-24">
       <div class="container-custom">
         <div class="max-w-4xl mx-auto">
-          {rest.preHeader && <p class="text-mint font-bold text-sm mb-4 uppercase tracking-wide">{rest.preHeader}</p>}
+          {rest.preHeader && <p class="text-mint-dark font-bold text-sm mb-4 uppercase tracking-wide">{rest.preHeader}</p>}
           {rest.headline && (
             <h2 class="font-sans font-extrabold text-3xl md:text-4xl lg:text-[43px] text-charcoal leading-tight mb-6">
               {rest.headline}
@@ -321,8 +321,8 @@ function getDocHref(doc: { fileUrl?: string; url?: string }) {
 
           {rest.document && (
             <div class="bg-warm-light rounded-2xl p-6 md:p-8 mb-8">
-              <a href={getDocHref(rest.document)} class="flex items-center gap-3 text-charcoal hover:text-mint transition-colors group">
-                <svg class="w-5 h-5 text-mint flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <a href={getDocHref(rest.document)} class="flex items-center gap-3 text-charcoal hover:text-mint-dark transition-colors group">
+                <svg class="w-5 h-5 text-mint-dark flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                 </svg>
                 <span class="text-lg font-semibold group-hover:underline">{rest.document.label}</span>
@@ -332,7 +332,7 @@ function getDocHref(doc: { fileUrl?: string; url?: string }) {
 
           {rest.externalLinkText && rest.externalLinkHref && (
             <p class="text-charcoal/80 text-lg leading-relaxed">
-              Se også <a href={rest.externalLinkHref} target="_blank" rel="noopener noreferrer" class="text-mint hover:underline font-semibold">{rest.externalLinkText}</a>.
+              Se også <a href={rest.externalLinkHref} target="_blank" rel="noopener noreferrer" class="text-mint-dark hover:underline font-semibold">{rest.externalLinkText}</a>.
             </p>
           )}
         </div>

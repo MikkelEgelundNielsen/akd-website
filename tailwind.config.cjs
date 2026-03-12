@@ -6,7 +6,10 @@ module.exports = {
       colors: {
         // Primary colors
         'forest-green': '#004928',    // Primary, navigation, headers
-        'mint': '#10E397',            // Minor accents only (NOT CTAs)
+        'mint': {
+          DEFAULT: '#10E397',          // Bright mint – use on dark backgrounds only
+          'dark': '#0A8F5F',           // Accessible mint – WCAG AA on light backgrounds
+        },
         'burnt-orange': '#E87722',    // PRIMARY CTA COLOR ⭐
         'amber': '#F5A623',           // Secondary CTA / highlights
         
