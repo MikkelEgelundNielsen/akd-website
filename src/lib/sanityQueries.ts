@@ -308,15 +308,16 @@ export const latestPublicNewsQuery = `*[_type == "newsArticle" && isPublic == tr
   "mainImageAlt": mainImage.alt
 }`
 
-// Portal news articles (for avlerinfo.dk)
-export const portalNewsArticlesQuery = `*[_type == "newsArticle" && isPublic == true && showOnPortal == true] | order(publishedAt desc) {
+// Portal news articles (for avlerinfo.dk) — includes non-public with isPublic flag for lock icons
+export const portalNewsArticlesQuery = `*[_type == "newsArticle" && showOnPortal == true] | order(publishedAt desc) {
   _id,
   title,
   "slug": slug.current,
   publishedAt,
   excerpt,
   "mainImage": mainImage.asset->url,
-  "mainImageAlt": mainImage.alt
+  "mainImageAlt": mainImage.alt,
+  isPublic
 }`
 
 // Dashboard news (latest 5 for avlere dashboard)
